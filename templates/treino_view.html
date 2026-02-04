@@ -25,29 +25,6 @@
           <h4 class="card-title">Treino de {{ treino.aluno }}</h4>
           <p class="text-muted mb-4">Objetivo: <strong>{{ treino.objetivo }}</strong> · Grupo: <strong>{{ treino.grupo }}</strong></p>
 
-          <div class="table-responsive mb-4">
-            <table class="table align-middle">
-              <thead>
-                <tr>
-                  <th>Exercício</th>
-                  <th>Grupo</th>
-                  <th>Séries</th>
-                  <th>Repetições</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for item in itens %}
-                <tr>
-                  <td>{{ item.nome }}</td>
-                  <td>{{ item.grupo }}</td>
-                  <td>{{ item.series }}</td>
-                  <td>{{ item.repeticoes }}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-
           <div class="vstack gap-3">
             {% for item in itens %}
             <div class="border rounded bg-white p-3">
@@ -74,28 +51,6 @@
                   <div class="text-muted small">Sem vídeo/imagem disponível.</div>
                 {% endif %}
               </div>
-
-              {% if item.dicas %}
-              <div class="mb-2">
-                <strong class="small">Dicas:</strong>
-                <ul class="mb-0 small">
-                  {% for dica in item.dicas %}
-                  <li>{{ dica }}</li>
-                  {% endfor %}
-                </ul>
-              </div>
-              {% endif %}
-
-              {% if item.erros %}
-              <div class="mb-2">
-                <strong class="small">Erros comuns:</strong>
-                <ul class="mb-0 small">
-                  {% for erro in item.erros %}
-                  <li>{{ erro }}</li>
-                  {% endfor %}
-                </ul>
-              </div>
-              {% endif %}
 
               {% if item.observacoes %}
               <div class="alert alert-info py-2 mb-0 small">{{ item.observacoes }}</div>
