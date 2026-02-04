@@ -1,0 +1,182 @@
+[
+  {
+    "id": "agachamento",
+    "nome": "Agachamento",
+    "grupo": "Glúteos",
+    "midia": "/static/exercicios/gluteos/gluteo_agachamento_livre.gif",
+    "dicas": ["Desça controlando (2–3s)", "Joelhos acompanham a ponta dos pés", "Suba contraindo glúteos"],
+    "erros": ["Joelho colapsando para dentro", "Perder a neutralidade lombar", "Amplitudes curtas sem controle"],
+    "observacoes": ""
+  },
+  {
+    "id": "elevacao_pelvica",
+    "nome": "Elevação Pélvica (Hip Thrust)",
+    "grupo": "Glúteos",
+    "midia": "/static/exercicios/gluteos/gluteo_hip_thrust.gif",
+    "dicas": ["Pausa de 1–2s no topo", "Costelas “para baixo” (sem hiperextensão)", "Queixo levemente recolhido"],
+    "erros": ["Subir com lombar", "Não travar no topo", "Pés muito longe do corpo"],
+    "observacoes": ""
+  },
+  {
+    "id": "afundo",
+    "nome": "Afundo (Lunge)",
+    "grupo": "Glúteos",
+    "midia": "/static/exercicios/gluteos/gluteo_afundo_lunge.gif",
+    "dicas": ["Passo mais longo = mais glúteo", "Tronco levemente inclinado", "Controle total na descida"],
+    "erros": ["Passo curto demais (vira quadríceps)", "Bater o joelho no chão", "Perder equilíbrio por pressa"],
+    "observacoes": ""
+  },
+  {
+    "id": "sumo",
+    "nome": "Agachamento Sumô",
+    "grupo": "Glúteos",
+    "midia": "/static/exercicios/gluteos/gluteo_sumo.gif",
+    "dicas": ["Pés abertos e pontas para fora", "Desça mantendo joelhos abertos", "Suba empurrando o chão"],
+    "erros": ["Joelhos fechando", "Curvar tronco sem necessidade", "Amplitude curta"],
+    "observacoes": ""
+  },
+  {
+    "id": "quatro_apoios",
+    "nome": "Quatro Apoios (Donkey Kick)",
+    "grupo": "Glúteos",
+    "midia": "/static/exercicios/gluteos/gluteo_quatro_apoios.gif",
+    "dicas": ["Pelve estável", "Suba e segure 1s", "Movimento curto e controlado"],
+    "erros": ["Girar quadril", "Arqueamento lombar", "Balançar o corpo"],
+    "observacoes": ""
+  },
+  {
+    "id": "extensao_cabo",
+    "nome": "Extensão no Cabo",
+    "grupo": "Glúteos",
+    "midia": "/static/exercicios/gluteos/gluteo_extensao_cabo.gif",
+    "dicas": ["Contração no final do movimento", "Tronco firme", "Sem impulso"],
+    "erros": ["Chutar com lombar", "Excesso de carga e pouca amplitude", "Perder o controle na volta"],
+    "observacoes": ""
+  },
+  {
+    "id": "levantamento_terra",
+    "nome": "Levantamento Terra (Romeno/Stiff)",
+    "grupo": "Glúteos",
+    "midia": "/static/exercicios/gluteos/gluteo_terra_romeno.gif",
+    "dicas": ["Quadril para trás", "Coluna neutra", "Descida lenta (3s)"],
+    "erros": ["Arredondar costas", "Flexionar muito o joelho", "Descer além da mobilidade com perda de forma"],
+    "observacoes": ""
+  },
+  {
+    "id": "cadeira_abdutora",
+    "nome": "Cadeira Abdutora",
+    "grupo": "Glúteos",
+    "midia": "/static/exercicios/gluteos/gluteo_abdutora.gif",
+    "dicas": ["Incline o tronco levemente à frente", "Abra e segure 1s", "Controle total"],
+    "erros": ["Roubar com tronco", "Bater as pernas na volta", "Carga alta sem amplitude"],
+    "observacoes": ""
+  },
+  {
+    "id": "elevacao_lateral",
+    "nome": "Elevação de Perna Lateral",
+    "grupo": "Glúteos",
+    "midia": "/static/exercicios/gluteos/gluteo_elevacao_lateral.gif",
+    "dicas": ["Pés alinhados", "Quadril não gira", "Repetições contínuas"],
+    "erros": ["Rodar a perna para “roubar”", "Jogar o tronco", "Amplitude exagerada sem controle"],
+    "observacoes": ""
+  },
+  {
+    "id": "ponte_unilateral",
+    "nome": "Ponte com Elevação de Perna",
+    "grupo": "Glúteos",
+    "midia": "/static/exercicios/gluteos/gluteo_ponte_unilateral.gif",
+    "dicas": ["Quadril nivelado", "Suba e pause 1s", "Empurre pelo calcanhar"],
+    "erros": ["Desalinhar quadril", "Empurrar pela ponta do pé", "Perder a postura do tronco"],
+    "observacoes": ""
+  },
+{
+  "id": "supino_reto_barra",
+  "nome": "Supino Reto (Barra ou Halteres)",
+  "grupo": "Peito",
+  "midia": "/static/exercicios/peito/peito_supino_reto_barra.mp4",
+  "dicas": [
+    "Mantenha os pés firmes no chão",
+    "Escápulas retraídas",
+    "Controle a descida"
+  ],
+  "erros": [
+    "Descer a barra muito alto no peito",
+    "Tirar os pés do chão",
+    "Quicar a barra"
+  ],
+  "observacoes": "3–4 séries • Treino Superior A"
+},
+{
+  "id": "costas_remada_curvada",
+  "nome": "Remada Curvada (Barra)",
+  "grupo": "Costas",
+  "midia": "/static/exercicios/costas/costas_remada_curvada.mp4",
+  "dicas": [
+    "Mantenha a coluna neutra",
+    "Puxe com os cotovelos",
+    "Controle a volta"
+  ],
+  "erros": [
+    "Arredondar a lombar",
+    "Usar impulso do tronco",
+    "Puxar com os braços apenas"
+  ],
+  "observacoes": "3–4 séries • Treino Superior A"
+},
+{
+  "id": "peito_supino_inclinado_halteres",
+  "nome": "Supino Inclinado (Halteres)",
+  "grupo": "Peito",
+  "midia": "/static/exercicios/peito/peito_supino_inclinado_halteres.mp4",
+  "dicas": [
+    "Mantenha o banco entre 30° e 45°",
+    "Controle a descida",
+    "Não bata os halteres no topo"
+  ],
+  "erros": [
+    "Abrir demais os cotovelos",
+    "Transformar em supino reto pelo ângulo",
+    "Descer rápido sem controle"
+  ],
+  "observacoes": "3 séries • Ênfase em peito superior"
+},
+{
+  "id": "costas_puxada_alta_pulldown",
+  "nome": "Puxada Alta (Pulldown)",
+  "grupo": "Costas",
+  "subgrupo": "Largura",
+  "midia": "/static/exercicios/costas/costas_puxada_alta_pulldown.mp4",
+  "dicas": [
+    "Puxe com os cotovelos",
+    "Leve o peito em direção à barra",
+    "Controle a subida"
+  ],
+  "erros": [
+    "Puxar atrás da nuca",
+    "Usar balanço do tronco",
+    "Soltar o peso rápido"
+  ],
+  "observacoes": "3 séries • Ênfase em dorsais (largura)"
+},
+{
+  "id": "triceps_extensao_polia_alta",
+  "nome": "Extensão de Tríceps na Polia Alta",
+  "grupo": "Tríceps",
+  "subgrupo": "Cabeça Lateral / Medial",
+  "midia": "/static/exercicios/triceps/triceps_extensao_polia_alta.mp4",
+  "dicas": [
+    "Mantenha os cotovelos fixos",
+    "Estenda completamente o braço",
+    "Controle o retorno"
+  ],
+  "erros": [
+    "Abrir os cotovelos",
+    "Usar o tronco para empurrar",
+    "Soltar o peso rápido"
+  ],
+  "observacoes": "3 séries • Treino Superior A"
+}
+
+
+
+]

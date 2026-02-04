@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Biblioteca de Exercícios</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/app.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar bg-white border-bottom sticky-top">
+  <div class="container py-2">
+    <span class="navbar-brand fw-semibold">🏋️ Biblioteca de Exercícios</span>
+  </div>
+</nav>
+
+<div class="container py-3">
+
+  <form class="row g-2 align-items-end mb-3" method="GET" action="/">
+    <div class="col-12 col-md-6">
+      <label class="form-label mb-1">Buscar</label>
+      <input class="form-control" name="q" value="{{ q }}" placeholder="Ex: agachamento, glúteos...">
+    </div>
+
+    <div class="col-8 col-md-4">
+      <label class="form-label mb-1">Grupo</label>
+      <select class="form-select" name="grupo">
+        <option value="">Todos</option>
+        {% for g in grupos %}
+          <option value="{{ g }}" {% if grupo_selecionado == g %}selected{% endif %}>{{ g }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-4 col-md-2 d-grid">
+      <button class="btn btn-primary">Filtrar</button>
+    </div>
+
+    {% if q or grupo_selecionado %}
+    <div class="col-12">
+      <a class="small text-decoration-none" href="/">Limpar filtros</a>
+    </div>
+    {% endif %}
+  </form>
+
+  {% if exercicios|length == 0 %}
+    <div class="alert alert-warning">Nenhum exercício encontrado.</div>
+  {% endif %}
+
+  <div class="row g-3">
+    {% for ex in exercicios %}
+    <div class="col-12 col-md-6 col-lg-4">
+      <a href="/e/{{ ex.id }}" class="text-decoration-none">
+        <div class="card shadow-sm h-100">
+          <div class="p-2 bg-white border-bottom"
+               style="height:220px; display:flex; align-items:center; justify-content:center;">
+
+            {% if ex.midia %}
+              {% if ex.midia.lower().endswith('.mp4') %}
+                <video autoplay loop muted playsinline
+                       style="max-height:200px; max-width:100%; object-fit:contain;">
+                  <source src="{{ ex.midia }}" type="video/mp4">
+                </video>
+              {% else %}
+                <img src="{{ ex.midia }}" alt="{{ ex.nome }}"
+                     style="max-height:200px; max-width:100%; object-fit:contain;">
+              {% endif %}
+            {% else %}
+              <div class="text-muted small">Sem mídia</div>
+            {% endif %}
+
+          </div>
+
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+              <h5 class="card-title mb-1">{{ ex.nome }}</h5>
+              <span class="badge text-bg-secondary">{{ ex.grupo }}</span>
+            </div>
+
+            {% if ex.dicas and ex.dicas|length > 0 %}
+              <p class="text-muted mb-0 small">Dica: {{ ex.dicas[0] }}</p>
+            {% endif %}
+          </div>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="mt-4 text-muted small">
+    Dica: abra no celular e adicione à tela inicial (vira “app”).
+  </div>
+
+</div>
+</body>
+</html>
