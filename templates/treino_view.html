@@ -39,7 +39,7 @@
               <div class="mb-3">
                 {% if item.midia %}
                   {% if item.midia.lower().endswith('.mp4') %}
-                    <video controls playsinline
+                    <video autoplay loop muted playsinline
                            style="max-height:220px; max-width:100%; object-fit:contain;">
                       <source src="{{ item.midia }}" type="video/mp4">
                     </video>

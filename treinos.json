@@ -100,5 +100,39 @@
       }
     ],
     "criado_em": "2026-02-04T23:35:31.007501"
+  },
+  {
+    "id": "0774b509",
+    "aluno": "Rafael",
+    "objetivo": "Hipertrofia",
+    "grupo": "Superior A - Peito, Costas e Tríceps",
+    "exercicios": [
+      {
+        "exercicio_id": "supino_reto_barra",
+        "series": "4",
+        "repeticoes": "12"
+      },
+      {
+        "exercicio_id": "costas_remada_curvada",
+        "series": "4",
+        "repeticoes": "12"
+      },
+      {
+        "exercicio_id": "peito_supino_inclinado_halteres",
+        "series": "3",
+        "repeticoes": "12"
+      },
+      {
+        "exercicio_id": "costas_puxada_alta_pulldown",
+        "series": "3",
+        "repeticoes": "12"
+      },
+      {
+        "exercicio_id": "triceps_extensao_polia_alta",
+        "series": "3",
+        "repeticoes": "12"
+      }
+    ],
+    "criado_em": "2026-02-06T03:57:45.891109"
   }
 ]
