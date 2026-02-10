@@ -28,6 +28,7 @@ def carregar_exercicios():
         ex.setdefault("dicas", [])
         ex.setdefault("erros", [])
         ex.setdefault("observacoes", "")
+        ex.setdefault("aparelho", "Peso livre")
     return data
 
 
@@ -68,20 +69,26 @@ def index():
 
     q = (request.args.get("q") or "").strip().lower()
     grupo = (request.args.get("grupo") or "").strip().lower()
+    aparelho = (request.args.get("aparelho") or "").strip().lower()
 
-    # Lista de grupos (para dropdown)
+    # Lista de grupos/aparelhos (para dropdown)
     grupos = sorted({(ex.get("grupo") or "").strip() for ex in exercicios if ex.get("grupo")})
+    aparelhos = sorted({(ex.get("aparelho") or "").strip() for ex in exercicios if ex.get("aparelho")})
 
     filtrados = []
     for ex in exercicios:
         nome = (ex.get("nome") or "").lower()
         g = (ex.get("grupo") or "").lower()
 
+        a = (ex.get("aparelho") or "").lower()
+
         if grupo and g != grupo:
             continue
+        if aparelho and a != aparelho:
+            continue
         if q:
-            # Busca simples por nome + grupo
-            if q not in nome and q not in g:
+            # Busca simples por nome + grupo + aparelho
+            if q not in nome and q not in g and q not in a:
                 continue
 
         filtrados.append(ex)
@@ -93,8 +100,10 @@ def index():
         "index.html",
         exercicios=filtrados,
         grupos=grupos,
+        aparelhos=aparelhos,
         q=request.args.get("q") or "",
-        grupo_selecionado=request.args.get("grupo") or ""
+        grupo_selecionado=request.args.get("grupo") or "",
+        aparelho_selecionado=request.args.get("aparelho") or "",
     )
 
 

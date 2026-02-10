@@ -24,7 +24,7 @@
       <input class="form-control" name="q" value="{{ q }}" placeholder="Ex: agachamento, glúteos...">
     </div>
 
-    <div class="col-8 col-md-4">
+    <div class="col-6 col-md-3">
       <label class="form-label mb-1">Grupo</label>
       <select class="form-select" name="grupo">
         <option value="">Todos</option>
@@ -34,11 +34,21 @@
       </select>
     </div>
 
-    <div class="col-4 col-md-2 d-grid">
+    <div class="col-6 col-md-3">
+      <label class="form-label mb-1">Aparelho</label>
+      <select class="form-select" name="aparelho">
+        <option value="">Todos</option>
+        {% for a in aparelhos %}
+          <option value="{{ a }}" {% if aparelho_selecionado == a %}selected{% endif %}>{{ a }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-12 col-md-2 d-grid">
       <button class="btn btn-primary">Filtrar</button>
     </div>
 
-    {% if q or grupo_selecionado %}
+    {% if q or grupo_selecionado or aparelho_selecionado %}
     <div class="col-12">
       <a class="small text-decoration-none" href="/">Limpar filtros</a>
     </div>
@@ -76,7 +86,12 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start gap-2">
               <h5 class="card-title mb-1">{{ ex.nome }}</h5>
-              <span class="badge text-bg-secondary">{{ ex.grupo }}</span>
+              <div class="d-flex flex-column gap-1 align-items-end">
+                <span class="badge text-bg-secondary">{{ ex.grupo }}</span>
+                {% if ex.aparelho %}
+                <span class="badge text-bg-light border text-dark">{{ ex.aparelho }}</span>
+                {% endif %}
+              </div>
             </div>
 
             {% if ex.dicas and ex.dicas|length > 0 %}

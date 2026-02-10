@@ -41,7 +41,10 @@
 
     <div class="card-body">
       <h4 class="mb-1">{{ ex.nome }}</h4>
-      <div class="text-muted mb-3">{{ ex.grupo }}</div>
+      <div class="text-muted mb-3">
+        {{ ex.grupo }}
+        {% if ex.aparelho %}• Aparelho: {{ ex.aparelho }}{% endif %}
+      </div>
 
       <div class="row g-3">
         <div class="col-12 col-md-7">
