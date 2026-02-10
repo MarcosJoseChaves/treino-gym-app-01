@@ -24,7 +24,7 @@ def carregar_exercicios():
         ex.setdefault("id", "")
         ex.setdefault("nome", "Sem nome")
         ex.setdefault("grupo", "Sem grupo")
-        ex.setdefault("gif", "")
+        ex.setdefault("midia", "")
         ex.setdefault("dicas", [])
         ex.setdefault("erros", [])
         ex.setdefault("observacoes", "")
