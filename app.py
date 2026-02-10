@@ -180,6 +180,7 @@ def normalizar_item_treino(item):
     if not isinstance(item, dict):
         item = {}
     item.setdefault("id", "")
+    item.setdefault("link_id", "")
     item.setdefault("aluno", "")
     item.setdefault("objetivo", "")
 
@@ -199,11 +200,36 @@ def normalizar_item_treino(item):
     if not data_treino:
         data_treino = normalizar_data_iso(item.get("criado_em"))
     item["data_treino"] = data_treino
+
+    # Link público permanente: mantém compatibilidade com links antigos
+    # e evita quebra quando o treino for editado no futuro.
+    if not item.get("link_id"):
+        item["link_id"] = item.get("id") or uuid.uuid4().hex[:8]
+
+    aliases = normalizar_lista_texto(item.get("link_aliases"))
+    if item["id"] and item["id"] != item["link_id"]:
+        aliases = normalizar_lista_texto(aliases + [item["id"]])
+    item["link_aliases"] = aliases
     return item
 
 
 def treinos_por_id(treinos):
     return {t["id"]: t for t in treinos if t.get("id")}
+
+
+def encontrar_treino_por_link(treinos, treino_id_ou_link):
+    chave = (treino_id_ou_link or "").strip()
+    if not chave:
+        return None
+
+    for treino in treinos:
+        if treino.get("id") == chave:
+            return treino
+        if treino.get("link_id") == chave:
+            return treino
+        if chave in (treino.get("link_aliases") or []):
+            return treino
+    return None
 
 
 @app.route("/")
@@ -370,6 +396,8 @@ def montar_treino():
         treinos = [normalizar_item_treino(t) for t in carregar_treinos()]
         treino_id_form = (request.form.get("treino_id") or "").strip()
         treino_id = treino_id_form or uuid.uuid4().hex[:8]
+        link_id_form = (request.form.get("link_id") or "").strip()
+        link_id = link_id_form or treino_id_form or treino_id
 
         payload = {
             "id": treino_id,
@@ -380,6 +408,8 @@ def montar_treino():
             "grupos": grupos_musculares,
             "grupo": exibir_lista(grupos_musculares, fallback=""),
             "data_treino": data_treino,
+            "link_id": link_id,
+            "link_aliases": [],
             "exercicios": itens,
             "criado_em": datetime.utcnow().isoformat(),
         }
@@ -390,6 +420,11 @@ def montar_treino():
                 treino_existente = normalizar_item_treino(treino_existente)
                 if treino_existente.get("id") == treino_id_form:
                     payload["criado_em"] = treino_existente.get("criado_em") or payload["criado_em"]
+                    payload["link_id"] = treino_existente.get("link_id") or payload["link_id"]
+                    payload["link_aliases"] = normalizar_lista_texto(
+                        (treino_existente.get("link_aliases") or [])
+                        + ([treino_existente.get("id")] if treino_existente.get("id") else [])
+                    )
                     treinos[idx] = payload
                     atualizado = True
                     break
@@ -403,6 +438,7 @@ def montar_treino():
 
     exercicios_prefill = [{"exercicio_id": "", "series": "", "repeticoes": ""}]
     treino_id_prefill = ""
+    link_id_prefill = ""
     aluno_prefill = ""
     objetivo_prefill = ""
     grupos_prefill = []
@@ -414,6 +450,7 @@ def montar_treino():
         if treino_edicao:
             treino_id_prefill = treino_edicao.get("id") or ""
             aluno_prefill = treino_edicao.get("aluno") or ""
+            link_id_prefill = treino_edicao.get("link_id") or treino_id_prefill
         objetivo_prefill = origem_prefill.get("objetivo") or ""
         grupos_prefill = normalizar_lista_texto(origem_prefill.get("grupos") or origem_prefill.get("grupo"))
         tipos_prefill = [t.upper() for t in normalizar_lista_texto(origem_prefill.get("tipos") or origem_prefill.get("tipo"))]
@@ -452,6 +489,7 @@ def montar_treino():
         data_fim_filtro=data_fim_filtro,
         exercicios_prefill=exercicios_prefill,
         treino_id_prefill=treino_id_prefill,
+        link_id_prefill=link_id_prefill,
         aluno_prefill=aluno_prefill,
         objetivo_prefill=objetivo_prefill,
         grupos_prefill=grupos_prefill,
@@ -468,7 +506,7 @@ def visualizar_treino(treino_id):
     exercicios = carregar_exercicios()
     mapa = index_por_id(exercicios)
     treinos = [normalizar_item_treino(t) for t in carregar_treinos()]
-    treino = treinos_por_id(treinos).get(treino_id)
+    treino = encontrar_treino_por_link(treinos, treino_id)
 
     if not treino:
         abort(404)
@@ -493,7 +531,7 @@ def visualizar_treino(treino_id):
             }
         )
 
-    destino = url_for("visualizar_treino", treino_id=treino_id, _external=True)
+    destino = url_for("visualizar_treino", treino_id=treino.get("link_id") or treino_id, _external=True)
     mensagem = (
         f"Treino do aluno {treino.get('aluno') or 'Sem nome'}\n"
         f"Tipo(s): {exibir_lista(treino.get('tipos') or treino.get('tipo'))}\n"
