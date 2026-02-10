@@ -23,7 +23,18 @@
       <div class="card shadow-sm">
         <div class="card-body">
           <h4 class="card-title">Treino de {{ treino.aluno }}</h4>
-          <p class="text-muted mb-4">Objetivo: <strong>{{ treino.objetivo }}</strong> · Grupo: <strong>{{ treino.grupo }}</strong></p>
+          <div class="d-flex gap-2 mb-3 flex-wrap">
+            <a class="btn btn-outline-warning btn-sm" href="/treino?editar={{ treino.id }}">Editar treino</a>
+            <form method="POST" action="/treino/{{ treino.id }}/excluir" onsubmit="return confirm('Excluir este treino?');" class="d-inline">
+              <button class="btn btn-outline-danger btn-sm" type="submit">Excluir treino</button>
+            </form>
+          </div>
+          <p class="text-muted mb-4">
+            Tipo(s): <strong>{{ treino.tipo or '-' }}</strong>
+            · Objetivo: <strong>{{ treino.objetivo }}</strong>
+            · Músculos: <strong>{{ treino.grupo or 'Não informado' }}</strong>
+            · Data: <strong>{{ treino.data_treino or '-' }}</strong>
+          </p>
 
           <div class="vstack gap-3">
             {% for item in itens %}

@@ -12,15 +12,52 @@ app = Flask(__name__)
 DATA_FILE = os.path.join(os.path.dirname(__file__), "exercicios.json")
 TREINOS_FILE = os.path.join(os.path.dirname(__file__), "treinos.json")
 
+TIPOS_TREINO = ["A", "B", "C", "D"]
+OBJETIVOS_TREINO = [
+    "Hipertrofia",
+    "Emagrecimento",
+    "Condicionamento",
+    "Força",
+    "Reabilitação",
+    "Hipertrofia e emagrecimento",
+    "Hipertrofia e condicionamento",
+    "Força e hipertrofia",
+    "Força e emagrecimento",
+]
+
+MUSCULOS_ALVO_PADRAO = [
+    "Peito",
+    "Costas",
+    "Tríceps",
+    "Bíceps",
+    "Ombros",
+    "Pernas",
+    "Quadríceps",
+    "Posterior de coxa",
+    "Glúteos",
+    "Panturrilhas",
+    "Abdômen",
+]
 
 def carregar_exercicios():
     """Carrega a lista de exercícios do JSON."""
     if not os.path.exists(DATA_FILE):
         return []
-    with open(DATA_FILE, "r", encoding="utf-8") as f:
-        data = json.load(f)
+    try:
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return []
+
+    if not isinstance(data, list):
+        return []
+
     # Garantias mínimas de consistência
+    exercicios_normalizados = []
+
     for ex in data:
+        if not isinstance(ex, dict):
+            continue
         ex.setdefault("id", "")
         ex.setdefault("nome", "Sem nome")
         ex.setdefault("grupo", "Sem grupo")
@@ -29,7 +66,91 @@ def carregar_exercicios():
         ex.setdefault("erros", [])
         ex.setdefault("observacoes", "")
         ex.setdefault("aparelho", "Peso livre")
-    return data
+        exercicios_normalizados.append(ex)
+
+    return exercicios_normalizados
+
+
+def normalizar_data_iso(valor):
+    """Normaliza data para formato YYYY-MM-DD quando possível."""
+    if not valor:
+        return ""
+
+    texto = str(valor).strip()
+    if not texto:
+        return ""
+
+    # já no formato esperado
+    if len(texto) >= 10 and texto[4] == "-" and texto[7] == "-":
+        candidato = texto[:10]
+        try:
+            datetime.strptime(candidato, "%Y-%m-%d")
+            return candidato
+        except ValueError:
+            pass
+
+    for fmt in ("%d/%m/%Y", "%Y/%m/%d", "%d-%m-%Y"):
+        try:
+            return datetime.strptime(texto, fmt).strftime("%Y-%m-%d")
+        except ValueError:
+            continue
+
+    return ""
+
+
+
+
+
+
+def normalizar_lista_texto(valor):
+    """Normaliza valor textual para lista sem duplicatas."""
+    if isinstance(valor, list):
+        candidatos = valor
+    elif isinstance(valor, str):
+        candidatos = [parte.strip() for parte in valor.split(",")]
+    else:
+        candidatos = []
+
+    itens = []
+    vistos = set()
+    for item in candidatos:
+        texto = str(item).strip()
+        if not texto:
+            continue
+        chave = texto.lower()
+        if chave in vistos:
+            continue
+        vistos.add(chave)
+        itens.append(texto)
+    return itens
+
+
+def exibir_lista(lista, fallback="-"):
+    lista = normalizar_lista_texto(lista)
+    return ", ".join(lista) if lista else fallback
+
+
+
+
+def obter_grupos_validos(exercicios):
+    """Extrai grupos únicos de forma defensiva."""
+    if not isinstance(exercicios, list):
+        return []
+
+    grupos = []
+    vistos = set()
+    for ex in exercicios:
+        if not isinstance(ex, dict):
+            continue
+
+        grupo = (ex.get("grupo") or "").strip()
+        if not grupo or grupo in vistos:
+            continue
+
+        vistos.add(grupo)
+        grupos.append(grupo)
+
+    return sorted(grupos)
 
 
 def index_por_id(exercicios):
@@ -40,8 +161,14 @@ def index_por_id(exercicios):
 def carregar_treinos():
     if not os.path.exists(TREINOS_FILE):
         return []
-    with open(TREINOS_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
+    
+    try:
+        with open(TREINOS_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return []
+
+    return data if isinstance(data, list) else []
 
 
 def salvar_treinos(treinos):
@@ -50,12 +177,28 @@ def salvar_treinos(treinos):
 
 
 def normalizar_item_treino(item):
+    if not isinstance(item, dict):
+        item = {}
     item.setdefault("id", "")
     item.setdefault("aluno", "")
     item.setdefault("objetivo", "")
-    item.setdefault("grupo", "")
-    item.setdefault("exercicios", [])
+
+    tipos = normalizar_lista_texto(item.get("tipos") or item.get("tipo"))
+    grupos = normalizar_lista_texto(item.get("grupos") or item.get("grupo"))
+
+    # Compatibilidade com estrutura antiga (tipo/grupo string)
+    item["tipos"] = tipos
+    item["grupos"] = grupos
+    item["tipo"] = exibir_lista(tipos, fallback="")
+    item["grupo"] = exibir_lista(grupos, fallback="")
+    exercicios = item.get("exercicios")
+
+    item["exercicios"] = exercicios if isinstance(exercicios, list) else []
     item.setdefault("criado_em", "")
+    data_treino = normalizar_data_iso(item.get("data_treino"))
+    if not data_treino:
+        data_treino = normalizar_data_iso(item.get("criado_em"))
+    item["data_treino"] = data_treino
     return item
 
 
@@ -72,7 +215,9 @@ def index():
     aparelho = (request.args.get("aparelho") or "").strip().lower()
 
     # Lista de grupos/aparelhos (para dropdown)
-    grupos = sorted({(ex.get("grupo") or "").strip() for ex in exercicios if ex.get("grupo")})
+    # Mantém `grupos` sempre definido para evitar NameError no render
+    # mesmo com dados malformados em `exercicios`.
+    grupos = obter_grupos_validos(exercicios)
     aparelhos = sorted({(ex.get("aparelho") or "").strip() for ex in exercicios if ex.get("aparelho")})
 
     filtrados = []
@@ -104,18 +249,106 @@ def index():
         q=request.args.get("q") or "",
         grupo_selecionado=request.args.get("grupo") or "",
         aparelho_selecionado=request.args.get("aparelho") or "",
-    )
+    )   
 
 
 @app.route("/treino", methods=["GET", "POST"])
 def montar_treino():
     exercicios = carregar_exercicios()
-    grupos = sorted({(ex.get("grupo") or "").strip() for ex in exercicios if ex.get("grupo")})
+    mapa_exercicios = index_por_id(exercicios)
+    grupos = obter_grupos_validos(exercicios)
+    tipos_treino = TIPOS_TREINO
+    objetivos_treino = OBJETIVOS_TREINO
+    treinos = [normalizar_item_treino(t) for t in carregar_treinos()]
+    treinos = [normalizar_item_treino(t) for t in carregar_treinos()]
+
+    busca_treino = (request.args.get("buscar_treino") or "").strip().lower()
+    aluno_treino_filtro = (request.args.get("aluno_treino") or "").strip()
+    tipo_treino_filtro = (request.args.get("tipo_treino") or "").strip().upper()
+    data_inicio_filtro = normalizar_data_iso(request.args.get("data_inicio") or "")
+    data_fim_filtro = normalizar_data_iso(request.args.get("data_fim") or "")
+    mostrar_treinos_salvos = bool(
+        busca_treino or aluno_treino_filtro or tipo_treino_filtro or data_inicio_filtro or data_fim_filtro
+    )
+
+    alunos_disponiveis = sorted(
+        {
+            (t.get("aluno") or "").strip()
+            for t in treinos
+            if (t.get("aluno") or "").strip()
+        },
+        key=lambda nome: nome.lower(),
+    )
+
+    treinos_filtrados = []
+    for treino in reversed(treinos):
+        treino_tipos = [(t or "").strip().upper() for t in treino.get("tipos", [])]
+        treino_tipo = ", ".join(treino_tipos)
+        treino_data = normalizar_data_iso(treino.get("data_treino") or treino.get("criado_em"))
+        treino_aluno = (treino.get("aluno") or "").strip()
+        conteudo_busca = " ".join(
+            [
+                treino_aluno,
+                treino.get("objetivo") or "",
+                treino.get("grupo") or "",
+                " ".join(treino_tipos),
+                treino_data,
+            ]
+        ).lower()
+
+        if busca_treino and busca_treino not in conteudo_busca:
+            continue
+        if aluno_treino_filtro and treino_aluno != aluno_treino_filtro:
+            continue
+        if tipo_treino_filtro and tipo_treino_filtro not in treino_tipos:
+            continue
+        if data_inicio_filtro and (not treino_data or treino_data < data_inicio_filtro):
+            continue
+        if data_fim_filtro and (not treino_data or treino_data > data_fim_filtro):
+            continue
+
+        nomes_exercicios = []
+        for item in treino.get("exercicios", [])[:3]:
+            if not isinstance(item, dict):
+                continue
+            ex = mapa_exercicios.get(item.get("exercicio_id"))
+            if ex:
+                nomes_exercicios.append(ex.get("nome") or "Exercício")
+
+        treinos_filtrados.append(
+            {
+                "id": treino.get("id"),
+                "aluno": treino_aluno or "Sem aluno",
+                "tipo": treino_tipo or "-",
+                "tipos": treino_tipos,
+                "objetivo": treino.get("objetivo") or "Não informado",
+                "grupo": exibir_lista(treino.get("grupos"), fallback="Não informado"),
+                "data_treino": treino_data,
+                "total_exercicios": len(treino.get("exercicios") or []),
+                "nomes_exercicios": nomes_exercicios,
+            }
+        )
+
+    treino_modelo = None
+    treino_edicao = None
+    modelo_id = (request.args.get("modelo") or "").strip()
+    editar_id = (request.args.get("editar") or "").strip()
+
+    if editar_id:
+        treino_edicao = treinos_por_id(treinos).get(editar_id)
+        if treino_edicao:
+            treino_edicao = normalizar_item_treino(treino_edicao)
+    elif modelo_id:
+        treino_modelo = treinos_por_id(treinos).get(modelo_id)
+        if treino_modelo:
+            treino_modelo = normalizar_item_treino(treino_modelo)
 
     if request.method == "POST":
         aluno = (request.form.get("aluno") or "").strip()
+        tipos = normalizar_lista_texto([t.upper() for t in request.form.getlist("tipos[]")])
         objetivo = (request.form.get("objetivo") or "").strip()
-        grupo = (request.form.get("grupo") or "").strip()
+        grupos_musculares = normalizar_lista_texto(request.form.getlist("grupos[]"))
+        data_treino = normalizar_data_iso(request.form.get("data_treino") or "")
 
         exercicios_ids = request.form.getlist("exercicio_id[]")
         series_lista = request.form.getlist("series[]")
@@ -135,25 +368,98 @@ def montar_treino():
             )
 
         treinos = [normalizar_item_treino(t) for t in carregar_treinos()]
-        treino_id = uuid.uuid4().hex[:8]
-        treinos.append(
-            {
-                "id": treino_id,
-                "aluno": aluno,
-                "objetivo": objetivo,
-                "grupo": grupo,
-                "exercicios": itens,
-                "criado_em": datetime.utcnow().isoformat(),
-            }
-        )
-        salvar_treinos(treinos)
+        treino_id_form = (request.form.get("treino_id") or "").strip()
+        treino_id = treino_id_form or uuid.uuid4().hex[:8]
 
+        payload = {
+            "id": treino_id,
+            "aluno": aluno,
+            "tipos": tipos,
+            "tipo": exibir_lista(tipos, fallback=""),
+            "objetivo": objetivo,
+            "grupos": grupos_musculares,
+            "grupo": exibir_lista(grupos_musculares, fallback=""),
+            "data_treino": data_treino,
+            "exercicios": itens,
+            "criado_em": datetime.utcnow().isoformat(),
+        }
+
+        if treino_id_form:
+            atualizado = False
+            for idx, treino_existente in enumerate(treinos):
+                treino_existente = normalizar_item_treino(treino_existente)
+                if treino_existente.get("id") == treino_id_form:
+                    payload["criado_em"] = treino_existente.get("criado_em") or payload["criado_em"]
+                    treinos[idx] = payload
+                    atualizado = True
+                    break
+            if not atualizado:
+                treinos.append(payload)
+        else:
+            treinos.append(payload)
+
+        salvar_treinos(treinos)
         return redirect(url_for("visualizar_treino", treino_id=treino_id))
+
+    exercicios_prefill = [{"exercicio_id": "", "series": "", "repeticoes": ""}]
+    treino_id_prefill = ""
+    aluno_prefill = ""
+    objetivo_prefill = ""
+    grupos_prefill = []
+    tipos_prefill = []
+    data_treino_prefill = ""
+
+    origem_prefill = treino_edicao or treino_modelo
+    if origem_prefill:
+        if treino_edicao:
+            treino_id_prefill = treino_edicao.get("id") or ""
+            aluno_prefill = treino_edicao.get("aluno") or ""
+        objetivo_prefill = origem_prefill.get("objetivo") or ""
+        grupos_prefill = normalizar_lista_texto(origem_prefill.get("grupos") or origem_prefill.get("grupo"))
+        tipos_prefill = [t.upper() for t in normalizar_lista_texto(origem_prefill.get("tipos") or origem_prefill.get("tipo"))]
+        data_treino_prefill = normalizar_data_iso(origem_prefill.get("data_treino") or origem_prefill.get("criado_em"))
+        exercicios_prefill = []
+        for item in origem_prefill.get("exercicios") or []:
+            if not isinstance(item, dict):
+                continue
+            exercicios_prefill.append(
+                {
+                    "exercicio_id": item.get("exercicio_id") or "",
+                    "series": item.get("series") or "",
+                    "repeticoes": item.get("repeticoes") or "",
+                }
+            )
+
+        if not exercicios_prefill:
+            exercicios_prefill = [{"exercicio_id": "", "series": "", "repeticoes": ""}]
+
+    grupos = grupos if isinstance(grupos, list) else []
+    opcoes_musculos = sorted(set(grupos) | set(MUSCULOS_ALVO_PADRAO), key=lambda nome: nome.lower())
 
     return render_template(
         "treino.html",
         exercicios=exercicios,
-        grupos=grupos,
+        grupos=opcoes_musculos,
+        musculos_opcoes=opcoes_musculos,
+        tipos_treino=tipos_treino,
+        treinos_salvos=treinos_filtrados,
+        mostrar_treinos_salvos=mostrar_treinos_salvos,
+        alunos_disponiveis=alunos_disponiveis,
+        aluno_treino_filtro=aluno_treino_filtro,
+        busca_treino=request.args.get("buscar_treino") or "",
+        tipo_treino_filtro=tipo_treino_filtro,
+        data_inicio_filtro=data_inicio_filtro,
+        data_fim_filtro=data_fim_filtro,
+        exercicios_prefill=exercicios_prefill,
+        treino_id_prefill=treino_id_prefill,
+        aluno_prefill=aluno_prefill,
+        objetivo_prefill=objetivo_prefill,
+        grupos_prefill=grupos_prefill,
+        tipos_prefill=tipos_prefill,
+        data_treino_prefill=data_treino_prefill,
+        objetivos_treino=objetivos_treino,
+        treino_modelo=treino_modelo,
+        treino_edicao=treino_edicao,
     )
 
 
@@ -169,6 +475,8 @@ def visualizar_treino(treino_id):
 
     itens = []
     for item in treino.get("exercicios", []):
+        if not isinstance(item, dict):
+            continue
         ex = mapa.get(item.get("exercicio_id"))
         if not ex:
             continue
@@ -188,8 +496,10 @@ def visualizar_treino(treino_id):
     destino = url_for("visualizar_treino", treino_id=treino_id, _external=True)
     mensagem = (
         f"Treino do aluno {treino.get('aluno') or 'Sem nome'}\n"
+        f"Tipo(s): {exibir_lista(treino.get('tipos') or treino.get('tipo'))}\n"
         f"Objetivo: {treino.get('objetivo') or 'Não informado'}\n"
-        f"Grupo: {treino.get('grupo') or 'Não informado'}\n"
+        f"Músculos: {exibir_lista(treino.get('grupos') or treino.get('grupo'), fallback='Não informado')}\n"
+        f"Data: {normalizar_data_iso(treino.get('data_treino') or treino.get('criado_em')) or '-'}\n"
         f"Link para visualizar: {destino}"
     )
     whatsapp_link = f"https://wa.me/?text={quote(mensagem)}"
@@ -202,6 +512,16 @@ def visualizar_treino(treino_id):
         destino=destino,
     )
 
+@app.route("/treino/<treino_id>/excluir", methods=["POST"])
+def excluir_treino(treino_id):
+    treinos = [normalizar_item_treino(t) for t in carregar_treinos()]
+    treinos_filtrados = [t for t in treinos if t.get("id") != treino_id]
+
+    if len(treinos_filtrados) == len(treinos):
+        abort(404)
+
+    salvar_treinos(treinos_filtrados)
+    return redirect(url_for("montar_treino"))
 
 @app.route("/e/<ex_id>")
 def exercicio(ex_id):

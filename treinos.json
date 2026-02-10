@@ -1,107 +1,5 @@
 [
   {
-    "id": "4f46c275",
-    "aluno": "Rafael",
-    "objetivo": "Hipertrofia",
-    "grupo": "Superior A - Peito, Costas e Tríceps",
-    "exercicios": [
-      {
-        "exercicio_id": "supino_reto_barra",
-        "series": "4",
-        "repeticoes": "12"
-      },
-      {
-        "exercicio_id": "costas_remada_curvada",
-        "series": "4",
-        "repeticoes": "12"
-      },
-      {
-        "exercicio_id": "peito_supino_inclinado_halteres",
-        "series": "3",
-        "repeticoes": "12"
-      },
-      {
-        "exercicio_id": "costas_puxada_alta_pulldown",
-        "series": "3",
-        "repeticoes": "12"
-      },
-      {
-        "exercicio_id": "triceps_extensao_polia_alta",
-        "series": "3",
-        "repeticoes": "12"
-      }
-    ],
-    "criado_em": "2026-02-04T22:50:49.762872"
-  },
-  {
-    "id": "f52b740f",
-    "aluno": "Rafael",
-    "objetivo": "Hipertrofia",
-    "grupo": "Superior A - Peito, Costas e Tríceps",
-    "exercicios": [
-      {
-        "exercicio_id": "supino_reto_barra",
-        "series": "4",
-        "repeticoes": "12"
-      },
-      {
-        "exercicio_id": "costas_remada_curvada",
-        "series": "4",
-        "repeticoes": "12"
-      },
-      {
-        "exercicio_id": "peito_supino_inclinado_halteres",
-        "series": "3",
-        "repeticoes": "12"
-      },
-      {
-        "exercicio_id": "costas_puxada_alta_pulldown",
-        "series": "3",
-        "repeticoes": "12"
-      },
-      {
-        "exercicio_id": "triceps_extensao_polia_alta",
-        "series": "3",
-        "repeticoes": "12"
-      }
-    ],
-    "criado_em": "2026-02-04T23:02:45.337255"
-  },
-  {
-    "id": "c989cb38",
-    "aluno": "Rafael",
-    "objetivo": "Hipertrofia",
-    "grupo": "Superior A - Peito, Costas e Tríceps",
-    "exercicios": [
-      {
-        "exercicio_id": "supino_reto_barra",
-        "series": "4",
-        "repeticoes": "12"
-      },
-      {
-        "exercicio_id": "costas_remada_curvada",
-        "series": "4",
-        "repeticoes": "12"
-      },
-      {
-        "exercicio_id": "peito_supino_inclinado_halteres",
-        "series": "3",
-        "repeticoes": "12"
-      },
-      {
-        "exercicio_id": "costas_puxada_alta_pulldown",
-        "series": "3",
-        "repeticoes": "12"
-      },
-      {
-        "exercicio_id": "triceps_extensao_polia_alta",
-        "series": "3",
-        "repeticoes": "12"
-      }
-    ],
-    "criado_em": "2026-02-04T23:35:31.007501"
-  },
-  {
     "id": "0774b509",
     "aluno": "Rafael",
     "objetivo": "Hipertrofia",
@@ -133,6 +31,35 @@
         "repeticoes": "12"
       }
     ],
-    "criado_em": "2026-02-06T03:57:45.891109"
+    "criado_em": "2026-02-06T03:57:45.891109",
+    "tipo": "",
+    "tipos": [],
+    "grupos": [
+      "Superior A - Peito",
+      "Costas e Tríceps"
+    ],
+    "data_treino": "2026-02-06"
+  },
+  {
+    "id": "a42f264a",
+    "aluno": "Maria",
+    "tipo": "A",
+    "objetivo": "Hipertrofia",
+    "grupo": "Costas",
+    "exercicios": [
+      {
+        "exercicio_id": "extensao_cabo",
+        "series": "2",
+        "repeticoes": "12"
+      }
+    ],
+    "criado_em": "2026-02-10T03:16:24.300338",
+    "tipos": [
+      "A"
+    ],
+    "grupos": [
+      "Costas"
+    ],
+    "data_treino": "2026-02-10"
   }
 ]
