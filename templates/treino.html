@@ -64,8 +64,7 @@
       </form>
 
       {% if not mostrar_treinos_salvos %}
-        <div class="alert alert-light border mb-0">
-        </div>
+        <div class="alert alert-light border mb-0"></div>
       {% elif treinos_salvos|length == 0 %}
         <div class="alert alert-light border mb-0">Nenhum treino salvo encontrado com os filtros atuais.</div>
       {% else %}
@@ -112,7 +111,8 @@
       </div>
       {% endif %}
 
-      <input type="hidden" name="treino_id" value="{{ treino_id_prefill }}">
+      <form method="POST" class="vstack gap-4">
+        <input type="hidden" name="treino_id" value="{{ treino_id_prefill }}">
         <div class="row g-3">
           <div class="col-12 col-md-4">
             <label class="form-label">Nome do aluno</label>
@@ -122,15 +122,8 @@
             <label class="form-label">Data do treino</label>
             <input class="form-control" type="date" name="data_treino" value="{{ data_treino_prefill }}">
           </div>
-          grupos=opcoes_musculos,
+          <div class="col-12 col-md-4">
             <label class="form-label d-block mb-2">Tipo do treino (marque nenhum, um ou mais)</label>
-            {% set opcoes_musculos_ui = (
-              musculos_opcoes if (musculos_opcoes is defined and musculos_opcoes)
-              else (
-                grupos if (grupos is defined and grupos)
-                else ['Peito', 'Costas', 'Tríceps', 'Bíceps', 'Ombros', 'Pernas', 'Quadríceps', 'Posterior de coxa', 'Glúteos', 'Panturrilhas', 'Abdômen']
-              )
-            ) %}
             <div class="d-flex flex-wrap gap-3 border rounded p-2">
               {% for tipo in tipos_treino %}
               <div class="form-check">
@@ -138,6 +131,7 @@
                 <label class="form-check-label" for="tipo-{{ tipo }}">{{ tipo }}</label>
               </div>
               {% endfor %}
+            </div>
           </div>
           <div class="col-12 col-md-4">
             <label class="form-label">Objetivo do treino</label>
@@ -153,14 +147,16 @@
             <label class="form-label d-block mb-2">Músculos-alvo (marque nenhum, um ou mais)</label>
             <div class="d-flex flex-wrap gap-3 border rounded p-2">
               {% for g in musculos_opcoes %}
-              <option value="{{ g }}"></option>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="grupos[]" value="{{ g }}" id="musculo-{{ loop.index }}" {% if g in grupos_prefill %}checked{% endif %}>
+                <label class="form-check-label" for="musculo-{{ loop.index }}">{{ g }}</label>
+              </div>
               {% endfor %}
 
-              {% if opcoes_musculos_ui|length == 0 %}
+              {% if musculos_opcoes|length == 0 %}
               <span class="text-muted small">Nenhum grupo cadastrado na biblioteca ainda.</span>
               {% endif %}
             </div>
-
           </div>
         </div>
 
@@ -217,6 +213,9 @@
 
     clone.querySelectorAll('input, select').forEach((field) => {
       field.value = '';
+      if (field.type === 'checkbox') {
+        field.checked = false;
+      }
     });
 
     container.appendChild(clone);
