@@ -217,6 +217,19 @@ def treinos_por_id(treinos):
     return {t["id"]: t for t in treinos if t.get("id")}
 
 
+def gerar_whatsapp_link_treino(treino_id, treino):
+    destino = url_for("visualizar_treino", treino_id=treino_id, _external=True)
+    mensagem = (
+        f"Treino do aluno {treino.get('aluno') or 'Sem nome'}\n"
+        f"Tipo(s): {exibir_lista(treino.get('tipos') or treino.get('tipo'))}\n"
+        f"Objetivo: {treino.get('objetivo') or 'Não informado'}\n"
+        f"Músculos: {exibir_lista(treino.get('grupos') or treino.get('grupo'), fallback='Não informado')}\n"
+        f"Data: {normalizar_data_iso(treino.get('data_treino') or treino.get('criado_em')) or '-'}\n"
+        f"Link para visualizar: {destino}"
+    )
+    return f"https://wa.me/?text={quote(mensagem)}"
+
+
 def encontrar_treino_por_link(treinos, treino_id_ou_link):
     chave = (treino_id_ou_link or "").strip()
     if not chave:
@@ -333,13 +346,26 @@ def montar_treino():
         if data_fim_filtro and (not treino_data or treino_data > data_fim_filtro):
             continue
 
-        nomes_exercicios = []
-        for item in treino.get("exercicios", [])[:3]:
+        preview_exercicios = []
+        for idx, item in enumerate(treino.get("exercicios", [])):
             if not isinstance(item, dict):
                 continue
-            ex = mapa_exercicios.get(item.get("exercicio_id"))
-            if ex:
-                nomes_exercicios.append(ex.get("nome") or "Exercício")
+            exercicio_id = (item.get("exercicio_id") or "").strip()
+            if not exercicio_id:
+                continue
+            ex = mapa_exercicios.get(exercicio_id)
+            if not ex:
+                continue
+
+            preview_exercicios.append(
+                {
+                    "id": exercicio_id,
+                    "nome": ex.get("nome") or "Exercício",
+                    "grupo": ex.get("grupo") or "",
+                    "midia": ex.get("midia") or "",
+                    "idx": idx,
+                }
+            )
 
         treinos_filtrados.append(
             {
@@ -351,7 +377,8 @@ def montar_treino():
                 "grupo": exibir_lista(treino.get("grupos"), fallback="Não informado"),
                 "data_treino": treino_data,
                 "total_exercicios": len(treino.get("exercicios") or []),
-                "nomes_exercicios": nomes_exercicios,
+                "preview_exercicios": preview_exercicios,
+                "whatsapp_link": gerar_whatsapp_link_treino(treino.get("id"), treino),
             }
         )
 
@@ -473,6 +500,8 @@ def montar_treino():
     grupos = grupos if isinstance(grupos, list) else []
     opcoes_musculos = sorted(set(grupos) | set(MUSCULOS_ALVO_PADRAO), key=lambda nome: nome.lower())
 
+    retorno_url = request.url
+
     return render_template(
         "treino.html",
         exercicios=exercicios,
@@ -498,6 +527,7 @@ def montar_treino():
         objetivos_treino=objetivos_treino,
         treino_modelo=treino_modelo,
         treino_edicao=treino_edicao,
+        retorno_url=retorno_url,
     )
 
 
@@ -570,7 +600,45 @@ def exercicio(ex_id):
     if not ex:
         abort(404)
 
-    return render_template("exercicio.html", ex=ex)
+    treino_id = (request.args.get("treino") or "").strip()
+    idx_atual = request.args.get("idx")
+    voltar_url = (request.args.get("voltar") or "").strip() or url_for("index")
+
+    prev_url = None
+    next_url = None
+
+    if treino_id:
+        treinos = [normalizar_item_treino(t) for t in carregar_treinos()]
+        treino = treinos_por_id(treinos).get(treino_id)
+        if treino:
+            ordem_exercicios = []
+            for item in treino.get("exercicios", []):
+                if not isinstance(item, dict):
+                    continue
+                ex_treino_id = (item.get("exercicio_id") or "").strip()
+                if ex_treino_id and ex_treino_id in mapa:
+                    ordem_exercicios.append(ex_treino_id)
+
+            if idx_atual is not None:
+                try:
+                    posicao = int(idx_atual)
+                except (TypeError, ValueError):
+                    posicao = -1
+            else:
+                posicao = -1
+
+            if not (0 <= posicao < len(ordem_exercicios)) and ex_id in ordem_exercicios:
+                posicao = ordem_exercicios.index(ex_id)
+
+            if 0 <= posicao < len(ordem_exercicios):
+                if posicao > 0:
+                    prev_id = ordem_exercicios[posicao - 1]
+                    prev_url = url_for("exercicio", ex_id=prev_id, treino=treino_id, idx=posicao - 1, voltar=voltar_url)
+                if posicao < len(ordem_exercicios) - 1:
+                    next_id = ordem_exercicios[posicao + 1]
+                    next_url = url_for("exercicio", ex_id=next_id, treino=treino_id, idx=posicao + 1, voltar=voltar_url)
+
+    return render_template("exercicio.html", ex=ex, prev_url=prev_url, next_url=next_url, voltar_url=voltar_url)
 
 
 @app.route("/qr/<ex_id>.png")

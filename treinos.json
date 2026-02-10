@@ -41,7 +41,9 @@
         "repeticoes": "12"
       }
     ],
-    "criado_em": "2026-02-06T03:57:45.891109"
+    "criado_em": "2026-02-06T03:57:45.891109",
+    "link_id": "0774b509",
+    "link_aliases": []
   },
   {
     "id": "a42f264a",
@@ -63,7 +65,9 @@
     "grupos": [
       "Costas"
     ],
-    "data_treino": "2026-02-10"
+    "data_treino": "2026-02-10",
+    "link_id": "a42f264a",
+    "link_aliases": []
   },
   {
     "id": "ee14f7be",
@@ -96,6 +100,48 @@
         "repeticoes": "12"
       }
     ],
-    "criado_em": "2026-02-10T05:18:30.612914"
+    "criado_em": "2026-02-10T05:18:30.612914",
+    "link_id": "ee14f7be",
+    "link_aliases": []
+  },
+  {
+    "id": "f5f24595",
+    "aluno": "Geronimo",
+    "tipos": [
+      "B",
+      "C"
+    ],
+    "tipo": "B, C",
+    "objetivo": "Hipertrofia e condicionamento",
+    "grupos": [
+      "Abdômen",
+      "Bíceps",
+      "Panturrilhas",
+      "Peito"
+    ],
+    "grupo": "Abdômen, Bíceps, Panturrilhas, Peito",
+    "data_treino": "2026-02-10",
+    "link_id": "f5f24595",
+    "link_aliases": [
+      "f5f24595"
+    ],
+    "exercicios": [
+      {
+        "exercicio_id": "triceps_extensao_frente",
+        "series": "4",
+        "repeticoes": "10"
+      },
+      {
+        "exercicio_id": "triceps_extensao_polia_alta",
+        "series": "2",
+        "repeticoes": "12"
+      },
+      {
+        "exercicio_id": "costas_remada_curvada",
+        "series": "1",
+        "repeticoes": "10"
+      }
+    ],
+    "criado_em": "2026-02-10T06:15:15.480940"
   }
 ]

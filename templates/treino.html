@@ -81,12 +81,31 @@
               </div>
 
               <div class="small text-muted">Data: {{ salvo.data_treino or '-' }}</div>
-              {% if salvo.nomes_exercicios %}
-              <div class="small mt-1">{{ salvo.nomes_exercicios|join(', ') }}</div>
+              {% if salvo.preview_exercicios %}
+              <div class="d-flex flex-wrap gap-2 mt-2">
+                {% for ex in salvo.preview_exercicios %}
+                <a href="/e/{{ ex.id }}?treino={{ salvo.id }}&idx={{ ex.idx }}&voltar={{ retorno_url|urlencode }}" class="text-decoration-none" title="Abrir {{ ex.nome }}">
+                  <div class="border rounded bg-light overflow-hidden" style="width:84px; height:84px; display:flex; align-items:center; justify-content:center;">
+                    {% if ex.midia %}
+                      {% if ex.midia.lower().endswith('.mp4') %}
+                      <video autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover;">
+                        <source src="{{ ex.midia }}" type="video/mp4">
+                      </video>
+                      {% else %}
+                      <img src="{{ ex.midia }}" alt="{{ ex.nome }}" style="width:100%; height:100%; object-fit:cover;">
+                      {% endif %}
+                    {% else %}
+                    <span class="text-muted small px-1 text-center">Sem mídia</span>
+                    {% endif %}
+                  </div>
+                </a>
+                {% endfor %}
+              </div>
+              <div class="small text-muted mt-1">Toque na miniatura para abrir o exercício.</div>
               {% endif %}
 
               <div class="d-flex gap-2 mt-3 flex-wrap">
-                <a class="btn btn-sm btn-outline-primary" href="/treino/{{ salvo.id }}">Ver exercícios</a>
+                <a class="btn btn-sm btn-outline-success" href="{{ salvo.whatsapp_link }}" target="_blank" rel="noopener">Enviar no WhatsApp</a>
                 <a class="btn btn-sm btn-outline-warning" href="/treino?editar={{ salvo.id }}">Editar</a>
                 <form method="POST" action="/treino/{{ salvo.id }}/excluir" onsubmit="return confirm('Excluir este treino?');" class="d-inline">
                   <button class="btn btn-sm btn-outline-danger" type="submit">Excluir</button>
@@ -169,7 +188,7 @@
           <div id="exercicios-container" class="vstack gap-3">
             {% for item in exercicios_prefill %}
             <div class="row g-2 align-items-end exercicio-row">
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-5">
                 <label class="form-label">Exercício</label>
                 <select class="form-select" name="exercicio_id[]" required>
                   <option value="">Selecione...</option>
@@ -178,13 +197,16 @@
                   {% endfor %}
                 </select>
               </div>
-              <div class="col-6 col-md-3">
+              <div class="col-5 col-md-3">
                 <label class="form-label">Séries</label>
                 <input class="form-control" name="series[]" value="{{ item.series }}" placeholder="Ex: 4" required>
               </div>
-              <div class="col-6 col-md-3">
+              <div class="col-5 col-md-3">
                 <label class="form-label">Repetições</label>
                 <input class="form-control" name="repeticoes[]" value="{{ item.repeticoes }}" placeholder="Ex: 12" required>
+              </div>
+              <div class="col-2 col-md-1 d-grid">
+                <button class="btn btn-outline-danger remove-exercicio" type="button" title="Excluir exercício">✕</button>
               </div>
             </div>
             {% endfor %}
@@ -208,6 +230,17 @@
   const container = document.getElementById('exercicios-container');
   const addButton = document.getElementById('add-exercicio');
 
+  const atualizarBotoesRemover = () => {
+    const rows = container.querySelectorAll('.exercicio-row');
+    rows.forEach((row) => {
+      const removeButton = row.querySelector('.remove-exercicio');
+      if (!removeButton) {
+        return;
+      }
+      removeButton.disabled = rows.length === 1;
+    });
+  };
+
   addButton.addEventListener('click', () => {
     const rows = container.querySelectorAll('.exercicio-row');
     const lastRow = rows[rows.length - 1];
@@ -221,7 +254,28 @@
     });
 
     container.appendChild(clone);
+    atualizarBotoesRemover();
   });
+
+  container.addEventListener('click', (event) => {
+    const removeButton = event.target.closest('.remove-exercicio');
+    if (!removeButton) {
+      return;
+    }
+
+    const rows = container.querySelectorAll('.exercicio-row');
+    if (rows.length === 1) {
+      return;
+    }
+
+    const row = removeButton.closest('.exercicio-row');
+    if (row) {
+      row.remove();
+      atualizarBotoesRemover();
+    }
+  });
+
+  atualizarBotoesRemover();
 </script>
 
 </body>
