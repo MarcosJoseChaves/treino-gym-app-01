@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, abort, send_file, url_for, redirect
+from flask import Flask, render_template, request, abort, send_file, url_for, redirect, session
 import json
 import os
 import io
@@ -8,9 +8,21 @@ import uuid
 from urllib.parse import quote
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "trocar-em-producao")
 
-DATA_FILE = os.path.join(os.path.dirname(__file__), "exercicios.json")
-QUESTIONARIO_FILE = os.path.join(os.path.dirname(__file__), "questionario_respostas.json")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin123")
+
+BASE_DIR = os.path.dirname(__file__)
+DATA_FILE = os.path.join(BASE_DIR, "exercicios.json")
+TREINOS_FILE = os.path.join(BASE_DIR, "treinos.json")
+QUESTIONARIO_FILE = os.path.join(BASE_DIR, "questionario_respostas.json")
+
+
+def caminho_arquivo(nome_constante, fallback_nome_arquivo):
+    caminho = globals().get(nome_constante)
+    if caminho:
+        return caminho
+    return os.path.join(BASE_DIR, fallback_nome_arquivo)
 
 TIPOS_TREINO = ["A", "B", "C", "D"]
 OBJETIVOS_TREINO = [
@@ -38,6 +50,22 @@ MUSCULOS_ALVO_PADRAO = [
     "Panturrilhas",
     "Abdômen",
 ]
+
+
+
+def admin_ativo():
+    return session.get("admin_logado") is True
+
+
+def exigir_admin_ou_redirect():
+    if admin_ativo():
+        return None
+    return redirect(url_for("admin_login", proximo=request.full_path if request.query_string else request.path))
+
+
+@app.context_processor
+def injetar_estado_admin():
+    return {"is_admin": admin_ativo()}
 
 def carregar_exercicios():
     """Carrega a lista de exercícios do JSON."""
@@ -159,11 +187,12 @@ def index_por_id(exercicios):
 
 
 def carregar_treinos():
-    if not os.path.exists(TREINOS_FILE):
+    treinos_file = caminho_arquivo("TREINOS_FILE", "treinos.json")
+    if not os.path.exists(treinos_file):
         return []
     
     try:
-        with open(TREINOS_FILE, "r", encoding="utf-8") as f:
+        with open(treinos_file, "r", encoding="utf-8") as f:
             data = json.load(f)
     except (json.JSONDecodeError, OSError):
         return []
@@ -172,16 +201,18 @@ def carregar_treinos():
 
 
 def salvar_treinos(treinos):
-    with open(TREINOS_FILE, "w", encoding="utf-8") as f:
+    treinos_file = caminho_arquivo("TREINOS_FILE", "treinos.json")
+    with open(treinos_file, "w", encoding="utf-8") as f:
         json.dump(treinos, f, ensure_ascii=False, indent=2)
 
 
 def carregar_respostas_questionario():
-    if not os.path.exists(QUESTIONARIO_FILE):
+    questionario_file = caminho_arquivo("QUESTIONARIO_FILE", "questionario_respostas.json")
+    if not os.path.exists(questionario_file):
         return []
 
     try:
-        with open(QUESTIONARIO_FILE, "r", encoding="utf-8") as f:
+        with open(questionario_file, "r", encoding="utf-8") as f:
             data = json.load(f)
     except (json.JSONDecodeError, OSError):
         return []
@@ -190,7 +221,8 @@ def carregar_respostas_questionario():
 
 
 def salvar_respostas_questionario(respostas):
-    with open(QUESTIONARIO_FILE, "w", encoding="utf-8") as f:
+    questionario_file = caminho_arquivo("QUESTIONARIO_FILE", "questionario_respostas.json")
+    with open(questionario_file, "w", encoding="utf-8") as f:
         json.dump(respostas, f, ensure_ascii=False, indent=2)
 
 
@@ -223,10 +255,12 @@ def normalizar_item_treino(item):
         data_treino = normalizar_data_iso(item.get("criado_em"))
     item["data_treino"] = data_treino
 
-    # Link público permanente: mantém compatibilidade com links antigos
+   # Link público permanente: mantém compatibilidade com links antigos
     # e evita quebra quando o treino for editado no futuro.
     if not item.get("link_id"):
         item["link_id"] = item.get("id") or uuid.uuid4().hex[:8]
+    if not item.get("public_token"):
+        item["public_token"] = uuid.uuid4().hex[:12]
 
     aliases = normalizar_lista_texto(item.get("link_aliases"))
     if item["id"] and item["id"] != item["link_id"]:
@@ -240,7 +274,7 @@ def treinos_por_id(treinos):
 
 
 def gerar_whatsapp_link_treino(treino_id, treino):
-    destino = url_for("visualizar_treino", treino_id=treino_id, _external=True)
+    destino = url_for("visualizar_treino", treino_id=treino_id, token=treino.get("public_token") or "", _external=True)
     mensagem = (
         f"Treino do aluno {treino.get('aluno') or 'Sem nome'}\n"
         f"Tipo(s): {exibir_lista(treino.get('tipos') or treino.get('tipo'))}\n"
@@ -315,6 +349,9 @@ def index():
 
 @app.route("/treino", methods=["GET", "POST"])
 def montar_treino():
+    bloqueio = exigir_admin_ou_redirect()
+    if bloqueio:
+        return bloqueio
     exercicios = carregar_exercicios()
     mapa_exercicios = index_por_id(exercicios)
     grupos = obter_grupos_validos(exercicios)
@@ -458,6 +495,7 @@ def montar_treino():
             "grupo": exibir_lista(grupos_musculares, fallback=""),
             "data_treino": data_treino,
             "link_id": link_id,
+            "public_token": uuid.uuid4().hex[:12],
             "link_aliases": [],
             "exercicios": itens,
             "criado_em": datetime.utcnow().isoformat(),
@@ -470,6 +508,7 @@ def montar_treino():
                 if treino_existente.get("id") == treino_id_form:
                     payload["criado_em"] = treino_existente.get("criado_em") or payload["criado_em"]
                     payload["link_id"] = treino_existente.get("link_id") or payload["link_id"]
+                    payload["public_token"] = treino_existente.get("public_token") or payload["public_token"]
                     payload["link_aliases"] = normalizar_lista_texto(
                         (treino_existente.get("link_aliases") or [])
                         + ([treino_existente.get("id")] if treino_existente.get("id") else [])
@@ -563,6 +602,12 @@ def visualizar_treino(treino_id):
     if not treino:
         abort(404)
 
+    if not admin_ativo():
+        token_recebido = (request.args.get("token") or "").strip()
+        token_esperado = (treino.get("public_token") or "").strip()
+        if not token_esperado or token_recebido != token_esperado:
+            abort(403)
+
     itens = []
     for item in treino.get("exercicios", []):
         if not isinstance(item, dict):
@@ -583,7 +628,7 @@ def visualizar_treino(treino_id):
             }
         )
 
-    destino = url_for("visualizar_treino", treino_id=treino.get("link_id") or treino_id, _external=True)
+    destino = url_for("visualizar_treino", treino_id=treino.get("link_id") or treino_id, token=treino.get("public_token") or "", _external=True)
     mensagem = (
         f"Treino do aluno {treino.get('aluno') or 'Sem nome'}\n"
         f"Tipo(s): {exibir_lista(treino.get('tipos') or treino.get('tipo'))}\n"
@@ -604,6 +649,9 @@ def visualizar_treino(treino_id):
 
 @app.route("/treino/<treino_id>/excluir", methods=["POST"])
 def excluir_treino(treino_id):
+    bloqueio = exigir_admin_ou_redirect()
+    if bloqueio:
+        return bloqueio
     treinos = [normalizar_item_treino(t) for t in carregar_treinos()]
     treinos_filtrados = [t for t in treinos if t.get("id") != treino_id]
 
@@ -717,8 +765,35 @@ def questionario_aluno():
         salvar_respostas_questionario(respostas)
         return redirect(url_for("questionario_aluno", salvo="1"))
 
-    respostas = carregar_respostas_questionario()
-    respostas_ordenadas = list(reversed(respostas))
+    respostas_ordenadas = []
+    nome_filtro = ""
+    data_inicio_filtro = ""
+    data_fim_filtro = ""
+
+    if admin_ativo():
+        respostas = carregar_respostas_questionario()
+        nome_filtro = limpar_texto_campo(request.args.get("nome") or "")
+        data_inicio_filtro = normalizar_data_iso(request.args.get("data_inicio") or "")
+        data_fim_filtro = normalizar_data_iso(request.args.get("data_fim") or "")
+
+        respostas_filtradas = []
+        for resposta in respostas:
+            if not isinstance(resposta, dict):
+                continue
+
+            nome_resposta = limpar_texto_campo(resposta.get("nome"))
+            data_resposta = normalizar_data_iso(resposta.get("criado_em"))
+
+            if nome_filtro and nome_filtro.lower() not in nome_resposta.lower():
+                continue
+            if data_inicio_filtro and (not data_resposta or data_resposta < data_inicio_filtro):
+                continue
+            if data_fim_filtro and (not data_resposta or data_resposta > data_fim_filtro):
+                continue
+
+            respostas_filtradas.append(resposta)
+
+        respostas_ordenadas = list(reversed(respostas_filtradas))
     link_formulario = url_for("questionario_aluno", _external=True)
     mensagem = (
         "Oi! Para montar seu treino com mais precisão, responda este formulário rápido:\n"
@@ -732,7 +807,33 @@ def questionario_aluno():
         respostas=respostas_ordenadas,
         link_formulario=link_formulario,
         whatsapp_link=whatsapp_link,
+        pode_ver_respostas=admin_ativo(),
+        nome_filtro=nome_filtro,
+        data_inicio_filtro=data_inicio_filtro,
+        data_fim_filtro=data_fim_filtro,
     )
+
+@app.route("/admin/login", methods=["GET", "POST"])
+def admin_login():
+    erro = ""
+    proximo = (request.args.get("proximo") or request.form.get("proximo") or "").strip()
+
+    if request.method == "POST":
+        senha = (request.form.get("senha") or "").strip()
+        if senha and senha == ADMIN_PASSWORD:
+            session["admin_logado"] = True
+            if proximo.startswith("/"):
+                return redirect(proximo)
+            return redirect(url_for("montar_treino"))
+        erro = "Senha inválida."
+
+    return render_template("admin_login.html", erro=erro, proximo=proximo)
+
+
+@app.route("/admin/logout", methods=["POST"])
+def admin_logout():
+    session.pop("admin_logado", None)
+    return redirect(url_for("index"))
 
 
 if __name__ == "__main__":
