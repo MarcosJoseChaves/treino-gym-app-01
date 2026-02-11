@@ -36,38 +36,56 @@
             · Data: <strong>{{ treino.data_treino or '-' }}</strong>
           </p>
 
-          <div class="vstack gap-3">
+           <div id="lista-miniaturas" class="row row-cols-1 row-cols-sm-2 g-3">
             {% for item in itens %}
-            <div class="border rounded bg-white p-3">
-              <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
-                <div>
-                  <h6 class="mb-1">{{ item.nome }}</h6>
-                  <div class="text-muted small">{{ item.grupo }} · {{ item.series }} séries · {{ item.repeticoes }} repetições</div>
-                </div>
-                <span class="badge text-bg-secondary">Detalhes</span>
-              </div>
-
-              <div class="mb-3">
-                {% if item.midia %}
-                  {% if item.midia.lower().endswith('.mp4') %}
-                    <video autoplay loop muted playsinline
-                           style="max-height:220px; max-width:100%; object-fit:contain;">
-                      <source src="{{ item.midia }}" type="video/mp4">
-                    </video>
+            <div class="col">
+              <button
+                type="button"
+                class="btn w-100 text-start border rounded bg-white p-2 exercicio-thumb"
+                data-index="{{ loop.index0 }}"
+              >
+                <div class="small text-muted mb-2">{{ item.grupo }} · {{ item.series }} séries · {{ item.repeticoes }} repetições</div>
+                <div class="mb-2" style="height: 160px; display:flex; align-items:center; justify-content:center;">
+                  {% if item.midia %}
+                    {% if item.midia.lower().endswith('.mp4') %}
+                      <video autoplay loop muted playsinline
+                             style="max-height:100%; max-width:100%; object-fit:contain;">
+                        <source src="{{ item.midia }}" type="video/mp4">
+                      </video>
+                    {% else %}
+                      <img src="{{ item.midia }}" alt="{{ item.nome }}"
+                           style="max-height:100%; max-width:100%; object-fit:contain;">
+                    {% endif %}
                   {% else %}
-                    <img src="{{ item.midia }}" alt="{{ item.nome }}"
-                         style="max-height:220px; max-width:100%; object-fit:contain;">
+                    <div class="text-muted small">Sem mídia.</div>
                   {% endif %}
-                {% else %}
-                  <div class="text-muted small">Sem vídeo/imagem disponível.</div>
-                {% endif %}
-              </div>
-
-              {% if item.observacoes %}
-              <div class="alert alert-info py-2 mb-0 small">{{ item.observacoes }}</div>
-              {% endif %}
+                </div>
+                <div class="fw-semibold">{{ item.nome }}</div>
+              </button>
             </div>
             {% endfor %}
+          </div>
+
+          <div id="detalhe-exercicio" class="d-none">
+            <div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
+              <button type="button" class="btn btn-outline-secondary btn-sm" id="voltar-miniaturas">← Voltar para miniaturas</button>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="anterior-exercicio">← Anterior</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="proximo-exercicio">Próximo →</button>
+              </div>
+            </div>
+
+            <div class="border rounded bg-white p-3">
+              <h5 class="mb-1" id="detalhe-nome"></h5>
+              <div class="text-muted small mb-3" id="detalhe-resumo"></div>
+
+              <div class="mb-3" id="detalhe-midia"
+                   style="min-height:220px; display:flex; align-items:center; justify-content:center;"></div>
+
+              <ul class="mb-3 ps-3" id="detalhe-dicas"></ul>
+              <ul class="mb-3 ps-3" id="detalhe-erros"></ul>
+              <div class="alert alert-info py-2 mb-0 small d-none" id="detalhe-observacoes"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -101,6 +119,83 @@
 <script>
   const copyButton = document.getElementById('copy-link');
   const linkText = document.getElementById('treino-link').textContent;
+  const itensTreino = {{ itens|tojson }};
+
+  const listaMiniaturas = document.getElementById('lista-miniaturas');
+  const detalheExercicio = document.getElementById('detalhe-exercicio');
+  const voltarMiniaturas = document.getElementById('voltar-miniaturas');
+  const anteriorExercicio = document.getElementById('anterior-exercicio');
+  const proximoExercicio = document.getElementById('proximo-exercicio');
+
+  const detalheNome = document.getElementById('detalhe-nome');
+  const detalheResumo = document.getElementById('detalhe-resumo');
+  const detalheMidia = document.getElementById('detalhe-midia');
+  const detalheDicas = document.getElementById('detalhe-dicas');
+  const detalheErros = document.getElementById('detalhe-erros');
+  const detalheObservacoes = document.getElementById('detalhe-observacoes');
+
+  let indexAtual = -1;
+
+  function montarLista(listaEl, titulo, itens) {
+    if (!itens || !itens.length) {
+      listaEl.classList.add('d-none');
+      listaEl.innerHTML = '';
+      return;
+    }
+
+    listaEl.classList.remove('d-none');
+    listaEl.innerHTML = `<li class="fw-semibold mb-1">${titulo}</li>${itens.map((item) => `<li>${item}</li>`).join('')}`;
+  }
+
+  function montarMidia(item) {
+    if (!item.midia) {
+      detalheMidia.innerHTML = '<div class="text-muted small">Sem vídeo/imagem disponível.</div>';
+      return;
+    }
+
+    if (item.midia.toLowerCase().endsWith('.mp4')) {
+      detalheMidia.innerHTML = `
+        <video autoplay loop muted playsinline style="max-height:320px; max-width:100%; object-fit:contain;">
+          <source src="${item.midia}" type="video/mp4">
+        </video>
+      `;
+      return;
+    }
+
+    detalheMidia.innerHTML = `<img src="${item.midia}" alt="${item.nome}" style="max-height:320px; max-width:100%; object-fit:contain;">`;
+  }
+
+  function abrirDetalhe(index) {
+    const item = itensTreino[index];
+    if (!item) return;
+
+    indexAtual = index;
+    detalheNome.textContent = item.nome || 'Exercício';
+    detalheResumo.textContent = `${item.grupo || '-'} · ${item.series || '-'} séries · ${item.repeticoes || '-'} repetições`;
+    montarMidia(item);
+    montarLista(detalheDicas, 'Dicas rápidas', item.dicas || []);
+    montarLista(detalheErros, 'Erros comuns', item.erros || []);
+
+    if (item.observacoes) {
+      detalheObservacoes.textContent = item.observacoes;
+      detalheObservacoes.classList.remove('d-none');
+    } else {
+      detalheObservacoes.textContent = '';
+      detalheObservacoes.classList.add('d-none');
+    }
+
+    anteriorExercicio.disabled = indexAtual <= 0;
+    proximoExercicio.disabled = indexAtual >= itensTreino.length - 1;
+
+    listaMiniaturas.classList.add('d-none');
+    detalheExercicio.classList.remove('d-none');
+  }
+
+  function mostrarMiniaturas() {
+    indexAtual = -1;
+    detalheExercicio.classList.add('d-none');
+    listaMiniaturas.classList.remove('d-none');
+  }
 
   copyButton.addEventListener('click', async () => {
     try {
@@ -113,6 +208,16 @@
       copyButton.textContent = 'Não foi possível copiar';
     }
   });
+
+  document.querySelectorAll('.exercicio-thumb').forEach((botao) => {
+    botao.addEventListener('click', () => {
+      abrirDetalhe(Number(botao.dataset.index));
+    });
+  });
+
+  voltarMiniaturas.addEventListener('click', mostrarMiniaturas);
+  anteriorExercicio.addEventListener('click', () => abrirDetalhe(indexAtual - 1));
+  proximoExercicio.addEventListener('click', () => abrirDetalhe(indexAtual + 1));
 </script>
 
 </body>
