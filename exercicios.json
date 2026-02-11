@@ -71,24 +71,7 @@
     "observacoes": "",
     "aparelho": "Peso livre"
   },
-  {
-    "id": "quatro_apoios",
-    "nome": "Quatro Apoios (Donkey Kick)",
-    "grupo": "Glúteos",
-    "midia": "/static/exercicios/gluteos/gluteo_quatro_apoios.gif",
-    "dicas": [
-      "Pelve estável",
-      "Suba e segure 1s",
-      "Movimento curto e controlado"
-    ],
-    "erros": [
-      "Girar quadril",
-      "Arqueamento lombar",
-      "Balançar o corpo"
-    ],
-    "observacoes": "",
-    "aparelho": "Peso corporal"
-  },
+
   {
     "id": "extensao_cabo",
     "nome": "Extensão no Cabo",
@@ -111,7 +94,7 @@
     "id": "levantamento_terra",
     "nome": "Levantamento Terra (Romeno/Stiff)",
     "grupo": "Glúteos",
-    "midia": "/static/exercicios/gluteos/gluteo_terra_romeno.gif",
+    "midia": "/static/exercicios/gluteos/gluteos_levantamento_terra_romeno.mp4",
     "dicas": [
       "Quadril para trás",
       "Coluna neutra",
@@ -165,7 +148,7 @@
     "id": "ponte_unilateral",
     "nome": "Ponte com Elevação de Perna",
     "grupo": "Glúteos",
-    "midia": "/static/exercicios/gluteos/gluteo_ponte_unilateral.gif",
+    "midia": "/static/exercicios/gluteos/gluteo_ponte_elevacao_perna.mp4",
     "dicas": [
       "Quadril nivelado",
       "Suba e pause 1s",
