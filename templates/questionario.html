@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Questionário do Aluno</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/app.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar bg-white border-bottom sticky-top">
+  <div class="container py-2 d-flex justify-content-between align-items-center">
+    <a href="/" class="btn btn-sm btn-outline-secondary">← Biblioteca</a>
+    <span class="navbar-brand fw-semibold">📝 Questionário do Aluno</span>
+    <a href="/treino" class="btn btn-sm btn-outline-primary">Montar treino</a>
+  </div>
+</nav>
+
+<div class="container py-4">
+  {% if salvo %}
+  <div class="alert alert-success">Resposta salva com sucesso ✅</div>
+  {% endif %}
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+        <div>
+          <h5 class="card-title mb-1">Formulário simples e funcional</h5>
+          <p class="text-muted small mb-0">Use esse link para enviar no WhatsApp e coletar as respostas dos alunos.</p>
+        </div>
+      </div>
+
+      <div class="d-grid d-md-flex gap-2 mb-3">
+        <a class="btn btn-success" href="{{ whatsapp_link }}" target="_blank" rel="noopener">Enviar link no WhatsApp</a>
+      </div>
+
+      <div class="alert alert-light border small mb-0">
+        <strong>Link do formulário:</strong>
+        <div class="text-break">{{ link_formulario }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="card-title mb-3">Resposta do aluno</h5>
+
+      <form method="POST" class="row g-3">
+        <div class="col-12 col-md-6">
+          <label class="form-label">Nome do aluno</label>
+          <input class="form-control" name="nome" placeholder="Ex: João Silva">
+        </div>
+
+        <div class="col-12 col-md-6">
+          <label class="form-label">WhatsApp</label>
+          <input class="form-control" name="whatsapp" placeholder="Ex: (11) 99999-9999">
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Qual seu objetivo principal?</label>
+          <input class="form-control" name="objetivo_principal" required placeholder="Hipertrofia, emagrecimento, força, qualidade de vida, reabilitação">
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Quais dias da semana e quanto tempo por dia você tem disponível para treinar?</label>
+          <textarea class="form-control" name="disponibilidade" rows="2" required></textarea>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Você já praticou musculação antes?</label>
+          <input class="form-control" name="experiencia_nivel" required placeholder="Iniciante, intermediário ou avançado">
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Possui alguma limitação física, lesão, dor ou condição de saúde?</label>
+          <textarea class="form-control" name="limitacoes" rows="2" required placeholder="Dor no joelho, hérnia, hipertensão..."></textarea>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Quais grupos musculares você gostaria de dar mais ênfase?</label>
+          <input class="form-control" name="enfase_muscular" required placeholder="Ex: glúteos e posterior de coxa">
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Como é sua rotina de trabalho/estudo?</label>
+          <textarea class="form-control" name="rotina" rows="2" required placeholder="Sedentária, ativa, muito estressante..."></textarea>
+        </div>
+
+        <div class="col-12 d-grid d-md-flex gap-2">
+          <button class="btn btn-primary" type="submit">Salvar respostas</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title mb-3">Respostas salvas</h5>
+
+      {% if respostas|length == 0 %}
+      <div class="alert alert-light border mb-0">Nenhuma resposta salva ainda.</div>
+      {% else %}
+      <div class="table-responsive">
+        <table class="table table-sm align-middle">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Aluno</th>
+              <th>Objetivo</th>
+              <th>Nível</th>
+              <th>Ênfase</th>
+              <th>Limitações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in respostas %}
+            <tr>
+              <td>{{ r.criado_em }}</td>
+              <td>{{ r.nome or '-' }}</td>
+              <td>{{ r.objetivo_principal or '-' }}</td>
+              <td>{{ r.experiencia_nivel or '-' }}</td>
+              <td>{{ r.enfase_muscular or '-' }}</td>
+              <td>{{ r.limitacoes or '-' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+</body>
+</html>

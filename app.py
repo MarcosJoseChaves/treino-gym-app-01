@@ -10,7 +10,7 @@ from urllib.parse import quote
 app = Flask(__name__)
 
 DATA_FILE = os.path.join(os.path.dirname(__file__), "exercicios.json")
-TREINOS_FILE = os.path.join(os.path.dirname(__file__), "treinos.json")
+QUESTIONARIO_FILE = os.path.join(os.path.dirname(__file__), "questionario_respostas.json")
 
 TIPOS_TREINO = ["A", "B", "C", "D"]
 OBJETIVOS_TREINO = [
@@ -174,6 +174,28 @@ def carregar_treinos():
 def salvar_treinos(treinos):
     with open(TREINOS_FILE, "w", encoding="utf-8") as f:
         json.dump(treinos, f, ensure_ascii=False, indent=2)
+
+
+def carregar_respostas_questionario():
+    if not os.path.exists(QUESTIONARIO_FILE):
+        return []
+
+    try:
+        with open(QUESTIONARIO_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return []
+
+    return data if isinstance(data, list) else []
+
+
+def salvar_respostas_questionario(respostas):
+    with open(QUESTIONARIO_FILE, "w", encoding="utf-8") as f:
+        json.dump(respostas, f, ensure_ascii=False, indent=2)
+
+
+def limpar_texto_campo(valor):
+    return (str(valor or "")).strip()
 
 
 def normalizar_item_treino(item):
@@ -673,6 +695,44 @@ def qr_exercicio(ex_id):
     buf.seek(0)
 
     return send_file(buf, mimetype="image/png")
+
+
+@app.route("/questionario", methods=["GET", "POST"])
+def questionario_aluno():
+    if request.method == "POST":
+        respostas = carregar_respostas_questionario()
+        registro = {
+            "id": uuid.uuid4().hex[:8],
+            "criado_em": datetime.now().strftime("%Y-%m-%d %H:%M"),
+            "nome": limpar_texto_campo(request.form.get("nome")),
+            "whatsapp": limpar_texto_campo(request.form.get("whatsapp")),
+            "objetivo_principal": limpar_texto_campo(request.form.get("objetivo_principal")),
+            "disponibilidade": limpar_texto_campo(request.form.get("disponibilidade")),
+            "experiencia_nivel": limpar_texto_campo(request.form.get("experiencia_nivel")),
+            "limitacoes": limpar_texto_campo(request.form.get("limitacoes")),
+            "enfase_muscular": limpar_texto_campo(request.form.get("enfase_muscular")),
+            "rotina": limpar_texto_campo(request.form.get("rotina")),
+        }
+        respostas.append(registro)
+        salvar_respostas_questionario(respostas)
+        return redirect(url_for("questionario_aluno", salvo="1"))
+
+    respostas = carregar_respostas_questionario()
+    respostas_ordenadas = list(reversed(respostas))
+    link_formulario = url_for("questionario_aluno", _external=True)
+    mensagem = (
+        "Oi! Para montar seu treino com mais precisão, responda este formulário rápido:\n"
+        f"{link_formulario}"
+    )
+    whatsapp_link = f"https://wa.me/?text={quote(mensagem)}"
+
+    return render_template(
+        "questionario.html",
+        salvo=request.args.get("salvo") == "1",
+        respostas=respostas_ordenadas,
+        link_formulario=link_formulario,
+        whatsapp_link=whatsapp_link,
+    )
 
 
 if __name__ == "__main__":

@@ -21,7 +21,7 @@
     "id": "elevacao_pelvica",
     "nome": "Elevação Pélvica (Hip Thrust)",
     "grupo": "Glúteos",
-    "midia": "/static/exercicios/gluteos/gluteo_hip_thrust.gif",
+    "midia": "/static/exercicios/gluteos/gluteo_elevação_pelvica.mp4",
     "dicas": [
       "Pausa de 1–2s no topo",
       "Costelas “para baixo” (sem hiperextensão)",
@@ -39,7 +39,7 @@
     "id": "afundo",
     "nome": "Afundo (Lunge)",
     "grupo": "Glúteos",
-    "midia": "/static/exercicios/gluteos/gluteo_afundo_lunge.gif",
+    "midia": "/static/exercicios/gluteos/gluteo_afundo_lunge.mp4",
     "dicas": [
       "Passo mais longo = mais glúteo",
       "Tronco levemente inclinado",
@@ -57,7 +57,7 @@
     "id": "sumo",
     "nome": "Agachamento Sumô",
     "grupo": "Glúteos",
-    "midia": "/static/exercicios/gluteos/gluteo_sumo.gif",
+    "midia": "/static/exercicios/gluteos/gluteos_sumo_halteres.mp4",
     "dicas": [
       "Pés abertos e pontas para fora",
       "Desça mantendo joelhos abertos",
@@ -129,7 +129,7 @@
     "id": "cadeira_abdutora",
     "nome": "Cadeira Abdutora",
     "grupo": "Glúteos",
-    "midia": "/static/exercicios/gluteos/gluteo_abdutora.gif",
+    "midia": "/static/exercicios/gluteos/gluteo_cadeira_abdutora.mp4",
     "dicas": [
       "Incline o tronco levemente à frente",
       "Abra e segure 1s",
@@ -147,7 +147,7 @@
     "id": "elevacao_lateral",
     "nome": "Elevação de Perna Lateral",
     "grupo": "Glúteos",
-    "midia": "/static/exercicios/gluteos/gluteo_elevacao_lateral.gif",
+    "midia": "/static/exercicios/gluteos/gluteos_elevacao_lateral.gif",
     "dicas": [
       "Pés alinhados",
       "Quadril não gira",
