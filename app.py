@@ -274,7 +274,7 @@ def treinos_por_id(treinos):
 
 
 def gerar_whatsapp_link_treino(treino_id, treino):
-    destino = url_for("visualizar_treino", treino_id=treino_id, token=treino.get("public_token") or "", _external=True)
+    destino = url_for("visualizar_treino", treino_id=treino_id, _external=True)
     mensagem = (
         f"Treino do aluno {treino.get('aluno') or 'Sem nome'}\n"
         f"Tipo(s): {exibir_lista(treino.get('tipos') or treino.get('tipo'))}\n"
@@ -602,12 +602,6 @@ def visualizar_treino(treino_id):
     if not treino:
         abort(404)
 
-    if not admin_ativo():
-        token_recebido = (request.args.get("token") or "").strip()
-        token_esperado = (treino.get("public_token") or "").strip()
-        if not token_esperado or token_recebido != token_esperado:
-            abort(403)
-
     itens = []
     for item in treino.get("exercicios", []):
         if not isinstance(item, dict):
@@ -628,7 +622,7 @@ def visualizar_treino(treino_id):
             }
         )
 
-    destino = url_for("visualizar_treino", treino_id=treino.get("link_id") or treino_id, token=treino.get("public_token") or "", _external=True)
+    destino = url_for("visualizar_treino", treino_id=treino.get("link_id") or treino_id, _external=True)
     mensagem = (
         f"Treino do aluno {treino.get('aluno') or 'Sem nome'}\n"
         f"Tipo(s): {exibir_lista(treino.get('tipos') or treino.get('tipo'))}\n"
