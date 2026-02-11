@@ -71,7 +71,6 @@
     "observacoes": "",
     "aparelho": "Peso livre"
   },
-
   {
     "id": "extensao_cabo",
     "nome": "Extensão no Cabo",
@@ -162,7 +161,7 @@
     "observacoes": "",
     "aparelho": "Peso corporal"
   },
-{
+  {
     "id": "supino_reto_barra",
     "nome": "Supino Reto (Barra ou Halteres)",
     "grupo": "Peito",
@@ -233,7 +232,7 @@
       "Soltar o peso rápido"
     ],
     "observacoes": "3 séries • Ênfase em dorsais (largura)",
-    "aparelho": "Máquina (Pulldown)"
+    "aparelho": "Cabo/Polia"
   },
   {
     "id": "triceps_extensao_polia_alta",
@@ -256,10 +255,9 @@
   },
   {
     "id": "triceps_extensao_frente",
-    "nome": "Extensão de Tríceps à Frente",
+    "nome": "Extensão de Tríceps à Frente (Polia)",
     "grupo": "Tríceps",
     "subgrupo": "Cabeça Longa",
-    "aparelho": "Cabo/Polia",
     "midia": "/static/exercicios/triceps/triceps_extensao_frente.mp4",
     "dicas": [
       "Mantenha os cotovelos estáveis durante toda a execução",
@@ -271,8 +269,82 @@
       "Usar balanço do corpo para mover a carga",
       "Perder a fase excêntrica"
     ],
-    "observacoes": "3 séries • Foco em controle e contração"
-  }
-
-
+    "observacoes": "3 séries • Foco em controle e contração",
+    "aparelho": "Cabo/Polia"
+  },
+  {
+    "id": "costas_remada_v_cabo",
+    "nome": "Remada em V com Cabo",
+    "grupo": "Costas",
+    "subgrupo": "Espessura",
+    "midia": "/static/exercicios/costas/costas_remada_v_cabo.gif",
+    "dicas": [
+      "Coluna neutra e peito aberto",
+      "Puxe com os cotovelos (não com as mãos)",
+      "Controle a volta e mantenha tensão"
+    ],
+    "erros": [
+      "Arredondar a lombar",
+      "Usar balanço do tronco",
+      "Encurtar amplitude e soltar rápido"
+    ],
+    "instrucoes": [
+      "Instale a barra em V na polia e posicione-se em frente à máquina com os pés na largura dos ombros.",
+      "Segure com pegada neutra e puxe em direção ao peito, sentindo o trabalho nas costas.",
+      "Contraia as costas e segure 1–2 segundos.",
+      "Retorne controlando até a posição inicial.",
+      "Repita pelo número de séries e repetições do treino."
+    ],
+    "observacoes": "",
+    "aparelho": "Cabo/Polia"
+  },
+  {
+    "id": "costas_puxada_supinada_fechada",
+    "nome": "Puxada Lat Inversa na Máquina (Pegada Fechada)",
+    "grupo": "Costas",
+    "subgrupo": "Largura",
+    "midia": "/static/exercicios/costas/costas_puxada_supinada_fechada.gif",
+    "musculos_secundarios": [
+      "Bíceps",
+      "Ombros"
+    ],
+    "dicas": [
+      "Mantenha o peito aberto",
+      "Puxe com os cotovelos",
+      "Segure 1 segundo na contração"
+    ],
+    "erros": [
+      "Balançar o tronco",
+      "Puxar com os braços apenas",
+      "Soltar o peso rápido"
+    ],
+    "instrucoes": [
+      "Prenda a barra na máquina de puxada alta e segure com pegada invertida.",
+      "Mantenha as costas retas e o corpo estável.",
+      "Puxe a barra até a parte superior do peito contraindo os dorsais.",
+      "Segure brevemente a contração.",
+      "Retorne de forma controlada e repita."
+    ],
+    "observacoes": "",
+    "aparelho": "Cabo/Polia"
+  },
+{
+  "id": "costas_pullover_cabo",
+  "nome": "Pullover no Cabo (Braços Estendidos)",
+  "grupo": "Costas",
+  "subgrupo": "Largura",
+  "midia": "/static/exercicios/costas/costas_pullover_crossover_braco_estendido.mp4",
+  "dicas": [
+    "Mantenha os braços quase estendidos",
+    "Inicie o movimento pelas costas, não pelos braços",
+    "Desça controlando até a linha do quadril"
+  ],
+  "erros": [
+    "Dobrar demais os cotovelos (vira tríceps)",
+    "Usar impulso do tronco",
+    "Soltar o peso rápido"
+  ],
+  "observacoes": "Excelente para ativação de dorsais e conexão mente-músculo",
+  "aparelho": "Cabo/Polia"
+}
 ]
