@@ -574,5 +574,105 @@
   ],
   "observacoes": "Variante do levantamento terra utilizando halteres.",
   "aparelho": "Halteres"
+},
+{
+  "id": "supino_declinado_barra",
+  "nome": "Supino Declinado com Barra",
+  "grupo": "Peito",
+  "subgrupo": "Peito Inferior",
+  "midia": "/static/exercicios/peito/supino_declinado_barra.mp4",
+  "dicas": [
+    "Mantenha escápulas retraídas",
+    "Controle a descida",
+    "Empurre a barra de forma estável"
+  ],
+  "erros": [
+    "Deixar a barra subir desalinhada",
+    "Perder tensão no abdômen",
+    "Descer rápido demais"
+  ],
+  "observacoes": "Ênfase em porção inferior do peitoral.",
+  "aparelho": "Barra"
+},
+{
+  "id": "supino_pegada_fechada",
+  "nome": "Supino com Pegada Fechada",
+  "grupo": "Peito",
+  "subgrupo": "Peito / Tríceps",
+  "midia": "/static/exercicios/peito/supino_pegada_fechada.mp4",
+  "dicas": [
+    "Mantenha os cotovelos próximos ao corpo",
+    "Controle a descida",
+    "Estenda completamente os braços"
+  ],
+  "erros": [
+    "Abrir excessivamente os cotovelos",
+    "Tirar os pés do chão",
+    "Quicar a barra"
+  ],
+  "observacoes": "Maior ativação de tríceps.",
+  "aparelho": "Barra"
+},
+{
+  "id": "supino_pegada_aberta",
+  "nome": "Supino com Pegada Aberta",
+  "grupo": "Peito",
+  "subgrupo": "Peito",
+  "midia": "/static/exercicios/peito/supino_pegada_aberta.mp4",
+  "dicas": [
+    "Mantenha controle da barra",
+    "Desça até linha média do peito",
+    "Estabilize as escápulas"
+  ],
+  "erros": [
+    "Exagerar na largura da pegada",
+    "Perder estabilidade do ombro",
+    "Descer rápido demais"
+  ],
+  "observacoes": "Ênfase maior no peitoral.",
+  "aparelho": "Barra"
+},
+{
+  "id": "supino_chao_barra",
+  "nome": "Supino no Chão (Floor Press)",
+  "grupo": "Peito",
+  "subgrupo": "Peito / Tríceps",
+  "midia": "/static/exercicios/peito/supino_chao_barra.mp4",
+  "dicas": [
+    "Mantenha os cotovelos controlados",
+    "Pause levemente no chão",
+    "Empurre de forma explosiva"
+  ],
+  "erros": [
+    "Relaxar completamente os braços no chão",
+    "Arqueamento excessivo",
+    "Perder estabilidade"
+  ],
+  "observacoes": "Reduz amplitude e protege ombros.",
+  "aparelho": "Barra"
+},
+{
+  "id": "larsen_press",
+  "nome": "Larsen Press",
+  "grupo": "Peito",
+  "subgrupo": "Peito",
+  "midia": "/static/exercicios/peito/larsen_press.mp4",
+  "dicas": [
+    "Mantenha os pés suspensos",
+    "Controle total da barra",
+    "Ative o core durante a execução"
+  ],
+  "erros": [
+    "Perder estabilidade",
+    "Deixar a barra subir desalinhada",
+    "Relaxar o abdômen"
+  ],
+  "observacoes": "Remove ajuda das pernas aumentando exigência do peitoral.",
+  "aparelho": "Barra"
 }
+
+
+
+
+
 ]
