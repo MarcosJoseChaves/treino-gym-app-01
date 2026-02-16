@@ -61,15 +61,32 @@ def resolver_database_url():
         "SQLALCHEMY_DATABASE_URI",
         "NEON_DATABASE_URL",
         "NEONDB_URL",
+        "NEONDB",
         "POSTGRES_URL",
+        "RENDER_DATABASE_URL",
+        "INTERNAL_DATABASE_URL",
+        "EXTERNAL_DATABASE_URL",
+        "GYM_DATABASE_URL",
     ]
 
+    origem = ""
+    valor = ""
     for nome in candidatos:
-        valor = (os.environ.get(nome) or "").strip()
-        if valor:
+        candidato = (os.environ.get(nome) or "").strip()
+        if candidato:
+            origem = nome
+            valor = candidato
             break
-    else:
-        valor = ""
+    if not valor:
+        for nome, candidato in os.environ.items():
+            chave = (nome or "").strip().upper()
+            texto = (candidato or "").strip()
+            if not texto:
+                continue
+            if "DATABASE_URL" in chave or chave.endswith("_DB_URL"):
+                origem = nome
+                valor = texto
+                break
 
     if not valor:
         # Fallback para ambientes que expõem apenas PG* vars
@@ -80,19 +97,20 @@ def resolver_database_url():
         pg_port = (os.environ.get("PGPORT") or "5432").strip()
 
         if pg_host and pg_db and pg_user and pg_password:
+            origem = "PG*"
             valor = f"postgresql://{pg_user}:{quote(pg_password)}@{pg_host}:{pg_port}/{pg_db}?sslmode=require"
 
     if valor.startswith("postgres://"):
         valor = f"postgresql://{valor[len('postgres://'):]}"
 
-    return valor
+    return valor, origem
 
 
-database_url = resolver_database_url()
+database_url, database_url_origem = resolver_database_url()
 if database_url:
     app.config["SQLALCHEMY_DATABASE_URI"] = database_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.logger.info("Banco de dados configurado para persistir treinos/questionários.")
+    app.logger.info(f"Banco configurado via {database_url_origem or 'env'} para persistir treinos/questionários.")
 else:
     app.logger.warning("DATABASE_URL não encontrada; dados serão salvos localmente e podem ser perdidos no deploy.")
 
@@ -297,6 +315,9 @@ def carregar_treinos():
             return treinos
         except SQLAlchemyError:
             pass
+        except SQLAlchemyError as e:
+            app.logger.exception(f"Falha ao carregar treinos no banco: {e}")
+            return []
     treinos_file = caminho_arquivo("TREINOS_FILE", "treinos.json")
     if not os.path.exists(treinos_file):
         return []
@@ -336,8 +357,10 @@ def salvar_treinos(treinos):
 
             db.session.commit()
             return
-        except SQLAlchemyError:
+        except SQLAlchemyError as e:
             db.session.rollback()
+            app.logger.exception(f"Falha ao salvar treinos no banco: {e}")
+            raise
     treinos_file = caminho_arquivo("TREINOS_FILE", "treinos.json")
     with open(treinos_file, "w", encoding="utf-8") as f:
         json.dump(treinos, f, ensure_ascii=False, indent=2)
@@ -349,8 +372,9 @@ def carregar_respostas_questionario():
             registros = RespostaDB.query.all()
             respostas = [registro.dados for registro in registros if isinstance(registro.dados, dict)]
             return respostas
-        except SQLAlchemyError:
-            pass
+        except SQLAlchemyError as e:
+            app.logger.exception(f"Falha ao carregar respostas no banco: {e}")
+            return []
     questionario_file = caminho_arquivo("QUESTIONARIO_FILE", "questionario_respostas.json")
     if not os.path.exists(questionario_file):
         return []
@@ -384,8 +408,10 @@ def salvar_respostas_questionario(respostas):
 
             db.session.commit()
             return
-        except SQLAlchemyError:
+        except SQLAlchemyError as e:
             db.session.rollback()
+            app.logger.exception(f"Falha ao salvar respostas no banco: {e}")
+            raise
     questionario_file = caminho_arquivo("QUESTIONARIO_FILE", "questionario_respostas.json")
     with open(questionario_file, "w", encoding="utf-8") as f:
         json.dump(respostas, f, ensure_ascii=False, indent=2)
