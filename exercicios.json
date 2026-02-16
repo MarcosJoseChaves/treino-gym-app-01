@@ -669,8 +669,83 @@
   ],
   "observacoes": "Remove ajuda das pernas aumentando exigência do peitoral.",
   "aparelho": "Barra"
+},
+{
+  "id": "afundo_barra",
+  "nome": "Afundo com Barra",
+  "grupo": "Pernas",
+  "subgrupo": "Glúteos / Quadríceps",
+  "midia": "/static/exercicios/pernas/afundo_barra.mp4",
+  "dicas": [
+    "Passo longo para maior ativação de glúteos",
+    "Mantenha o tronco ereto",
+    "Desça controlando"
+  ],
+  "erros": [
+    "Passo curto demais",
+    "Joelho colapsando",
+    "Inclinar excessivamente o tronco"
+  ],
+  "observacoes": "Versão com barra do afundo tradicional.",
+  "aparelho": "Barra"
+},
+{
+  "id": "agachamento_cossack_barra",
+  "nome": "Agachamento Cossack com Barra",
+  "grupo": "Pernas",
+  "subgrupo": "Glúteos / Quadríceps / Adutores",
+  "midia": "/static/exercicios/pernas/agachamento_cossack_barra.mp4",
+  "dicas": [
+    "Desça mantendo o calcanhar no chão",
+    "Empurre o joelho para fora",
+    "Mantenha o tronco ereto"
+  ],
+  "erros": [
+    "Tirar o calcanhar do chão",
+    "Arredondar as costas",
+    "Descer sem controle"
+  ],
+  "observacoes": "Exercício unilateral lateral com grande exigência de mobilidade.",
+  "aparelho": "Barra"
+},
+{
+  "id": "agachamento_frontal_halter",
+  "nome": "Agachamento Frontal com Halter",
+  "grupo": "Pernas",
+  "subgrupo": "Glúteos / Quadríceps",
+  "midia": "/static/exercicios/pernas/agachamento_frontal_halter.mp4",
+  "dicas": [
+    "Mantenha o halter próximo ao peito",
+    "Cotovelos altos e tronco ereto",
+    "Desça controlando o movimento"
+  ],
+  "erros": [
+    "Inclinar excessivamente o tronco",
+    "Descer rápido sem controle",
+    "Tirar os calcanhares do chão"
+  ],
+  "observacoes": "Versão frontal aumenta demanda de core e postura.",
+  "aparelho": "Halter"
+},
+{
+  "id": "terra_romeno_marcha_halter",
+  "nome": "Levantamento Terra Romeno com Halteres em Marcha",
+  "grupo": "Quadril",
+  "subgrupo": "Glúteos / Posterior de coxa / Estabilidade",
+  "midia": "/static/exercicios/quadril/terra_romeno_marcha_halter.mp4",
+  "dicas": [
+    "Quadril vai para trás a cada passo",
+    "Mantenha a coluna neutra",
+    "Passos curtos e controlados"
+  ],
+  "erros": [
+    "Arredondar as costas",
+    "Perder equilíbrio por pressa",
+    "Flexionar demais os joelhos"
+  ],
+  "observacoes": "Exercício avançado para cadeia posterior e core.",
+  "aparelho": "Halteres"
 }
-
 
 
 
