@@ -132,7 +132,7 @@
       </div>
       {% endif %}
 
-      <form method="POST" class="vstack gap-4">
+      <form method="POST" id="form-montar-treino" class="vstack gap-4">
         <input type="hidden" name="treino_id" value="{{ treino_id_prefill }}">
         <input type="hidden" name="link_id" value="{{ link_id_prefill }}">
         <div class="row g-3">
@@ -211,6 +211,10 @@
                 <label class="form-check-label" for="filtro-favoritos-treino">Somente favoritos</label>
               </div>
             </div>
+            <div class="col-12 col-md-2 d-flex gap-2">
+              <button type="button" class="btn btn-outline-primary btn-sm w-100" id="aplicar-filtros-btn">Filtrar</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm w-100" id="limpar-filtros-btn">Limpar</button>
+            </div>
             <div class="col-12 col-md-3">
               <div class="small text-muted" id="contador-exercicios"></div>
             </div>
@@ -227,7 +231,7 @@
                 {% endif %}
               {% endfor %}
 
-            <div class="col-12 col-md-6 col-xl-4 exercicio-card" data-grupo="{{ (ex.grupo or '')|lower }}" data-aparelho="{{ (ex.aparelho or '')|lower }}" data-favorito="{{ '1' if ex.id in favoritos_admin else '0' }}">
+            <div class="col-12 col-md-6 col-xl-4 exercicio-card" data-exercicio-id="{{ ex.id }}" data-exercicio-nome="{{ ex.nome }}" data-grupo="{{ (ex.grupo or '')|lower }}" data-aparelho="{{ (ex.aparelho or '')|lower }}" data-favorito="{{ '1' if ex.id in favoritos_admin else '0' }}">
               <div class="border rounded p-2 h-100 bg-white">
                 <div class="ratio ratio-16x9 rounded overflow-hidden bg-light d-flex align-items-center justify-content-center mb-2">
                   {% if ex.midia %}
@@ -264,38 +268,48 @@
                   </button>
                 </form>
 
-                <input type="hidden" name="exercicio_id[]" value="{{ ex.id }}" class="exercicio-id-input" {% if not prefill.encontrado %}disabled{% endif %}>
-
                 <div class="row g-2 exercicio-config {% if not prefill.encontrado %}d-none{% endif %}">
                   <div class="col-6">
                     <label class="form-label small mb-1">Séries</label>
                     <input
-                      class="form-control"
-                      name="series[]"
+                      class="form-control exercicio-series-input"
                       value="{{ prefill.series }}"
                       placeholder="Ex: 4"
-                      {% if not prefill.encontrado %}disabled{% else %}required{% endif %}
+                      {% if not prefill.encontrado %}disabled{% endif %}
                     >
                   </div>
                   <div class="col-6">
                     <label class="form-label small mb-1">Repetições</label>
                     <input
-                      class="form-control"
-                      name="repeticoes[]"
+                      class="form-control exercicio-repeticoes-input"
                       value="{{ prefill.repeticoes }}"
                       placeholder="Ex: 12"
-                      {% if not prefill.encontrado %}disabled{% else %}required{% endif %}
+                      {% if not prefill.encontrado %}disabled{% endif %}
                     >
+                  </div>
+                  <div class="col-12">
+                    <button type="button" class="btn btn-success btn-sm adicionar-exercicio-btn">Adicionar na lista do treino</button>
                   </div>
                 </div>
               </div>
             </div>
             {% endfor %}
           </div>
+
+          <div class="mt-4 border rounded p-3 bg-light">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0">Lista do treino (antes de salvar)</h6>
+              <span class="badge text-bg-secondary" id="lista-treino-total">0 exercício(s)</span>
+            </div>
+            <p class="text-muted small mb-2">Use "Adicionar na lista do treino" nos cards para montar a ordem. Você pode remover itens antes de salvar.</p>
+            <div id="lista-treino-vazia" class="small text-muted">Nenhum exercício adicionado.</div>
+            <div class="vstack gap-2" id="lista-treino"></div>
+            <div id="inputs-treino-selecionado"></div>
+          </div>
         </div>
 
         <div class="d-flex flex-wrap gap-2">
-          <button class="btn btn-primary" type="submit">{% if treino_edicao %}Atualizar treino{% else %}Salvar treino{% endif %}</button>
+          <button class="btn btn-primary" id="btn-salvar-treino" type="submit" form="form-montar-treino">{% if treino_edicao %}Atualizar treino{% else %}Salvar treino{% endif %}</button>
           <a class="btn btn-outline-secondary" href="/">Voltar para biblioteca</a>
         </div>
       </form>
@@ -309,11 +323,135 @@
   const filtroAparelho = document.getElementById('filtro-aparelho');
   const contadorExercicios = document.getElementById('contador-exercicios');
   const filtroFavoritosTreino = document.getElementById('filtro-favoritos-treino');
+  const aplicarFiltrosBtn = document.getElementById('aplicar-filtros-btn');
+  const limparFiltrosBtn = document.getElementById('limpar-filtros-btn');
+  const listaTreino = document.getElementById('lista-treino');
+  const listaTreinoVazia = document.getElementById('lista-treino-vazia');
+  const listaTreinoTotal = document.getElementById('lista-treino-total');
+  const inputsTreinoSelecionado = document.getElementById('inputs-treino-selecionado');
+
+  const treinoSelecionado = [];
+
+  const formMontarTreino = document.getElementById('form-montar-treino');
+  const btnSalvarTreino = document.getElementById('btn-salvar-treino');
+
+  btnSalvarTreino?.addEventListener('click', () => {
+    atualizarHiddenInputs();
+  });
+
+  formMontarTreino?.addEventListener('submit', () => {
+    atualizarHiddenInputs();
+  });
 
   const atualizarContador = () => {
     const visiveis = cards.filter((card) => !card.classList.contains('d-none')).length;
-    const selecionados = cards.filter((card) => card.querySelector('.exercicio-check')?.checked).length;
-    contadorExercicios.textContent = `${visiveis} exercício(s) visível(is) · ${selecionados} selecionado(s)`;
+    const selecionados = treinoSelecionado.length;
+    contadorExercicios.textContent = `${visiveis} exercício(s) visível(is) · ${selecionados} na lista`;
+  };
+
+  const atualizarCardSelecionado = (card) => {
+    if (!card) return;
+
+    const checkbox = card.querySelector('.exercicio-check');
+    const config = card.querySelector('.exercicio-config');
+    const seriesInput = card.querySelector('.exercicio-series-input');
+    const repeticoesInput = card.querySelector('.exercicio-repeticoes-input');
+    const selecionado = !!checkbox?.checked;
+
+    if (config) {
+      config.classList.toggle('d-none', !selecionado);
+    }
+
+    [seriesInput, repeticoesInput].forEach((input) => {
+      if (!input) return;
+      input.disabled = !selecionado;
+      if (!selecionado) {
+        input.value = '';
+      }
+    });
+  };
+
+  const atualizarHiddenInputs = () => {
+    if (!inputsTreinoSelecionado) return;
+    inputsTreinoSelecionado.innerHTML = treinoSelecionado
+      .map((item) => `
+        <input type="hidden" name="exercicio_id[]" value="${item.exercicioId}">
+        <input type="hidden" name="series[]" value="${item.series}">
+        <input type="hidden" name="repeticoes[]" value="${item.repeticoes}">
+      `)
+      .join('');
+  };
+
+  const renderListaTreino = () => {
+    if (!listaTreino || !listaTreinoVazia || !listaTreinoTotal) return;
+
+    listaTreino.innerHTML = treinoSelecionado
+      .map((item, idx) => `
+        <div class="border rounded bg-white p-2 d-flex justify-content-between align-items-center gap-2">
+          <div>
+            <div class="fw-semibold">${idx + 1}. ${item.nome}</div>
+            <div class="small text-muted">Séries: ${item.series} · Repetições: ${item.repeticoes}</div>
+          </div>
+          <button type="button" class="btn btn-outline-danger btn-sm remover-lista-btn" data-exercicio-id="${item.exercicioId}">Retirar</button>
+        </div>
+      `)
+      .join('');
+
+    listaTreinoVazia.classList.toggle('d-none', treinoSelecionado.length > 0);
+    listaTreinoTotal.textContent = `${treinoSelecionado.length} exercício(s)`;
+
+    listaTreino.querySelectorAll('.remover-lista-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const exercicioId = btn.dataset.exercicioId;
+        const itemIdx = treinoSelecionado.findIndex((item) => item.exercicioId === exercicioId);
+        if (itemIdx >= 0) {
+          treinoSelecionado.splice(itemIdx, 1);
+          renderListaTreino();
+          atualizarHiddenInputs();
+          atualizarContador();
+        }
+
+        const card = cards.find((c) => c.dataset.exercicioId === exercicioId);
+        const checkbox = card?.querySelector('.exercicio-check');
+        if (checkbox) {
+          checkbox.checked = false;
+          atualizarCardSelecionado(card);
+        }
+      });
+    });
+  };
+
+  const adicionarOuAtualizarNaLista = (card) => {
+    const exercicioId = (card.dataset.exercicioId || '').trim();
+    const nome = (card.dataset.exercicioNome || 'Exercício').trim();
+    const checkbox = card.querySelector('.exercicio-check');
+    const seriesInput = card.querySelector('.exercicio-series-input');
+    const repeticoesInput = card.querySelector('.exercicio-repeticoes-input');
+    const series = (seriesInput?.value || '').trim();
+    const repeticoes = (repeticoesInput?.value || '').trim();
+
+    if (!exercicioId) return;
+    if (!series || !repeticoes) {
+      alert('Preencha séries e repetições antes de adicionar.');
+      return;
+    }
+
+    if (checkbox) {
+      checkbox.checked = true;
+      atualizarCardSelecionado(card);
+    }
+
+    const existente = treinoSelecionado.find((item) => item.exercicioId === exercicioId);
+    if (existente) {
+      existente.series = series;
+      existente.repeticoes = repeticoes;
+    } else {
+      treinoSelecionado.push({ exercicioId, nome, series, repeticoes });
+    }
+
+    renderListaTreino();
+    atualizarHiddenInputs();
+    atualizarContador();
   };
 
   const aplicarFiltros = () => {
@@ -334,53 +472,51 @@
     atualizarContador();
   };
 
-  const atualizarCardSelecionado = (card) => {
-    if (!card) {
-      return;
-    }
-
-    const checkbox = card.querySelector('.exercicio-check');
-    const config = card.querySelector('.exercicio-config');
-    const exercicioIdInput = card.querySelector('.exercicio-id-input');
-    const seriesInput = card.querySelector('input[name="series[]"]');
-    const repeticoesInput = card.querySelector('input[name="repeticoes[]"]');
-
-    const selecionado = !!checkbox?.checked;
-
-    if (config) {
-      config.classList.toggle('d-none', !selecionado);
-    }
-
-    if (exercicioIdInput) {
-      exercicioIdInput.disabled = !selecionado;
-    }
-
-    [seriesInput, repeticoesInput].forEach((input) => {
-      if (!input) {
-        return;
-      }
-      input.disabled = !selecionado;
-      input.required = selecionado;
-      if (!selecionado) {
-        input.value = '';
-      }
-    });
-
-    atualizarContador();
-  };
-
   cards.forEach((card) => {
+    const checkbox = card.querySelector('.exercicio-check');
+    const addBtn = card.querySelector('.adicionar-exercicio-btn');
+
     atualizarCardSelecionado(card);
 
-    const checkbox = card.querySelector('.exercicio-check');
     if (checkbox) {
-      checkbox.addEventListener('change', () => atualizarCardSelecionado(card));
+      checkbox.addEventListener('change', () => {
+        atualizarCardSelecionado(card);
+
+        if (!checkbox.checked) {
+          const exercicioId = (card.dataset.exercicioId || '').trim();
+          const itemIdx = treinoSelecionado.findIndex((item) => item.exercicioId === exercicioId);
+          if (itemIdx >= 0) {
+            treinoSelecionado.splice(itemIdx, 1);
+            renderListaTreino();
+            atualizarHiddenInputs();
+            atualizarContador();
+          }
+        }
+      });
+    }
+
+    if (addBtn) {
+      addBtn.addEventListener('click', () => adicionarOuAtualizarNaLista(card));
+    }
+
+    if (checkbox?.checked) {
+      adicionarOuAtualizarNaLista(card);
     }
   });
 
   filtroGrupo?.addEventListener('change', aplicarFiltros);
   filtroAparelho?.addEventListener('change', aplicarFiltros);
   filtroFavoritosTreino?.addEventListener('change', aplicarFiltros);
+  aplicarFiltrosBtn?.addEventListener('click', aplicarFiltros);
+  limparFiltrosBtn?.addEventListener('click', () => {
+    if (filtroGrupo) filtroGrupo.value = '';
+    if (filtroAparelho) filtroAparelho.value = '';
+    if (filtroFavoritosTreino) filtroFavoritosTreino.checked = false;
+    aplicarFiltros();
+  });
+
+  renderListaTreino();
+  atualizarHiddenInputs();
   aplicarFiltros();
 </script>
 
