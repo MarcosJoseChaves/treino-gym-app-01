@@ -54,10 +54,47 @@ TREINOS_FILE = os.path.join(BASE_DIR, "treinos.json")
 QUESTIONARIO_FILE = os.path.join(BASE_DIR, "questionario_respostas.json")
 
 
-database_url = os.environ.get("DATABASE_URL", "").strip()
+def resolver_database_url():
+    """Resolve URL do banco em provedores diferentes (Neon/Render/etc)."""
+    candidatos = [
+        "DATABASE_URL",
+        "SQLALCHEMY_DATABASE_URI",
+        "NEON_DATABASE_URL",
+        "NEONDB_URL",
+        "POSTGRES_URL",
+    ]
+
+    for nome in candidatos:
+        valor = (os.environ.get(nome) or "").strip()
+        if valor:
+            break
+    else:
+        valor = ""
+
+    if not valor:
+        # Fallback para ambientes que expõem apenas PG* vars
+        pg_host = (os.environ.get("PGHOST") or "").strip()
+        pg_db = (os.environ.get("PGDATABASE") or "").strip()
+        pg_user = (os.environ.get("PGUSER") or "").strip()
+        pg_password = (os.environ.get("PGPASSWORD") or "").strip()
+        pg_port = (os.environ.get("PGPORT") or "5432").strip()
+
+        if pg_host and pg_db and pg_user and pg_password:
+            valor = f"postgresql://{pg_user}:{quote(pg_password)}@{pg_host}:{pg_port}/{pg_db}?sslmode=require"
+
+    if valor.startswith("postgres://"):
+        valor = f"postgresql://{valor[len('postgres://'):]}"
+
+    return valor
+
+
+database_url = resolver_database_url()
 if database_url:
     app.config["SQLALCHEMY_DATABASE_URI"] = database_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.logger.info("Banco de dados configurado para persistir treinos/questionários.")
+else:
+    app.logger.warning("DATABASE_URL não encontrada; dados serão salvos localmente e podem ser perdidos no deploy.")
 
 db = SQLAlchemy(app) if database_url else None
 
