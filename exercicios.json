@@ -536,5 +536,43 @@
   ],
   "observacoes": "Variante com pegada neutra que reduz o estresse nos ombros.",
   "aparelho": "Barra Hexagonal"
+},
+{
+  "id": "step_up_banco",
+  "nome": "Step-up no Banco",
+  "grupo": "Pernas",
+  "subgrupo": "Glúteos / Quadríceps",
+  "midia": "/static/exercicios/pernas/step_up_banco.mp4",
+  "dicas": [
+    "Empurre pelo calcanhar da perna que sobe",
+    "Mantenha o tronco alinhado",
+    "Controle a descida"
+  ],
+  "erros": [
+    "Impulsionar com a perna de trás",
+    "Inclinar excessivamente o tronco",
+    "Descer rápido sem controle"
+  ],
+  "observacoes": "Exercício unilateral excelente para força e estabilidade.",
+  "aparelho": "Peso corporal"
+},
+{
+  "id": "terra_halteres",
+  "nome": "Levantamento Terra com Halteres",
+  "grupo": "Pernas",
+  "subgrupo": "Glúteos / Posterior de Coxa",
+  "midia": "/static/exercicios/pernas/terra_halteres.mp4",
+  "dicas": [
+    "Empurre o quadril para trás",
+    "Mantenha a coluna neutra",
+    "Desça controlando o movimento"
+  ],
+  "erros": [
+    "Arredondar a lombar",
+    "Dobrar demais os joelhos",
+    "Subir puxando apenas com as costas"
+  ],
+  "observacoes": "Variante do levantamento terra utilizando halteres.",
+  "aparelho": "Halteres"
 }
 ]
