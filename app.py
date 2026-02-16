@@ -7,7 +7,7 @@ import io
 import qrcode
 from datetime import datetime
 import uuid
-from urllib.parse import quote
+from urllib.parse import quote, urlparse, parse_qsl, urlencode, urlunparse
 
 BASE_DIR = os.path.dirname(__file__)
 
@@ -54,29 +54,64 @@ TREINOS_FILE = os.path.join(BASE_DIR, "treinos.json")
 QUESTIONARIO_FILE = os.path.join(BASE_DIR, "questionario_respostas.json")
 
 
+def garantir_sslmode_require(database_url):
+    """Garante sslmode=require para conexões PostgreSQL quando ausente."""
+    if not database_url.startswith("postgresql://"):
+        return database_url
+
+    parsed = urlparse(database_url)
+    params = dict(parse_qsl(parsed.query, keep_blank_values=True))
+    if "sslmode" in params:
+        return database_url
+
+    params["sslmode"] = "require"
+    nova_query = urlencode(params)
+    return urlunparse(parsed._replace(query=nova_query))
+
+
+def mascara_database_url(database_url):
+    """Masca senha da URL para logging seguro."""
+    if not database_url:
+        return ""
+    try:
+        parsed = urlparse(database_url)
+        if parsed.password:
+            netloc = parsed.netloc.replace(f":{parsed.password}@", ":***@")
+            return urlunparse(parsed._replace(netloc=netloc))
+        return database_url
+    except ValueError:
+        return "<database_url_invalida>"
+
+
 def resolver_database_url():
     """Resolve URL do banco em provedores diferentes (Neon/Render/etc)."""
-    candidatos = [
-        "DATABASE_URL",
-        "SQLALCHEMY_DATABASE_URI",
+    # Preferência por variáveis específicas do projeto/provedor.
+    candidatos_prioritarios = [
+        "GYM_DATABASE_URL",
         "NEON_DATABASE_URL",
         "NEONDB_URL",
         "NEONDB",
-        "POSTGRES_URL",
         "RENDER_DATABASE_URL",
-        "INTERNAL_DATABASE_URL",
         "EXTERNAL_DATABASE_URL",
-        "GYM_DATABASE_URL",
+                "INTERNAL_DATABASE_URL",
+        "SQLALCHEMY_DATABASE_URI",
+        "DATABASE_URL",
+        "POSTGRES_URL",
     ]
 
+    candidatos_encontrados = []
     origem = ""
     valor = ""
-    for nome in candidatos:
+    
+    for nome in candidatos_prioritarios:
         candidato = (os.environ.get(nome) or "").strip()
-        if candidato:
+        if not candidato:
+            continue
+        candidatos_encontrados.append(nome)
+        if not valor:
             origem = nome
             valor = candidato
-            break
+
     if not valor:
         for nome, candidato in os.environ.items():
             chave = (nome or "").strip().upper()
@@ -86,6 +121,7 @@ def resolver_database_url():
             if "DATABASE_URL" in chave or chave.endswith("_DB_URL"):
                 origem = nome
                 valor = texto
+                candidatos_encontrados.append(nome)
                 break
 
     if not valor:
@@ -98,19 +134,28 @@ def resolver_database_url():
 
         if pg_host and pg_db and pg_user and pg_password:
             origem = "PG*"
-            valor = f"postgresql://{pg_user}:{quote(pg_password)}@{pg_host}:{pg_port}/{pg_db}?sslmode=require"
+            valor = f"postgresql://{pg_user}:{quote(pg_password)}@{pg_host}:{pg_port}/{pg_db}"
 
     if valor.startswith("postgres://"):
         valor = f"postgresql://{valor[len('postgres://'):]}"
 
-    return valor, origem
+    valor = garantir_sslmode_require(valor)
+    return valor, origem, candidatos_encontrados
 
 
-database_url, database_url_origem = resolver_database_url()
+database_url, database_url_origem, database_urls_detectadas = resolver_database_url()
 if database_url:
     app.config["SQLALCHEMY_DATABASE_URI"] = database_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.logger.info(f"Banco configurado via {database_url_origem or 'env'} para persistir treinos/questionários.")
+    app.logger.info(
+        f"Banco configurado via {database_url_origem or 'env'}: {mascara_database_url(database_url)}"
+    )
+    if len(set(database_urls_detectadas)) > 1:
+        app.logger.warning(
+            "Foram encontradas múltiplas variáveis de banco (%s). Usando %s.",
+            ", ".join(sorted(set(database_urls_detectadas))),
+            database_url_origem,
+        )
 else:
     app.logger.warning("DATABASE_URL não encontrada; dados serão salvos localmente e podem ser perdidos no deploy.")
 
@@ -996,6 +1041,29 @@ def questionario_aluno():
         data_inicio_filtro=data_inicio_filtro,
         data_fim_filtro=data_fim_filtro,
     )
+
+@app.route("/admin/diagnostico-banco")
+def diagnostico_banco():
+    bloqueio = exigir_admin_ou_redirect()
+    if bloqueio:
+        return bloqueio
+
+    payload = {
+        "db_ativo": bool(db),
+        "origem": database_url_origem,
+        "url_mascarada": mascara_database_url(database_url),
+        "variaveis_detectadas": sorted(set(database_urls_detectadas)),
+        "contagens": {"treinos": 0, "respostas": 0},
+    }
+
+    if db:
+        try:
+            payload["contagens"]["treinos"] = TreinoDB.query.count()
+            payload["contagens"]["respostas"] = RespostaDB.query.count()
+        except SQLAlchemyError as e:
+            payload["erro"] = str(e)
+
+    return payload
 
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
