@@ -205,7 +205,13 @@
                 {% endfor %}
               </select>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
+              <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" id="filtro-favoritos-treino" {% if somente_favoritos_treino %}checked{% endif %}>
+                <label class="form-check-label" for="filtro-favoritos-treino">Somente favoritos</label>
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
               <div class="small text-muted" id="contador-exercicios"></div>
             </div>
           </div>
@@ -221,7 +227,7 @@
                 {% endif %}
               {% endfor %}
 
-            <div class="col-12 col-md-6 col-xl-4 exercicio-card" data-grupo="{{ (ex.grupo or '')|lower }}" data-aparelho="{{ (ex.aparelho or '')|lower }}">
+            <div class="col-12 col-md-6 col-xl-4 exercicio-card" data-grupo="{{ (ex.grupo or '')|lower }}" data-aparelho="{{ (ex.aparelho or '')|lower }}" data-favorito="{{ '1' if ex.id in favoritos_admin else '0' }}">
               <div class="border rounded p-2 h-100 bg-white">
                 <div class="ratio ratio-16x9 rounded overflow-hidden bg-light d-flex align-items-center justify-content-center mb-2">
                   {% if ex.midia %}
@@ -246,7 +252,17 @@
                   >
                   <label class="form-check-label fw-semibold" for="check-ex-{{ loop.index }}">{{ ex.nome }}</label>
                   <div class="small text-muted">{{ ex.grupo or 'Sem grupo' }} · {{ ex.aparelho or 'Aparelho não informado' }}</div>
+                  {% if ex.id in favoritos_admin %}
+                  <span class="badge text-bg-warning mt-1">★ Favorito</span>
+                  {% endif %}
                 </div>
+
+                <form method="POST" action="/admin/favoritos/{{ ex.id }}/alternar" class="mb-2">
+                  <input type="hidden" name="next" value="{{ request.full_path if request.query_string else request.path }}">
+                  <button class="btn btn-sm {% if ex.id in favoritos_admin %}btn-warning{% else %}btn-outline-warning{% endif %}" type="submit">
+                    {% if ex.id in favoritos_admin %}Remover favorito{% else %}Favoritar{% endif %}
+                  </button>
+                </form>
 
                 <input type="hidden" name="exercicio_id[]" value="{{ ex.id }}" class="exercicio-id-input" {% if not prefill.encontrado %}disabled{% endif %}>
 
@@ -292,6 +308,7 @@
   const filtroGrupo = document.getElementById('filtro-grupo');
   const filtroAparelho = document.getElementById('filtro-aparelho');
   const contadorExercicios = document.getElementById('contador-exercicios');
+  const filtroFavoritosTreino = document.getElementById('filtro-favoritos-treino');
 
   const atualizarContador = () => {
     const visiveis = cards.filter((card) => !card.classList.contains('d-none')).length;
@@ -302,6 +319,7 @@
   const aplicarFiltros = () => {
     const grupoSelecionado = (filtroGrupo.value || '').trim();
     const aparelhoSelecionado = (filtroAparelho.value || '').trim();
+    const somenteFavoritos = !!filtroFavoritosTreino?.checked;
 
     cards.forEach((card) => {
       const grupoCard = (card.dataset.grupo || '').trim();
@@ -309,7 +327,8 @@
 
       const grupoOk = !grupoSelecionado || grupoCard === grupoSelecionado;
       const aparelhoOk = !aparelhoSelecionado || aparelhoCard === aparelhoSelecionado;
-      card.classList.toggle('d-none', !(grupoOk && aparelhoOk));
+      const favoritoOk = !somenteFavoritos || (card.dataset.favorito || '') === '1';
+      card.classList.toggle('d-none', !(grupoOk && aparelhoOk && favoritoOk));
     });
 
     atualizarContador();
@@ -361,6 +380,7 @@
 
   filtroGrupo?.addEventListener('change', aplicarFiltros);
   filtroAparelho?.addEventListener('change', aplicarFiltros);
+  filtroFavoritosTreino?.addEventListener('change', aplicarFiltros);
   aplicarFiltros();
 </script>
 

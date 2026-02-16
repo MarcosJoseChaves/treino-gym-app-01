@@ -52,6 +52,7 @@ DATA_FILE = os.path.join(BASE_DIR, "exercicios.json")
 # Vamos manter os caminhos antigos caso você precise fazer a migração dos dados velhos depois
 TREINOS_FILE = os.path.join(BASE_DIR, "treinos.json")
 QUESTIONARIO_FILE = os.path.join(BASE_DIR, "questionario_respostas.json")
+FAVORITOS_FILE = os.path.join(BASE_DIR, "favoritos_admin.json")
 
 
 def garantir_sslmode_require(database_url):
@@ -263,6 +264,35 @@ def carregar_exercicios():
         exercicios_normalizados.append(ex)
 
     return exercicios_normalizados
+
+
+def carregar_favoritos_admin():
+    """Carrega IDs de exercícios favoritos do admin."""
+    favoritos_file = caminho_arquivo("FAVORITOS_FILE", "favoritos_admin.json")
+    if not os.path.exists(favoritos_file):
+        return set()
+
+    try:
+        with open(favoritos_file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return set()
+
+    if not isinstance(data, list):
+        return set()
+
+    return {
+        (str(ex_id).strip())
+        for ex_id in data
+        if str(ex_id).strip()
+    }
+
+
+def salvar_favoritos_admin(favoritos_ids):
+    favoritos_file = caminho_arquivo("FAVORITOS_FILE", "favoritos_admin.json")
+    favoritos_ordenados = sorted({(str(ex_id).strip()) for ex_id in favoritos_ids if str(ex_id).strip()})
+    with open(favoritos_file, "w", encoding="utf-8") as f:
+        json.dump(favoritos_ordenados, f, ensure_ascii=False, indent=2)
 
 
 def normalizar_data_iso(valor):
@@ -540,10 +570,12 @@ def encontrar_treino_por_link(treinos, treino_id_ou_link):
 @app.route("/")
 def index():
     exercicios = carregar_exercicios()
+    favoritos_admin = carregar_favoritos_admin() if admin_ativo() else set()
 
     q = (request.args.get("q") or "").strip().lower()
     grupo = (request.args.get("grupo") or "").strip().lower()
     aparelho = (request.args.get("aparelho") or "").strip().lower()
+    somente_favoritos = admin_ativo() and (request.args.get("favoritos") or "") == "1"
 
     # Lista de grupos/aparelhos (para dropdown)
     # Mantém `grupos` sempre definido para evitar NameError no render
@@ -566,11 +598,19 @@ def index():
             # Busca simples por nome + grupo + aparelho
             if q not in nome and q not in g and q not in a:
                 continue
+        if somente_favoritos and ex.get("id") not in favoritos_admin:
+            continue
 
         filtrados.append(ex)
 
-    # Ordena por grupo e nome
-    filtrados.sort(key=lambda x: ((x.get("grupo") or ""), (x.get("nome") or "")))
+    # Ordena favoritos primeiro para admin e depois por grupo/nome
+    filtrados.sort(
+        key=lambda x: (
+            0 if x.get("id") in favoritos_admin else 1,
+            (x.get("grupo") or ""),
+            (x.get("nome") or ""),
+        )
+    )
 
     return render_template(
         "index.html",
@@ -580,7 +620,34 @@ def index():
         q=request.args.get("q") or "",
         grupo_selecionado=request.args.get("grupo") or "",
         aparelho_selecionado=request.args.get("aparelho") or "",
+        favoritos_admin=favoritos_admin,
+        somente_favoritos=somente_favoritos,
     )   
+
+
+@app.route("/admin/favoritos/<ex_id>/alternar", methods=["POST"])
+def alternar_favorito_admin(ex_id):
+    bloqueio = exigir_admin_ou_redirect()
+    if bloqueio:
+        return bloqueio
+
+    exercicios = carregar_exercicios()
+    mapa_exercicios = index_por_id(exercicios)
+    if ex_id not in mapa_exercicios:
+        abort(404)
+
+    favoritos = carregar_favoritos_admin()
+    if ex_id in favoritos:
+        favoritos.remove(ex_id)
+    else:
+        favoritos.add(ex_id)
+
+    salvar_favoritos_admin(favoritos)
+
+    destino = (request.form.get("next") or request.referrer or url_for("index")).strip()
+    if not destino.startswith("/"):
+        destino = url_for("index")
+    return redirect(destino)
 
 
 @app.route("/treino", methods=["GET", "POST"])
@@ -589,6 +656,7 @@ def montar_treino():
     if bloqueio:
         return bloqueio
     exercicios = carregar_exercicios()
+    favoritos_admin = carregar_favoritos_admin()
     mapa_exercicios = index_por_id(exercicios)
     grupos = obter_grupos_validos(exercicios)
     tipos_treino = TIPOS_TREINO
@@ -600,6 +668,7 @@ def montar_treino():
     tipo_treino_filtro = (request.args.get("tipo_treino") or "").strip().upper()
     data_inicio_filtro = normalizar_data_iso(request.args.get("data_inicio") or "")
     data_fim_filtro = normalizar_data_iso(request.args.get("data_fim") or "")
+    somente_favoritos_treino = (request.args.get("favoritos") or "") == "1"
     mostrar_treinos_salvos = bool(
         busca_treino or aluno_treino_filtro or tipo_treino_filtro or data_inicio_filtro or data_fim_filtro
     )
@@ -796,6 +865,13 @@ def montar_treino():
     grupos = grupos if isinstance(grupos, list) else []
     opcoes_musculos = sorted(set(grupos) | set(MUSCULOS_ALVO_PADRAO), key=lambda nome: nome.lower())
     aparelhos_treino = sorted({(ex.get("aparelho") or "").strip() for ex in exercicios if (ex.get("aparelho") or "").strip()})
+    exercicios.sort(
+        key=lambda ex: (
+            0 if ex.get("id") in favoritos_admin else 1,
+            (ex.get("grupo") or ""),
+            (ex.get("nome") or ""),
+        )
+    )
 
     retorno_url = request.url
 
@@ -826,8 +902,9 @@ def montar_treino():
         treino_modelo=treino_modelo,
         treino_edicao=treino_edicao,
         retorno_url=retorno_url,
+        favoritos_admin=favoritos_admin,
+        somente_favoritos_treino=somente_favoritos_treino,
     )
-
 
 @app.route("/treino/<treino_id>")
 def visualizar_treino(treino_id):
