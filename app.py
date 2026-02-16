@@ -795,14 +795,16 @@ def montar_treino():
 
     grupos = grupos if isinstance(grupos, list) else []
     opcoes_musculos = sorted(set(grupos) | set(MUSCULOS_ALVO_PADRAO), key=lambda nome: nome.lower())
+    aparelhos_treino = sorted({(ex.get("aparelho") or "").strip() for ex in exercicios if (ex.get("aparelho") or "").strip()})
 
     retorno_url = request.url
 
     return render_template(
         "treino.html",
         exercicios=exercicios,
-        grupos=opcoes_musculos,
+        grupos=grupos,
         musculos_opcoes=opcoes_musculos,
+        aparelhos_treino=aparelhos_treino,
         tipos_treino=tipos_treino,
         treinos_salvos=treinos_filtrados,
         mostrar_treinos_salvos=mostrar_treinos_salvos,
