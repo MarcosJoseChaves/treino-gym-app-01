@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, abort, send_file, url_for, redirect, session
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import SQLAlchemyError
 import json
 import os
 import io
@@ -7,15 +9,79 @@ from datetime import datetime
 import uuid
 from urllib.parse import quote
 
+BASE_DIR = os.path.dirname(__file__)
+
+
+def carregar_variaveis_arquivo_env(caminho_env):
+    """Carrega variáveis de ambiente de um arquivo .env simples."""
+    if not os.path.exists(caminho_env):
+        return
+
+    try:
+        with open(caminho_env, "r", encoding="utf-8") as f:
+            for linha in f:
+                texto = linha.strip()
+                if not texto or texto.startswith("#") or "=" not in texto:
+                    continue
+
+                chave, valor = texto.split("=", 1)
+                chave = chave.strip()
+                valor = valor.strip()
+                if not chave:
+                    continue
+
+                if (valor.startswith('"') and valor.endswith('"')) or (valor.startswith("'") and valor.endswith("'")):
+                    valor = valor[1:-1]
+
+                if chave not in os.environ:
+                    os.environ[chave] = valor
+    except OSError:
+        return
+
+
+carregar_variaveis_arquivo_env(os.path.join(BASE_DIR, ".env"))
+
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "trocar-em-producao")
 
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin123")
 
-BASE_DIR = os.path.dirname(__file__)
+# --- ARQUIVOS LOCAIS ---
+# O arquivo de exercícios continua local pois é o seu catálogo fixo
 DATA_FILE = os.path.join(BASE_DIR, "exercicios.json")
+# Vamos manter os caminhos antigos caso você precise fazer a migração dos dados velhos depois
 TREINOS_FILE = os.path.join(BASE_DIR, "treinos.json")
 QUESTIONARIO_FILE = os.path.join(BASE_DIR, "questionario_respostas.json")
+
+
+database_url = os.environ.get("DATABASE_URL", "").strip()
+if database_url:
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db = SQLAlchemy(app) if database_url else None
+
+if db:
+    class TreinoDB(db.Model):
+        __tablename__ = "treinos"
+
+        id = db.Column(db.String, primary_key=True)
+        link_id = db.Column(db.String, unique=True, nullable=False, index=True)
+        dados = db.Column(db.JSON, nullable=False)
+
+
+    class RespostaDB(db.Model):
+        __tablename__ = "respostas"
+
+        id = db.Column(db.String, primary_key=True)
+        dados = db.Column(db.JSON, nullable=False)
+
+
+    with app.app_context():
+        db.create_all()
+else:
+    TreinoDB = None
+    RespostaDB = None
 
 
 def caminho_arquivo(nome_constante, fallback_nome_arquivo):
@@ -187,6 +253,13 @@ def index_por_id(exercicios):
 
 
 def carregar_treinos():
+    if db:
+        try:
+            registros = TreinoDB.query.all()
+            treinos = [registro.dados for registro in registros if isinstance(registro.dados, dict)]
+            return treinos
+        except SQLAlchemyError:
+            pass
     treinos_file = caminho_arquivo("TREINOS_FILE", "treinos.json")
     if not os.path.exists(treinos_file):
         return []
@@ -201,12 +274,46 @@ def carregar_treinos():
 
 
 def salvar_treinos(treinos):
+    if db:
+        treinos_validos = [normalizar_item_treino(t) for t in treinos if isinstance(t, dict)]
+        ids_recebidos = {t.get("id") for t in treinos_validos if t.get("id")}
+        try:
+            existentes = {registro.id: registro for registro in TreinoDB.query.all()}
+
+            for treino in treinos_validos:
+                treino_id = treino.get("id")
+                if not treino_id:
+                    continue
+
+                registro = existentes.get(treino_id)
+                if not registro:
+                    registro = TreinoDB(id=treino_id)
+
+                registro.link_id = (treino.get("link_id") or treino_id).strip()
+                registro.dados = treino
+                db.session.add(registro)
+
+            for treino_id, registro in existentes.items():
+                if treino_id not in ids_recebidos:
+                    db.session.delete(registro)
+
+            db.session.commit()
+            return
+        except SQLAlchemyError:
+            db.session.rollback()
     treinos_file = caminho_arquivo("TREINOS_FILE", "treinos.json")
     with open(treinos_file, "w", encoding="utf-8") as f:
         json.dump(treinos, f, ensure_ascii=False, indent=2)
 
 
 def carregar_respostas_questionario():
+    if db:
+        try:
+            registros = RespostaDB.query.all()
+            respostas = [registro.dados for registro in registros if isinstance(registro.dados, dict)]
+            return respostas
+        except SQLAlchemyError:
+            pass
     questionario_file = caminho_arquivo("QUESTIONARIO_FILE", "questionario_respostas.json")
     if not os.path.exists(questionario_file):
         return []
@@ -221,6 +328,27 @@ def carregar_respostas_questionario():
 
 
 def salvar_respostas_questionario(respostas):
+    if db:
+        respostas_validas = [r for r in respostas if isinstance(r, dict) and r.get("id")]
+        ids_recebidos = {r["id"] for r in respostas_validas}
+        try:
+            existentes = {registro.id: registro for registro in RespostaDB.query.all()}
+
+            for resposta in respostas_validas:
+                registro = existentes.get(resposta["id"])
+                if not registro:
+                    registro = RespostaDB(id=resposta["id"])
+                registro.dados = resposta
+                db.session.add(registro)
+
+            for resposta_id, registro in existentes.items():
+                if resposta_id not in ids_recebidos:
+                    db.session.delete(registro)
+
+            db.session.commit()
+            return
+        except SQLAlchemyError:
+            db.session.rollback()
     questionario_file = caminho_arquivo("QUESTIONARIO_FILE", "questionario_respostas.json")
     with open(questionario_file, "w", encoding="utf-8") as f:
         json.dump(respostas, f, ensure_ascii=False, indent=2)
@@ -357,7 +485,6 @@ def montar_treino():
     grupos = obter_grupos_validos(exercicios)
     tipos_treino = TIPOS_TREINO
     objetivos_treino = OBJETIVOS_TREINO
-    treinos = [normalizar_item_treino(t) for t in carregar_treinos()]
     treinos = [normalizar_item_treino(t) for t in carregar_treinos()]
 
     busca_treino = (request.args.get("buscar_treino") or "").strip().lower()
