@@ -935,7 +935,342 @@
     ],
     "observacoes": "Exercício clássico para hipertrofia do tríceps, com grande alongamento muscular.",
     "aparelho": "Barra"
-  }
+  },
+  {
+  "id": "pular_corda",
+  "nome": "Pular Corda",
+  "grupo": "Cardio",
+  "subgrupo": "Coordenação e resistência",
+  "midia": "/static/exercicios/cardio/cardio_pular_corda.mp4",
+  "dicas": [
+    "Mantenha os cotovelos próximos ao corpo",
+    "Gire a corda com os punhos, não com os braços",
+    "Salte com os dois pés e ritmo constante",
+    "Aterre suavemente na ponta dos pés"
+  ],
+  "erros": [
+    "Usar os braços para girar a corda",
+    "Pular muito alto e gastar energia excessiva",
+    "Perder o ritmo da respiração",
+    "Deixar os ombros tensionados"
+  ],
+  "observacoes": "Excelente exercício cardiovascular, melhora coordenação, agilidade e condicionamento.",
+  "aparelho": "Corda"
+},
+{
+  "id": "butt_kick",
+  "nome": "Butt Kick",
+  "grupo": "Cardio",
+  "subgrupo": "Aquecimento e coordenação",
+  "midia": "/static/exercicios/cardio/cardio_butt_kick.mp4",
+  "dicas": [
+    "Mantenha o tronco ereto",
+    "Leve os calcanhares em direção aos glúteos",
+    "Contraia o abdômen durante o movimento",
+    "Balance os braços de forma natural",
+    "Mantenha ritmo constante"
+  ],
+  "erros": [
+    "Inclinar o tronco para frente",
+    "Perder a postura ao acelerar",
+    "Bater os pés com força no chão",
+    "Deixar o abdômen relaxado"
+  ],
+  "observacoes": "Ótimo exercício para aquecimento, coordenação e ativação de posterior de coxa e glúteos.",
+  "aparelho": "Peso corporal"
+},
+{
+  "id": "cardio_box_quick_feet",
+  "nome": "Cardio Box Quick Feet",
+  "grupo": "Cardio",
+  "subgrupo": "Agilidade e coordenação",
+  "midia": "/static/exercicios/cardio/cardio_box_quick_feet.mp4",
+  "dicas": [
+    "Fique leve na ponta dos pés",
+    "Mantenha joelhos levemente flexionados",
+    "Toque os pés no chão rapidamente",
+    "Desenhe um quadrado imaginário no solo",
+    "Mantenha o core contraído"
+  ],
+  "erros": [
+    "Bater os pés com força no chão",
+    "Perder o ritmo",
+    "Travar os joelhos",
+    "Inclinar o tronco excessivamente"
+  ],
+  "observacoes": "Exercício excelente para melhorar agilidade, velocidade e condicionamento cardiovascular.",
+  "aparelho": "Peso corporal"
+},
+{
+  "id": "cardio_criss_cross_jacks",
+  "nome": "Cardio Criss Cross Jacks",
+  "grupo": "Cardio",
+  "subgrupo": "Coordenação e condicionamento",
+  "midia": "/static/exercicios/cardio/cardio_criss_cross_jacks.mp4",
+  "dicas": [
+    "Cruze os pés alternadamente a cada salto",
+    "Mantenha o tronco ereto",
+    "Use os braços para auxiliar no ritmo",
+    "Aterrisse de forma suave",
+    "Mantenha a respiração contínua"
+  ],
+  "erros": [
+    "Pousar com os pés rígidos",
+    "Perder o ritmo dos saltos",
+    "Curvar os ombros",
+    "Não alternar o cruzamento"
+  ],
+  "observacoes": "Variação do jumping jack que aumenta a coordenação e o gasto calórico.",
+  "aparelho": "Peso corporal"
+},
+{
+  "id": "cardio_diamond_hop",
+  "nome": "Cardio Diamond Hop",
+  "grupo": "Cardio",
+  "subgrupo": "Agilidade e coordenação",
+  "midia": "/static/exercicios/cardio/cardio_diamond_hop.mp4",
+  "dicas": [
+    "Salte com os dois pés juntos",
+    "Mantenha o core contraído",
+    "Aterrisse suavemente na ponta dos pés",
+    "Execute o padrão em formato de losango",
+    "Mantenha ritmo constante"
+  ],
+  "erros": [
+    "Aterrissar com os calcanhares",
+    "Perder o padrão do movimento",
+    "Inclinar excessivamente o tronco",
+    "Fazer movimentos lentos demais"
+  ],
+  "observacoes": "Exercício de cardio e agilidade que trabalha coordenação, potência e condicionamento.",
+  "aparelho": "Peso corporal"
+},
+{
+  "id": "cardio_figure_eight_sprint",
+  "nome": "Cardio Figure Eight Sprint",
+  "grupo": "Cardio",
+  "subgrupo": "Agilidade e velocidade",
+  "midia": "/static/exercicios/cardio/cardio_figure_eight_sprint.mp4",
+  "dicas": [
+    "Mantenha o tronco levemente inclinado à frente",
+    "Fique baixo durante as curvas",
+    "Use os braços para gerar impulso",
+    "Mantenha passos curtos e rápidos",
+    "Respire de forma controlada"
+  ],
+  "erros": [
+    "Ficar muito ereto durante o sprint",
+    "Dar passos muito longos",
+    "Perder o formato de oito",
+    "Reduzir a velocidade nas curvas"
+  ],
+  "observacoes": "Excelente para melhorar agilidade, mudança de direção e condicionamento cardiovascular.",
+  "aparelho": "Peso corporal"
+},
+{
+  "id": "cardio_forward_scissor",
+  "nome": "Cardio Forward Scissor",
+  "grupo": "Cardio",
+  "subgrupo": "Coordenação e agilidade",
+  "midia": "/static/exercicios/cardio/cardio_forward_scissor.mp4",
+  "dicas": [
+    "Mantenha o core contraído durante o movimento",
+    "Salte de forma leve e controlada",
+    "Aterre na ponta dos pés",
+    "Alterne as pernas de forma rápida",
+    "Use os braços para auxiliar no equilíbrio"
+  ],
+  "erros": [
+    "Aterrar com os calcanhares",
+    "Perder o ritmo do exercício",
+    "Inclinar excessivamente o tronco",
+    "Movimentar pouco as pernas"
+  ],
+  "observacoes": "Exercício cardiovascular simples para melhorar coordenação e resistência.",
+  "aparelho": "Peso corporal"
+},
+{
+  "id": "cardio_in_and_out_forward",
+  "nome": "Cardio In And Out Forward",
+  "grupo": "Cardio",
+  "subgrupo": "Coordenação e agilidade",
+  "midia": "/static/exercicios/cardio/cardio_in_and_out_forward.mp4",
+  "dicas": [
+    "Mantenha o tronco ereto",
+    "Ative o core durante todo o movimento",
+    "Faça passadas curtas e rápidas",
+    "Respire de forma contínua",
+    "Use os braços para auxiliar no equilíbrio"
+  ],
+  "erros": [
+    "Cruzar excessivamente as pernas",
+    "Bater os pés no chão com força",
+    "Perder o ritmo",
+    "Inclinar o tronco para frente ou para trás"
+  ],
+  "observacoes": "Exercício cardiovascular de baixo impacto que melhora coordenação e ritmo.",
+  "aparelho": "Peso corporal"
+},
+{
+  "id": "cardio_jumping_jacks",
+  "nome": "Cardio Jumping Jacks",
+  "grupo": "Cardio",
+  "subgrupo": "Resistência e coordenação",
+  "midia": "/static/exercicios/cardio/cardio_jumping_jacks.mp4",
+  "dicas": [
+    "Mantenha o abdômen contraído",
+    "Aterre suavemente com a ponta dos pés",
+    "Coordene braços e pernas",
+    "Mantenha o ritmo constante",
+    "Respire de forma contínua"
+  ],
+  "erros": [
+    "Bater os pés com força no chão",
+    "Deixar os joelhos travados",
+    "Perder a coordenação dos braços",
+    "Prender a respiração"
+  ],
+  "observacoes": "Exercício clássico de aquecimento e condicionamento cardiovascular.",
+  "aparelho": "Peso corporal"
+},
+{
+  "id": "cardio_knee_taps",
+  "nome": "Cardio Knee Taps",
+  "grupo": "Cardio",
+  "subgrupo": "Coordenação e resistência",
+  "midia": "/static/exercicios/cardio/cardio_knee_taps.mp4",
+  "dicas": [
+    "Mantenha o tronco ereto",
+    "Ative o abdômen durante o movimento",
+    "Eleve os joelhos de forma alternada",
+    "Coordene mão e perna do mesmo lado",
+    "Comece em ritmo leve e aumente gradualmente"
+  ],
+  "erros": [
+    "Curvar as costas",
+    "Balançar excessivamente o tronco",
+    "Elevar pouco os joelhos",
+    "Perder o ritmo",
+    "Prender a respiração"
+  ],
+  "observacoes": "Excelente para aquecimento, coordenação e ativação do core.",
+  "aparelho": "Peso corporal"
+},
+{
+  "id": "cardio_long_jump",
+  "nome": "Cardio Long Jump",
+  "grupo": "Cardio",
+  "subgrupo": "Potência e explosão",
+  "midia": "/static/exercicios/cardio/cardio_long_jump.mp4",
+  "dicas": [
+    "Mantenha os pés na largura dos ombros",
+    "Flexione levemente os joelhos antes do salto",
+    "Use o balanço dos braços para ganhar impulso",
+    "Aterrisse suavemente com joelhos flexionados",
+    "Mantenha o olhar para frente"
+  ],
+  "erros": [
+    "Aterrissar com os joelhos estendidos",
+    "Inclinar demais o tronco para frente",
+    "Perder o equilíbrio na aterrissagem",
+    "Não usar os braços para impulsão",
+    "Pular sem controle"
+  ],
+  "observacoes": "Excelente exercício para desenvolver potência, coordenação e condicionamento cardiovascular.",
+  "aparelho": "Peso corporal"
+},
+{
+  "id": "cardio_skater_single_leg_burpee",
+  "nome": "Cardio Skater com Burpee Unilateral",
+  "grupo": "Cardio",
+  "subgrupo": "Pliometria e alta intensidade",
+  "midia": "/static/exercicios/cardio/cardio_skater_single_leg_burpee.mp4",
+  "dicas": [
+    "Mantenha o tronco levemente inclinado para frente",
+    "Aterrisse com o joelho flexionado para absorver o impacto",
+    "Ative o core durante o burpee",
+    "Controle a descida das mãos ao chão",
+    "Alterne os lados de forma equilibrada"
+  ],
+  "erros": [
+    "Cair com o joelho estendido",
+    "Perder o equilíbrio no apoio unilateral",
+    "Executar o burpee sem controle",
+    "Deixar o quadril subir demais",
+    "Não alternar os lados"
+  ],
+  "observacoes": "Exercício avançado que combina potência, equilíbrio, coordenação e alto gasto calórico.",
+  "aparelho": "Peso corporal"
+},
+{
+  "id": "treadmill_jog",
+  "nome": "Corrida Leve na Esteira",
+  "grupo": "Cardio",
+  "subgrupo": "Corrida contínua",
+  "midia": "/static/exercicios/cardio/treadmill_jog.mp4",
+  "dicas": [
+    "Mantenha postura ereta e olhar à frente",
+    "Apoie o pé de forma suave, sem bater o calcanhar",
+    "Use os braços para ajudar no ritmo",
+    "Respire de forma contínua e controlada",
+    "Ajuste a velocidade para manter o trote confortável"
+  ],
+  "erros": [
+    "Segurar nas laterais da esteira",
+    "Inclinar excessivamente o tronco",
+    "Dar passadas muito longas",
+    "Bater forte os pés na esteira",
+    "Ignorar sinais de fadiga"
+  ],
+  "observacoes": "Ideal para aquecimento, melhora do condicionamento cardiovascular e queima de gordura.",
+  "aparelho": "Esteira"
+},
+{
+  "id": "treadmill_sprint",
+  "nome": "Sprint na Esteira",
+  "grupo": "Cardio",
+  "subgrupo": "Corrida de alta intensidade",
+  "midia": "/static/exercicios/cardio/treadmill_sprint.mp4",
+  "dicas": [
+    "Mantenha postura ereta e olhar à frente",
+    "Use os braços para gerar potência",
+    "Aumente a velocidade gradualmente antes de sprintar",
+    "Apoie o médio-pé para melhor absorção",
+    "Mantenha o core ativado"
+  ],
+  "erros": [
+    "Segurar nas laterais da esteira",
+    "Inclinar demais o tronco",
+    "Passadas descoordenadas",
+    "Velocidade acima da capacidade",
+    "Parar bruscamente sem desacelerar"
+  ],
+  "observacoes": "Exercício de alta intensidade indicado para protocolos HIIT e ganho de potência cardiovascular.",
+  "aparelho": "Esteira"
+},
+{
+  "id": "treadmill_walk",
+  "nome": "Caminhada na Esteira",
+  "grupo": "Cardio",
+  "subgrupo": "Caminhada",
+  "midia": "/static/exercicios/cardio/treadmill_walk.mp4",
+  "dicas": [
+    "Mantenha postura ereta e olhar à frente",
+    "Balance os braços de forma natural",
+    "Dê passos curtos e contínuos",
+    "Respire de forma controlada",
+    "Ajuste a velocidade conforme seu conforto"
+  ],
+  "erros": [
+    "Segurar nas laterais da esteira",
+    "Olhar para baixo durante a caminhada",
+    "Dar passos muito longos",
+    "Curvar as costas",
+    "Velocidade incompatível com seu nível"
+  ],
+  "observacoes": "Exercício leve e seguro, ideal para aquecimento, reabilitação e condicionamento cardiovascular.",
+  "aparelho": "Esteira"
+}
 
 
 ]
