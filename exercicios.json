@@ -745,9 +745,197 @@
   ],
   "observacoes": "Exercício avançado para cadeia posterior e core.",
   "aparelho": "Halteres"
-}
-
-
+},
+{
+    "id": "cadeira_extensora",
+    "nome": "Cadeira Extensora",
+    "grupo": "Pernas",
+    "subgrupo": "Quadríceps",
+    "midia": "/static/exercicios/pernas/cadeira_extensora.mp4",
+    "dicas": [
+      "Apoie bem a lombar no encosto",
+      "Estenda os joelhos completamente",
+      "Controle a descida do peso"
+    ],
+    "erros": [
+      "Tirar o quadril do banco",
+      "Despencar o peso na volta",
+      "Balançar o tronco"
+    ],
+    "observacoes": "Excelente para isolar o quadríceps.",
+    "aparelho": "Máquina"
+  },
+  {
+    "id": "cadeira_flexora",
+    "nome": "Cadeira Flexora",
+    "grupo": "Pernas",
+    "subgrupo": "Posterior de Coxa",
+    "midia": "/static/exercicios/pernas/cadeira_flexora.mp4",
+    "dicas": [
+      "Ajuste o rolo logo acima do calcanhar",
+      "Puxe o peso contraindo os posteriores",
+      "Mantenha o tronco estabilizado"
+    ],
+    "erros": [
+      "Levantar o quadril do banco",
+      "Fazer o movimento incompleto",
+      "Soltar a carga de uma vez"
+    ],
+    "observacoes": "Atenção ao ajuste do encosto para manter o joelho alinhado ao eixo da máquina.",
+    "aparelho": "Máquina"
+  },
+  {
+    "id": "leg_press_45",
+    "nome": "Leg Press 45º",
+    "grupo": "Pernas",
+    "subgrupo": "Quadríceps / Glúteos",
+    "midia": "/static/exercicios/pernas/leg_press_45.mp4",
+    "dicas": [
+      "Apoie totalmente as costas no banco",
+      "Empurre a plataforma com o calcanhar",
+      "Não trave os joelhos no topo"
+    ],
+    "erros": [
+      "Tirar a lombar do encosto na descida",
+      "Ajudar empurrando os joelhos com as mãos",
+      "Aproximar os joelhos na fase concêntrica"
+    ],
+    "observacoes": "Posicionamento dos pés mais alto foca em glúteos/posteriores; mais baixo foca em quadríceps.",
+    "aparelho": "Máquina"
+  },
+  {
+    "id": "rosca_direta_barra",
+    "nome": "Rosca Direta com Barra",
+    "grupo": "Bíceps",
+    "subgrupo": "Cabeça Longa e Curta",
+    "midia": "/static/exercicios/biceps/rosca_direta_barra.mp4",
+    "dicas": [
+      "Mantenha os cotovelos colados ao corpo",
+      "Contraia o abdômen",
+      "Suba controlando a barra"
+    ],
+    "erros": [
+      "Usar impulso com a lombar (roubar)",
+      "Avançar os cotovelos para frente",
+      "Descer a barra despencando"
+    ],
+    "observacoes": "Pode ser feito com barra reta ou barra W para maior conforto dos punhos.",
+    "aparelho": "Barra livre"
+  },
+  {
+    "id": "elevacao_lateral_halteres",
+    "nome": "Elevação Lateral com Halteres",
+    "grupo": "Ombros",
+    "subgrupo": "Deltoide Medial",
+    "midia": "/static/exercicios/ombros/elevacao_lateral_halteres.mp4",
+    "dicas": [
+      "Flexione levemente os cotovelos",
+      "Eleve os braços até a linha dos ombros",
+      "Pense em 'jogar o peso para os lados' e não para cima"
+    ],
+    "erros": [
+      "Elevar os braços muito acima dos ombros",
+      "Encolher os trapézios na subida",
+      "Balançar o corpo inteiro para subir a carga"
+    ],
+    "observacoes": "Excelente para dar o aspecto de 'ombros largos'.",
+    "aparelho": "Halteres"
+  },
+  {
+    "id": "panturrilha_em_pe_maquina",
+    "nome": "Panturrilha em Pé na Máquina",
+    "grupo": "Panturrilhas",
+    "subgrupo": "Gastrocnêmio",
+    "midia": "/static/exercicios/pernas/panturrilha_em_pe_maquina.mp4",
+    "dicas": [
+      "Faça a amplitude completa (desça o calcanhar ao máximo)",
+      "Pause 1 segundo no topo",
+      "Mantenha as pernas firmes e joelhos quase estendidos"
+    ],
+    "erros": [
+      "Fazer movimentos curtos e muito rápidos",
+      "Dobrar os joelhos excessivamente",
+      "Quicar no final do movimento"
+    ],
+    "observacoes": "Trabalha toda a extensão da panturrilha de forma pesada.",
+    "aparelho": "Máquina"
+  },
+  {
+    "id": "crucifixo_cabo_sentado",
+    "nome": "Crucifixo Sentado no Cabo",
+    "grupo": "Peito",
+    "subgrupo": "Porção superior / medial",
+    "midia": "/static/exercicios/peito/peito_crucifixo_cabo_sentado.mp4",
+    "dicas": [
+      "Mantenha leve flexão dos cotovelos",
+      "Feche os braços na linha do peito",
+      "Controle total na fase excêntrica"
+    ],
+    "erros": [
+      "Esticar demais os cotovelos",
+      "Usar carga excessiva e perder amplitude",
+      "Bater os halteres/cabos no topo"
+    ],
+    "observacoes": "Ótimo para tensão contínua no peitoral.",
+    "aparelho": "Cabo/Polia"
+  },
+  {
+    "id": "remada_cabo_meio_ajoelhado_unilateral",
+    "nome": "Remada no Cabo Meio Ajoelhado Unilateral",
+    "grupo": "Costas",
+    "subgrupo": "Dorsal / Meio das costas",
+    "midia": "/static/exercicios/costas/costas_remada_cabo_meio_ajoelhado_unilateral.mp4",
+    "dicas": [
+      "Mantenha o tronco ereto e o abdômen contraído",
+      "Puxe a alça em direção ao abdômen, contraindo as costas",
+      "Evite girar o tronco durante a execução"
+    ],
+    "erros": [
+      "Usar o corpo para impulsionar a carga",
+      "Arredondar as costas durante o movimento",
+      "Não controlar a volta do movimento"
+    ],
+    "observacoes": "Excelente para corrigir assimetrias e ativar profundamente os dorsais.",
+    "aparelho": "Cabo/Polia"
+  },
+  {
+    "id": "prancha_frontal",
+    "nome": "Prancha Frontal",
+    "grupo": "Core",
+    "subgrupo": "Abdômen / Estabilização",
+    "midia": "/static/exercicios/abdomen/core_prancha_frontal.mp4",
+    "dicas": [
+      "Mantenha o abdômen contraído durante todo o tempo",
+      "Alinhe ombros, quadris e tornozelos",
+      "Empurre o chão com os antebraços para ativar o core"
+    ],
+    "erros": [
+      "Deixar o quadril cair ou subir demais",
+      "Relaxar o abdômen durante o exercício",
+      "Prender a respiração"
+    ],
+    "observacoes": "Exercício isométrico fundamental para força e estabilidade do core.",
+    "aparelho": "Peso do corpo"
+  },
+  {
+    "id": "triceps_testa_barbell",
+    "nome": "Tríceps Testa com Barra",
+    "grupo": "Braços",
+    "subgrupo": "Tríceps",
+    "midia": "/static/exercicios/triceps/bracos_triceps_testa_barbell.mp4",
+    "dicas": [
+      "Mantenha os cotovelos apontados para cima e fixos",
+      "Desça a barra controlando até próximo à testa",
+      "Estenda completamente os cotovelos no topo"
+    ],
+    "erros": [
+      "Abrir demais os cotovelos",
+      "Usar carga excessiva e perder o controle",
+      "Bater a barra na testa ou descer rápido demais"
+    ],
+    "observacoes": "Exercício clássico para hipertrofia do tríceps, com grande alongamento muscular.",
+    "aparelho": "Barra"
+  }
 
 
 ]
