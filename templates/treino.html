@@ -184,7 +184,7 @@
 
         <div>
           <h5 class="card-title mb-2">Exercícios</h5>
-          <p class="text-muted small mb-3">Filtre por aparelho e/ou grupo muscular, marque os exercícios e preencha séries/repetições.</p>
+          <p class="text-muted small mb-3">Filtre por aparelho e/ou grupo muscular, marque os exercícios e preencha os parâmetros (séries/repetições ou minutos/velocidade para esteira/bicicleta).</p>
 
           <div class="row g-2 mb-3 align-items-end">
             <div class="col-12 col-md-4">
@@ -222,16 +222,21 @@
 
           <div class="row g-3" id="exercicios-grid">
             {% for ex in exercicios %}
-              {% set prefill = namespace(encontrado=false, series='', repeticoes='') %}
+              {% set prefill = namespace(encontrado=false, series='', repeticoes='', minutos='', velocidade='') %}
               {% for item in exercicios_prefill %}
                 {% if item.exercicio_id == ex.id %}
                   {% set prefill.encontrado = true %}
                   {% set prefill.series = item.series %}
                   {% set prefill.repeticoes = item.repeticoes %}
+                  {% set prefill.minutos = item.minutos %}
+                  {% set prefill.velocidade = item.velocidade %}
                 {% endif %}
               {% endfor %}
 
-            <div class="col-12 col-md-6 col-xl-4 exercicio-card" data-exercicio-id="{{ ex.id }}" data-exercicio-nome="{{ ex.nome }}" data-grupo="{{ (ex.grupo or '')|lower }}" data-aparelho="{{ (ex.aparelho or '')|lower }}" data-favorito="{{ '1' if ex.id in favoritos_admin else '0' }}">
+            {% set aparelho_normalizado = (ex.aparelho or '')|lower %}
+            {% set nome_normalizado = (ex.nome or '')|lower %}
+            {% set cardio_maquina = aparelho_normalizado in ['esteira', 'bicicleta'] or 'esteira' in nome_normalizado or 'bicicleta' in nome_normalizado or 'bike' in nome_normalizado %}
+            <div class="col-12 col-md-6 col-xl-4 exercicio-card" data-exercicio-id="{{ ex.id }}" data-exercicio-nome="{{ ex.nome }}" data-grupo="{{ (ex.grupo or '')|lower }}" data-aparelho="{{ (ex.aparelho or '')|lower }}" data-cardio-maquina="{{ '1' if cardio_maquina else '0' }}" data-favorito="{{ '1' if ex.id in favoritos_admin else '0' }}">
               <div class="border rounded p-2 h-100 bg-white">
                 <div class="ratio ratio-16x9 rounded overflow-hidden bg-light d-flex align-items-center justify-content-center mb-2">
                   {% if ex.midia %}
@@ -269,23 +274,44 @@
                 </form>
 
                 <div class="row g-2 exercicio-config {% if not prefill.encontrado %}d-none{% endif %}">
-                  <div class="col-6">
+                  <div class="col-6 exercicio-series-col {% if cardio_maquina %}d-none{% endif %}">
                     <label class="form-label small mb-1">Séries</label>
                     <input
                       class="form-control exercicio-series-input"
                       value="{{ prefill.series }}"
                       placeholder="Ex: 4"
+                      inputmode="numeric"
                       {% if not prefill.encontrado %}disabled{% endif %}
                     >
                   </div>
-                  <div class="col-6">
+                  <div class="col-6 exercicio-repeticoes-col {% if cardio_maquina %}d-none{% endif %}">
                     <label class="form-label small mb-1">Repetições</label>
                     <input
                       class="form-control exercicio-repeticoes-input"
                       value="{{ prefill.repeticoes }}"
                       placeholder="Ex: 12"
+                      inputmode="numeric"
                       {% if not prefill.encontrado %}disabled{% endif %}
                     >
+                  </div>
+                  <div class="col-6 exercicio-minutos-col {% if not cardio_maquina %}d-none{% endif %}">
+                    <label class="form-label small mb-1">Minutos</label>
+                    <input
+                      class="form-control exercicio-minutos-input"
+                      value="{{ prefill.minutos }}"
+                      placeholder="Ex: 20"
+                      inputmode="numeric"
+                      {% if not prefill.encontrado %}disabled{% endif %}
+                    >
+                  </div>
+                  <div class="col-6 exercicio-velocidade-col {% if not cardio_maquina %}d-none{% endif %}">
+                    <label class="form-label small mb-1">Velocidade</label>
+                    <select class="form-select exercicio-velocidade-input" {% if not prefill.encontrado %}disabled{% endif %}>
+                      <option value="">Selecione...</option>
+                      <option value="lenta" {% if prefill.velocidade == 'lenta' %}selected{% endif %}>Lenta</option>
+                      <option value="média" {% if prefill.velocidade == 'média' %}selected{% endif %}>Média</option>
+                      <option value="rápida" {% if prefill.velocidade == 'rápida' %}selected{% endif %}>Rápida</option>
+                    </select>
                   </div>
                   <div class="col-12">
                     <button type="button" class="btn btn-success btn-sm adicionar-exercicio-btn">Adicionar na lista do treino</button>
@@ -356,13 +382,15 @@
     const config = card.querySelector('.exercicio-config');
     const seriesInput = card.querySelector('.exercicio-series-input');
     const repeticoesInput = card.querySelector('.exercicio-repeticoes-input');
+    const minutosInput = card.querySelector('.exercicio-minutos-input');
+    const velocidadeInput = card.querySelector('.exercicio-velocidade-input');
     const selecionado = !!checkbox?.checked;
 
     if (config) {
       config.classList.toggle('d-none', !selecionado);
     }
 
-    [seriesInput, repeticoesInput].forEach((input) => {
+    [seriesInput, repeticoesInput, minutosInput, velocidadeInput].forEach((input) => {
       if (!input) return;
       input.disabled = !selecionado;
       if (!selecionado) {
@@ -378,6 +406,8 @@
         <input type="hidden" name="exercicio_id[]" value="${item.exercicioId}">
         <input type="hidden" name="series[]" value="${item.series}">
         <input type="hidden" name="repeticoes[]" value="${item.repeticoes}">
+        <input type="hidden" name="minutos[]" value="${item.minutos}">
+        <input type="hidden" name="velocidade[]" value="${item.velocidade}">
       `)
       .join('');
   };
@@ -390,7 +420,7 @@
         <div class="border rounded bg-white p-2 d-flex justify-content-between align-items-center gap-2">
           <div>
             <div class="fw-semibold">${idx + 1}. ${item.nome}</div>
-            <div class="small text-muted">Séries: ${item.series} · Repetições: ${item.repeticoes}</div>
+            <div class="small text-muted">${item.cardioMaquina ? `Minutos: ${item.minutos} · Velocidade: ${item.velocidade}` : `Séries: ${item.series} · Repetições: ${item.repeticoes}`}</div>
           </div>
           <button type="button" class="btn btn-outline-danger btn-sm remover-lista-btn" data-exercicio-id="${item.exercicioId}">Retirar</button>
         </div>
@@ -421,19 +451,31 @@
     });
   };
 
-  const adicionarOuAtualizarNaLista = (card) => {
+  const adicionarOuAtualizarNaLista = (card, validarCampos = true) => {
     const exercicioId = (card.dataset.exercicioId || '').trim();
     const nome = (card.dataset.exercicioNome || 'Exercício').trim();
     const checkbox = card.querySelector('.exercicio-check');
     const seriesInput = card.querySelector('.exercicio-series-input');
     const repeticoesInput = card.querySelector('.exercicio-repeticoes-input');
+    const minutosInput = card.querySelector('.exercicio-minutos-input');
+    const velocidadeInput = card.querySelector('.exercicio-velocidade-input');
+    const cardioMaquina = (card.dataset.cardioMaquina || '') === '1';
     const series = (seriesInput?.value || '').trim();
     const repeticoes = (repeticoesInput?.value || '').trim();
+    const minutos = (minutosInput?.value || '').trim();
+    const velocidade = (velocidadeInput?.value || '').trim();
 
     if (!exercicioId) return;
-    if (!series || !repeticoes) {
-      alert('Preencha séries e repetições antes de adicionar.');
-      return;
+    if (validarCampos) {
+      if (cardioMaquina) {
+        if (!minutos || !velocidade) {
+          alert('Preencha minutos e velocidade antes de adicionar.');
+          return;
+        }
+      } else if (!series || !repeticoes) {
+        alert('Preencha séries e repetições antes de adicionar.');
+        return;
+      }
     }
 
     if (checkbox) {
@@ -445,8 +487,11 @@
     if (existente) {
       existente.series = series;
       existente.repeticoes = repeticoes;
+      existente.minutos = minutos;
+      existente.velocidade = velocidade;
+      existente.cardioMaquina = cardioMaquina;
     } else {
-      treinoSelecionado.push({ exercicioId, nome, series, repeticoes });
+      treinoSelecionado.push({ exercicioId, nome, series, repeticoes, minutos, velocidade, cardioMaquina });
     }
 
     renderListaTreino();
@@ -500,7 +545,7 @@
     }
 
     if (checkbox?.checked) {
-      adicionarOuAtualizarNaLista(card);
+      adicionarOuAtualizarNaLista(card, false);
     }
   });
 

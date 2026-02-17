@@ -46,7 +46,17 @@
                 class="btn w-100 text-start border rounded bg-white p-2 exercicio-thumb"
                 data-index="{{ loop.index0 }}"
               >
-                <div class="small text-muted mb-2">{{ item.grupo }} · {{ item.series }} séries · {{ item.repeticoes }} repetições</div>
+                {% set aparelho_item = (item.aparelho or '')|lower %}
+                {% set nome_item = (item.nome or '')|lower %}
+                {% set cardio_maquina = aparelho_item in ['esteira', 'bicicleta'] or 'esteira' in nome_item or 'bicicleta' in nome_item or 'bike' in nome_item %}
+                <div class="small text-muted mb-2">
+                  {{ item.grupo }} ·
+                  {% if cardio_maquina %}
+                    {{ item.minutos }} min · Velocidade {{ item.velocidade }}
+                  {% else %}
+                    {{ item.series }} séries · {{ item.repeticoes }} repetições
+                  {% endif %}
+                </div>
                 <div class="mb-2" style="height: 160px; display:flex; align-items:center; justify-content:center;">
                   {% if item.midia %}
                     {% if item.midia.lower().endswith('.mp4') %}
@@ -173,7 +183,12 @@
 
     indexAtual = index;
     detalheNome.textContent = item.nome || 'Exercício';
-    detalheResumo.textContent = `${item.grupo || '-'} · ${item.series || '-'} séries · ${item.repeticoes || '-'} repetições`;
+    const aparelho = (item.aparelho || '').toLowerCase();
+    const nome = (item.nome || '').toLowerCase();
+    const cardioMaquina = aparelho === 'esteira' || aparelho === 'bicicleta' || nome.includes('esteira') || nome.includes('bicicleta') || nome.includes('bike');
+    detalheResumo.textContent = cardioMaquina
+      ? `${item.grupo || '-'} · ${item.minutos || '-'} min · Velocidade ${item.velocidade || '-'}`
+      : `${item.grupo || '-'} · ${item.series || '-'} séries · ${item.repeticoes || '-'} repetições`;
     montarMidia(item);
     montarLista(detalheDicas, 'Dicas rápidas', item.dicas || []);
     montarLista(detalheErros, 'Erros comuns', item.erros || []);

@@ -769,17 +769,25 @@ def montar_treino():
         exercicios_ids = request.form.getlist("exercicio_id[]")
         series_lista = request.form.getlist("series[]")
         repeticoes_lista = request.form.getlist("repeticoes[]")
+        minutos_lista = request.form.getlist("minutos[]")
+        velocidade_lista = request.form.getlist("velocidade[]")
 
         itens = []
-        for ex_id, series, reps in zip(exercicios_ids, series_lista, repeticoes_lista):
+        for idx, ex_id in enumerate(exercicios_ids):
             ex_id = (ex_id or "").strip()
             if not ex_id:
                 continue
+            series = series_lista[idx] if idx < len(series_lista) else ""
+            reps = repeticoes_lista[idx] if idx < len(repeticoes_lista) else ""
+            minutos = minutos_lista[idx] if idx < len(minutos_lista) else ""
+            velocidade = velocidade_lista[idx] if idx < len(velocidade_lista) else ""
             itens.append(
                 {
                     "exercicio_id": ex_id,
                     "series": (series or "").strip(),
                     "repeticoes": (reps or "").strip(),
+                    "minutos": (minutos or "").strip(),
+                    "velocidade": (velocidade or "").strip(),
                 }
             )
 
@@ -828,7 +836,7 @@ def montar_treino():
         salvar_treinos(treinos)
         return redirect(url_for("visualizar_treino", treino_id=treino_id))
 
-    exercicios_prefill = [{"exercicio_id": "", "series": "", "repeticoes": ""}]
+    exercicios_prefill = [{"exercicio_id": "", "series": "", "repeticoes": "", "minutos": "", "velocidade": ""}]
     treino_id_prefill = ""
     link_id_prefill = ""
     aluno_prefill = ""
@@ -856,11 +864,13 @@ def montar_treino():
                     "exercicio_id": item.get("exercicio_id") or "",
                     "series": item.get("series") or "",
                     "repeticoes": item.get("repeticoes") or "",
+                    "minutos": item.get("minutos") or "",
+                    "velocidade": item.get("velocidade") or "",
                 }
             )
 
         if not exercicios_prefill:
-            exercicios_prefill = [{"exercicio_id": "", "series": "", "repeticoes": ""}]
+            exercicios_prefill = [{"exercicio_id": "", "series": "", "repeticoes": "", "minutos": "", "velocidade": ""}]
 
     grupos = grupos if isinstance(grupos, list) else []
     opcoes_musculos = sorted(set(grupos) | set(MUSCULOS_ALVO_PADRAO), key=lambda nome: nome.lower())
@@ -929,6 +939,9 @@ def visualizar_treino(treino_id):
                 "grupo": ex.get("grupo"),
                 "series": item.get("series") or "-",
                 "repeticoes": item.get("repeticoes") or "-",
+                "minutos": item.get("minutos") or "-",
+                "velocidade": item.get("velocidade") or "-",
+                "aparelho": ex.get("aparelho") or "",
                 "midia": ex.get("midia") or "",
                 "dicas": ex.get("dicas") or [],
                 "erros": ex.get("erros") or [],
