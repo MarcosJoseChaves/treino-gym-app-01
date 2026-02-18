@@ -2,7 +2,7 @@
   {
     "id": "agachamento",
     "nome": "Agachamento",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Glúteos",
     "midia": "/static/exercicios/gluteos/gluteo_agachamento_livre.gif",
     "dicas": [
@@ -21,7 +21,7 @@
   {
     "id": "elevacao_pelvica",
     "nome": "Elevação Pélvica (Hip Thrust)",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Glúteos",
     "midia": "/static/exercicios/gluteos/gluteo_elevação_pelvica.mp4",
     "dicas": [
@@ -40,7 +40,7 @@
   {
     "id": "afundo",
     "nome": "Afundo (Lunge)",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Glúteos",
     "midia": "/static/exercicios/gluteos/gluteo_afundo_lunge.mp4",
     "dicas": [
@@ -59,7 +59,7 @@
   {
     "id": "sumo",
     "nome": "Agachamento Sumô",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Glúteos",
     "midia": "/static/exercicios/gluteos/gluteos_sumo_halteres.mp4",
     "dicas": [
@@ -78,7 +78,7 @@
   {
     "id": "extensao_cabo",
     "nome": "Extensão no Cabo",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Glúteos",
     "midia": "/static/exercicios/gluteos/gluteo_extensao_cabo.gif",
     "dicas": [
@@ -97,7 +97,7 @@
   {
     "id": "levantamento_terra",
     "nome": "Levantamento Terra (Romeno/Stiff)",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Glúteos",
     "midia": "/static/exercicios/gluteos/gluteos_levantamento_terra_romeno.mp4",
     "dicas": [
@@ -116,7 +116,7 @@
   {
     "id": "cadeira_abdutora",
     "nome": "Cadeira Abdutora",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Glúteos",
     "midia": "/static/exercicios/gluteos/gluteo_cadeira_abdutora.mp4",
     "dicas": [
@@ -135,7 +135,7 @@
   {
     "id": "elevacao_lateral",
     "nome": "Elevação de Perna Lateral",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Glúteos",
     "midia": "/static/exercicios/gluteos/gluteos_elevacao_lateral.gif",
     "dicas": [
@@ -154,7 +154,7 @@
   {
     "id": "ponte_unilateral",
     "nome": "Ponte com Elevação de Perna",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Glúteos",
     "midia": "/static/exercicios/gluteos/gluteo_ponte_elevacao_perna.mp4",
     "dicas": [
@@ -173,7 +173,7 @@
   {
     "id": "supino_reto_barra",
     "nome": "Supino Reto (Barra)",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Peito",
     "midia": "/static/exercicios/peito/peito_supino_reto_barra.mp4",
     "dicas": [
@@ -192,7 +192,7 @@
   {
     "id": "costas_remada_curvada",
     "nome": "Remada Curvada (Barra)",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Costas",
     "midia": "/static/exercicios/costas/costas_remada_curvada.mp4",
     "dicas": [
@@ -211,7 +211,7 @@
   {
     "id": "peito_supino_inclinado_halteres",
     "nome": "Supino Inclinado (Halteres)",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Peito",
     "midia": "/static/exercicios/peito/peito_supino_inclinado_halteres.mp4",
     "dicas": [
@@ -230,7 +230,7 @@
   {
     "id": "costas_puxada_alta_pulldown",
     "nome": "Puxada Alta (Pulldown)",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Costas",
     "foco": "Largura",
     "midia": "/static/exercicios/costas/costas_puxada_alta_pulldown.mp4",
@@ -250,7 +250,7 @@
   {
     "id": "triceps_extensao_polia_alta",
     "nome": "Extensão de Tríceps na Polia Alta",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Tríceps",
     "foco": "Cabeça Lateral / Medial",
     "midia": "/static/exercicios/triceps/triceps_extensao_polia_alta.mp4",
@@ -270,7 +270,7 @@
   {
     "id": "triceps_extensao_frente",
     "nome": "Extensão de Tríceps à Frente (Polia)",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Tríceps",
     "foco": "Cabeça Longa",
     "midia": "/static/exercicios/triceps/triceps_extensao_frente.mp4",
@@ -290,7 +290,7 @@
   {
     "id": "costas_remada_v_cabo",
     "nome": "Remada em V com Cabo",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Costas",
     "foco": "Espessura",
     "midia": "/static/exercicios/costas/costas_remada_v_cabo.gif",
@@ -317,7 +317,7 @@
   {
     "id": "costas_puxada_supinada_fechada",
     "nome": "Puxada Lat Inversa na Máquina (Pegada Fechada)",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Costas",
     "foco": "Largura",
     "midia": "/static/exercicios/costas/costas_puxada_supinada_fechada.gif",
@@ -348,7 +348,7 @@
   {
     "id": "costas_pullover_cabo",
     "nome": "Pullover no Cabo (Braços Estendidos)",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Costas",
     "foco": "Largura",
     "midia": "/static/exercicios/costas/costas_pullover_crossover_braco_estendido.mp4",
@@ -408,7 +408,7 @@
   {
     "id": "plataforma_vibratoria_em_pe",
     "nome": "Permanência em Pé na Plataforma Vibratória",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Coxas",
     "foco": "Estabilidade / Ativação",
     "midia": "/static/exercicios/pernas/plataforma_vibratoria_em_pe.mp4",
@@ -428,7 +428,7 @@
   {
     "id": "plataforma_vibratoria_afundo",
     "nome": "Afundo na Plataforma Vibratória",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Coxas",
     "foco": "Quadríceps",
     "midia": "/static/exercicios/pernas/plataforma_vibratoria_afundo.mp4",
@@ -468,7 +468,7 @@
   {
     "id": "terra_barra_hexagonal",
     "nome": "Levantamento Terra com Barra Hexagonal (Trap Bar)",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Pernas",
     "foco": "Glúteos / Quadríceps",
     "midia": "/static/exercicios/pernas/terra_barra_hexagonal.mp4",
@@ -488,7 +488,7 @@
   {
     "id": "encolhimento_barra_hexagonal",
     "nome": "Encolhimento de Ombros com Barra Hexagonal (Trap Bar)",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Costas",
     "foco": "Trapézio",
     "midia": "/static/exercicios/costas/encolhimento_barra_hexagonal.mp4",
@@ -508,7 +508,7 @@
   {
     "id": "farmers_carry_barra_hexagonal",
     "nome": "Caminhada do Fazendeiro com Barra Hexagonal (Trap Bar)",
-    "grupo": "Corpo Inteiro",
+    "grupo": "Corpo inteiro",
     "subgrupo": "Corpo Inteiro",
     "foco": "Core / Estabilidade",
     "midia": "/static/exercicios/pernas/farmers_carry_barra_hexagonal.mp4",
@@ -528,7 +528,7 @@
   {
     "id": "remada_curvada_barra_hexagonal",
     "nome": "Remada Curvada com Barra Hexagonal (Trap Bar)",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Costas",
     "foco": "Espessura",
     "midia": "/static/exercicios/costas/remada_curvada_barra_hexagonal.mp4",
@@ -548,7 +548,7 @@
   {
     "id": "desenvolvimento_barra_hexagonal",
     "nome": "Desenvolvimento Acima da Cabeça com Barra Hexagonal (Trap Bar)",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Ombros",
     "foco": "Deltoide Anterior",
     "midia": "/static/exercicios/ombros/desenvolvimento_barra_hexagonal.mp4",
@@ -568,7 +568,7 @@
   {
     "id": "step_up_banco",
     "nome": "Step-up no Banco",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Pernas",
     "foco": "Glúteos / Quadríceps",
     "midia": "/static/exercicios/pernas/step_up_banco.mp4",
@@ -588,7 +588,7 @@
   {
     "id": "terra_halteres",
     "nome": "Levantamento Terra com Halteres",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Pernas",
     "foco": "Glúteos / Posterior de Coxa",
     "midia": "/static/exercicios/pernas/terra_halteres.mp4",
@@ -608,7 +608,7 @@
   {
     "id": "supino_declinado_barra",
     "nome": "Supino Declinado com Barra",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Peito",
     "foco": "Peito Inferior",
     "midia": "/static/exercicios/peito/supino_declinado_barra.mp4",
@@ -628,7 +628,7 @@
   {
     "id": "supino_pegada_fechada",
     "nome": "Supino com Pegada Fechada",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Peito",
     "foco": "Peito / Tríceps",
     "midia": "/static/exercicios/peito/supino_pegada_fechada.mp4",
@@ -648,7 +648,7 @@
   {
     "id": "supino_pegada_aberta",
     "nome": "Supino com Pegada Aberta",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Peito",
     "foco": "Peito",
     "midia": "/static/exercicios/peito/supino_pegada_aberta.mp4",
@@ -668,7 +668,7 @@
   {
     "id": "supino_chao_barra",
     "nome": "Supino no Chão (Floor Press)",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Peito",
     "foco": "Peito / Tríceps",
     "midia": "/static/exercicios/peito/supino_chao_barra.mp4",
@@ -688,7 +688,7 @@
   {
     "id": "larsen_press",
     "nome": "Larsen Press",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Peito",
     "foco": "Peito",
     "midia": "/static/exercicios/peito/larsen_press.mp4",
@@ -708,7 +708,7 @@
   {
     "id": "afundo_barra",
     "nome": "Afundo com Barra",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Pernas",
     "foco": "Glúteos / Quadríceps",
     "midia": "/static/exercicios/pernas/afundo_barra.mp4",
@@ -728,7 +728,7 @@
   {
     "id": "agachamento_cossack_barra",
     "nome": "Agachamento Cossack com Barra",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Pernas",
     "foco": "Glúteos / Quadríceps / Adutores",
     "midia": "/static/exercicios/pernas/agachamento_cossack_barra.mp4",
@@ -748,7 +748,7 @@
   {
     "id": "agachamento_frontal_halter",
     "nome": "Agachamento Frontal com Halter",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Pernas",
     "foco": "Glúteos / Quadríceps",
     "midia": "/static/exercicios/pernas/agachamento_frontal_halter.mp4",
@@ -768,7 +768,7 @@
   {
     "id": "terra_romeno_marcha_halter",
     "nome": "Levantamento Terra Romeno com Halteres em Marcha",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Quadril",
     "foco": "Glúteos / Posterior de coxa / Estabilidade",
     "midia": "/static/exercicios/gluteos/terra_romeno_marcha_halter.mp4",
@@ -788,7 +788,7 @@
   {
     "id": "cadeira_extensora",
     "nome": "Cadeira Extensora",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Pernas",
     "foco": "Quadríceps",
     "midia": "/static/exercicios/pernas/cadeira_extensora.mp4",
@@ -808,7 +808,7 @@
   {
     "id": "cadeira_flexora",
     "nome": "Cadeira Flexora",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Pernas",
     "foco": "Posterior de Coxa",
     "midia": "/static/exercicios/pernas/cadeira_flexora.mp4",
@@ -828,7 +828,7 @@
   {
     "id": "leg_press_45",
     "nome": "Leg Press 45º",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Pernas",
     "foco": "Quadríceps / Glúteos",
     "midia": "/static/exercicios/pernas/leg_press_45.mp4",
@@ -848,7 +848,7 @@
   {
     "id": "rosca_direta_barra",
     "nome": "Rosca Direta com Barra",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Bíceps",
     "foco": "Cabeça Longa e Curta",
     "midia": "/static/exercicios/biceps/rosca_direta_barra.mp4",
@@ -868,7 +868,7 @@
   {
     "id": "elevacao_lateral_halteres",
     "nome": "Elevação Lateral com Halteres",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Ombros",
     "foco": "Deltoide Medial",
     "midia": "/static/exercicios/ombros/elevacao_lateral_halteres.mp4",
@@ -888,7 +888,7 @@
   {
     "id": "panturrilha_em_pe_maquina",
     "nome": "Panturrilha em Pé na Máquina",
-    "grupo": "Membros Inferiores",
+    "grupo": "Membros inferiores",
     "subgrupo": "Panturrilhas",
     "foco": "Gastrocnêmio",
     "midia": "/static/exercicios/pernas/panturrilha_em_pe_maquina.mp4",
@@ -908,7 +908,7 @@
   {
     "id": "crucifixo_cabo_sentado",
     "nome": "Crucifixo Sentado no Cabo",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Peito",
     "foco": "Porção superior / medial",
     "midia": "/static/exercicios/peito/peito_crucifixo_cabo_sentado.mp4",
@@ -928,7 +928,7 @@
   {
     "id": "remada_cabo_meio_ajoelhado_unilateral",
     "nome": "Remada no Cabo Meio Ajoelhado Unilateral",
-    "grupo": "Membros Superiores",
+    "grupo": "Membros superiores",
     "subgrupo": "Costas",
     "foco": "Dorsal / Meio das costas",
     "midia": "/static/exercicios/costas/costas_remada_cabo_meio_ajoelhado_unilateral.mp4",
@@ -968,8 +968,8 @@
   {
     "id": "triceps_testa_barbell",
     "nome": "Tríceps Testa com Barra",
-    "grupo": "Membros Superiores",
-    "subgrupo": "Braços",
+    "grupo": "Membros superiores",
+    "subgrupo": "Tríceps",
     "foco": "Tríceps",
     "midia": "/static/exercicios/triceps/bracos_triceps_testa_barbell.mp4",
     "dicas": [
@@ -1334,5 +1334,836 @@
     ],
     "observacoes": "Exercício leve e seguro, ideal para aquecimento, reabilitação e condicionamento cardiovascular.",
     "aparelho": "Esteira"
-  }
+  },
+  {
+  "id": "cable_dual_overhead_curl",
+  "nome": "Rosca Overhead no Cabo (Dupla)",
+  "grupo": "Membros superiores",
+  "subgrupo": "Bíceps",
+  "midia": "/static/exercicios/biceps/cable_dual_overhead_curl.gif",
+  "dicas": [
+    "Mantenha os cotovelos fixos na altura dos ombros",
+    "Contraia o bíceps no topo do movimento",
+    "Controle a volta do movimento",
+    "Mantenha o abdômen contraído para estabilidade",
+    "Use carga que permita execução perfeita"
+  ],
+  "erros": [
+    "Mover os cotovelos para frente ou para baixo",
+    "Usar balanço do tronco",
+    "Fazer o movimento rápido demais",
+    "Não estender totalmente os braços",
+    "Usar carga excessiva"
+  ],
+  "observacoes": "Exercício excelente para isolamento máximo do bíceps, mantendo tensão constante durante todo o movimento.",
+  "aparelho": "Cabo/Polia"
+},
+{
+  "id": "cable_rope_hammer_curl",
+  "nome": "Rosca Martelo no Cabo com Corda",
+  "grupo": "Membros superiores",
+  "subgrupo": "Bíceps",
+  "midia": "/static/exercicios/biceps/cable_rope_hammer_curl.gif",
+  "dicas": [
+    "Mantenha os cotovelos próximos ao tronco",
+    "Contraia os bíceps no topo do movimento",
+    "Controle a descida da carga",
+    "Mantenha o abdômen contraído",
+    "Use carga que permita boa execução"
+  ],
+  "erros": [
+    "Balançar o tronco para ajudar na subida",
+    "Abrir demais os cotovelos",
+    "Não estender completamente os braços",
+    "Subir a carga rápido demais",
+    "Usar peso excessivo"
+  ],
+  "observacoes": "Excelente exercício para trabalhar o bíceps e o braquiorradial, aumentando a espessura dos braços.",
+  "aparelho": "Cabo/Polia"
+},
+{
+  "id": "barbell_preacher_curl",
+  "nome": "Rosca Scott com Barra",
+  "grupo": "Membros superiores",
+  "subgrupo": "Bíceps",
+  "midia": "/static/exercicios/biceps/barbell_preacher_curl.gif",
+  "dicas": [
+    "Ajuste o banco para que os braços fiquem apoiados por completo",
+    "Use pegada supinada (palmas para cima)",
+    "Suba a barra de forma lenta e controlada",
+    "Contraia o bíceps no topo do movimento",
+    "Desça controlando a carga"
+  ],
+  "erros": [
+    "Tirar os braços do apoio",
+    "Usar impulso do corpo",
+    "Não estender totalmente os cotovelos",
+    "Descer a barra rápido demais",
+    "Usar carga excessiva"
+  ],
+  "observacoes": "Excelente exercício de isolamento para os bíceps, reduzindo a ajuda do ombro.",
+  "aparelho": "Barra"
+},
+{
+  "id": "cable_bicep_curl",
+  "nome": "Rosca Bíceps no Cabo em Pé",
+  "grupo": "Membros superiores",
+  "subgrupo": "Bíceps",
+  "midia": "/static/exercicios/biceps/cable_bicep_curl.gif",
+  "dicas": [
+    "Mantenha o abdômen contraído e postura ereta",
+    "Use pegada supinada (palmas para cima)",
+    "Movimente apenas os antebraços",
+    "Contraia os bíceps no topo do movimento",
+    "Controle a descida do peso"
+  ],
+  "erros": [
+    "Balançar o corpo para ajudar",
+    "Subir os cotovelos durante o movimento",
+    "Usar carga excessiva",
+    "Não estender totalmente os braços",
+    "Descer rápido demais"
+  ],
+  "observacoes": "O cabo mantém tensão constante durante todo o movimento, aumentando a ativação do bíceps.",
+  "aparelho": "Cabo/Polia"
+},
+{
+  "id": "dumbbell_alternating_hammer_curl",
+  "nome": "Rosca Martelo Alternada com Halteres",
+  "grupo": "Membros superiores",
+  "subgrupo": "Bíceps",
+  "midia": "/static/exercicios/biceps/dumbbell_alternating_hammer_curl.gif",
+  "dicas": [
+    "Mantenha os cotovelos colados ao corpo",
+    "Use pegada neutra (palmas voltadas para dentro)",
+    "Suba o halter em movimento controlado",
+    "Contraia o bíceps no topo",
+    "Respire corretamente durante o movimento"
+  ],
+  "erros": [
+    "Girar os punhos durante a subida",
+    "Balançar o tronco para ajudar",
+    "Subir os cotovelos",
+    "Usar carga excessiva",
+    "Executar o movimento rapidamente"
+  ],
+  "observacoes": "Além do bíceps, este exercício ativa fortemente o braquiorradial e antebraço.",
+  "aparelho": "Halter"
+},
+{
+  "id": "dumbbell_one_arm_row",
+  "nome": "Remada Unilateral com Halter",
+  "grupo": "Membros superiores",
+  "subgrupo": "Costas",
+  "midia": "/static/exercicios/costas/dumbbell_one_arm_row.gif",
+  "dicas": [
+    "Mantenha a coluna neutra durante todo o movimento",
+    "Puxe o halter com o cotovelo, não com a mão",
+    "Segure 1 segundo no topo contraindo as costas",
+    "Controle a descida do halter",
+    "Mantenha o abdômen firme"
+  ],
+  "erros": [
+    "Arredondar a lombar",
+    "Girar o tronco para ajudar",
+    "Subir o ombro em direção à orelha",
+    "Puxar com o braço em vez das costas",
+    "Usar carga excessiva"
+  ],
+  "observacoes": "Excelente exercício para desenvolver espessura nas costas e estabilidade do core.",
+  "aparelho": "Halter"
+},
+{
+  "id": "dumbbell_one_arm_preacher_curl",
+  "nome": "Rosca Scott Unilateral com Halter",
+  "grupo": "Membros superiores",
+  "subgrupo": "Bíceps",
+  "midia": "/static/exercicios/biceps/dumbbell_one_arm_preacher_curl.gif",
+  "dicas": [
+    "Mantenha o braço totalmente apoiado no banco",
+    "Execute o movimento lentamente",
+    "Segure 1 segundo no topo",
+    "Controle a descida do halter",
+    "Mantenha o punho neutro e firme"
+  ],
+  "erros": [
+    "Tirar o braço do apoio",
+    "Usar balanço do tronco",
+    "Descer rápido sem controle",
+    "Flexionar o punho durante a subida",
+    "Usar carga excessiva"
+  ],
+  "observacoes": "Excelente para isolamento máximo do bíceps e controle de força unilateral.",
+  "aparelho": "Halter"
+},
+{
+  "id": "dumbbell_side_bend",
+  "nome": "Flexão Lateral com Halter",
+  "grupo": "Tronco",
+  "subgrupo": "Abdômen",
+  "midia": "/static/exercicios/abdomen/dumbbell_side_bend.gif",
+  "dicas": [
+    "Mantenha o tronco ereto",
+    "Contraia o abdômen durante todo o movimento",
+    "Desça lentamente e controle a subida",
+    "Expire ao retornar à posição inicial",
+    "Troque de lado a cada série"
+  ],
+  "erros": [
+    "Inclinar o tronco para frente ou para trás",
+    "Dobrar os joelhos para ajudar no movimento",
+    "Usar carga excessiva",
+    "Movimentar os ombros em vez da cintura",
+    "Executar com pressa"
+  ],
+  "observacoes": "Exercício eficaz para fortalecimento dos músculos oblíquos do abdômen.",
+  "aparelho": "Halter"
+},
+{
+  "id": "dumbbell_alternating_bicep_curl",
+  "nome": "Rosca Alternada com Halteres",
+  "grupo": "Membros superiores",
+  "subgrupo": "Bíceps",
+  "midia": "/static/exercicios/biceps/dumbbell_alternating_bicep_curl.gif",
+  "dicas": [
+    "Mantenha os cotovelos fixos ao lado do corpo",
+    "Suba o halter de forma controlada",
+    "Alterne os braços a cada repetição",
+    "Contraia o bíceps no topo do movimento",
+    "Controle a fase de descida"
+  ],
+  "erros": [
+    "Balançar o tronco para ajudar na subida",
+    "Subir os halteres com impulso",
+    "Estender totalmente os cotovelos com impacto",
+    "Usar carga excessiva",
+    "Executar rápido demais"
+  ],
+  "observacoes": "Exercício clássico para ganho de força e hipertrofia dos bíceps.",
+  "aparelho": "Halter"
+},
+{
+  "id": "weighted_side_bend",
+  "nome": "Flexão Lateral com Anilha",
+  "grupo": "Tronco",
+  "subgrupo": "Abdômen",
+  "midia": "/static/exercicios/abdomen/weighted_side_bend.gif",
+  "dicas": [
+    "Mantenha o tronco ereto durante todo o movimento",
+    "Desça lentamente até sentir a contração dos oblíquos",
+    "Retorne de forma controlada",
+    "Expire ao subir",
+    "Mantenha o abdômen contraído"
+  ],
+  "erros": [
+    "Inclinar o tronco para frente ou para trás",
+    "Usar impulso para subir",
+    "Flexionar os joelhos para ajudar",
+    "Descer além da mobilidade",
+    "Soltar o peso sem controle"
+  ],
+  "observacoes": "Excelente para fortalecimento dos oblíquos e estabilização do core.",
+  "aparelho": "Anilha"
+},
+{
+  "id": "stability_ball_crunch",
+  "nome": "Abdominal na Bola Suíça",
+  "grupo": "Tronco",
+  "subgrupo": "Abdômen",
+  "midia": "/static/exercicios/abdomen/abdomen_crunch_bola_suica.gif",
+  "dicas": [
+    "Mantenha a lombar apoiada na bola durante todo o movimento",
+    "Contraia o abdômen antes de iniciar a subida",
+    "Expire ao subir, inspire ao descer",
+    "Suba apenas até tirar as escápulas da bola",
+    "Mantenha o pescoço relaxado"
+  ],
+  "erros": [
+    "Puxar o pescoço com as mãos",
+    "Usar impulso com o tronco",
+    "Descer rápido sem controle",
+    "Perder o contato da lombar com a bola",
+    "Prender a respiração"
+  ],
+  "observacoes": "Ativa intensamente o abdômen e melhora o controle do core com instabilidade.",
+  "aparelho": "Bola Suíça"
+},
+{
+  "id": "rosca_concentrada_halter",
+  "nome": "Rosca Concentrada com Halter",
+  "grupo": "Membros superiores",
+  "subgrupo": "Bíceps",
+  "midia": "/static/exercicios/biceps/biceps_rosca_concentrada_halter.gif",
+  "dicas": [
+    "Mantenha o cotovelo apoiado na parte interna da coxa",
+    "Suba contraindo totalmente o bíceps",
+    "Segure 1 segundo no topo",
+    "Controle a descida",
+    "Evite girar o tronco"
+  ],
+  "erros": [
+    "Usar balanço do corpo",
+    "Tirar o cotovelo da perna",
+    "Descer rápido sem controle",
+    "Usar carga excessiva",
+    "Não estender completamente o braço"
+  ],
+  "observacoes": "Excelente exercício para isolamento máximo do bíceps.",
+  "aparelho": "Halter"
+},
+{
+  "id": "toe_touches_abdominal",
+  "nome": "Toe Touches (Toque nos Pés)",
+  "grupo": "Tronco",
+  "subgrupo": "Abdômen",
+  "midia": "/static/exercicios/abdomen/abdomen_toe_touches.gif",
+  "dicas": [
+    "Mantenha a lombar colada no chão",
+    "Suba com controle, contraindo o abdômen",
+    "Alcance os pés sem flexionar os joelhos",
+    "Expire ao subir",
+    "Movimento curto e preciso"
+  ],
+  "erros": [
+    "Tirar a lombar do chão",
+    "Usar impulso dos braços",
+    "Flexionar excessivamente os joelhos",
+    "Descer rápido sem controle",
+    "Forçar o pescoço"
+  ],
+  "observacoes": "Exercício simples e eficaz para ativar o reto abdominal.",
+  "aparelho": "Peso corporal"
+},
+{
+  "id": "dumbbell_squat_curl_shoulder_press",
+  "nome": "Agachamento + Rosca + Desenvolvimento com Halteres",
+  "grupo": "Corpo inteiro",
+  "subgrupo": "Quadríceps, Glúteos, Bíceps",
+  "midia": "/static/exercicios/corpo_inteiro/corpo_inteiro_dumbbell_squat_curl_press.gif",
+  "dicas": [
+    "Mantenha o core contraído durante todo o movimento",
+    "Desça no agachamento com peito aberto e costas neutras",
+    "Suba do agachamento já iniciando a rosca",
+    "Finalize com o desenvolvimento acima da cabeça",
+    "Controle total na descida"
+  ],
+  "erros": [
+    "Arredondar a lombar no agachamento",
+    "Usar impulso para fazer a rosca",
+    "Arquear demais a lombar no desenvolvimento",
+    "Executar rápido sem controle",
+    "Perder alinhamento dos joelhos"
+  ],
+  "observacoes": "Exercício composto de alta demanda metabólica, excelente para treinos funcionais e de condicionamento.",
+  "aparelho": "Halteres"
+},
+{
+  "id": "dumbbell_single_leg_bench_squat",
+  "nome": "Agachamento Unilateral no Banco com Halter",
+  "grupo": "Membros inferiores",
+  "subgrupo": "Quadríceps, Glúteos e Panturrilhas",
+  "midia": "/static/exercicios/pernas/membros_inferiores_dumbbell_single_leg_bench_squat.gif",
+  "dicas": [
+    "Mantenha o core contraído durante todo o movimento",
+    "Desça de forma lenta e controlada",
+    "Empurre o chão com o calcanhar da perna de apoio",
+    "Mantenha o tronco ereto",
+    "Use apoio apenas para equilíbrio"
+  ],
+  "erros": [
+    "Deixar o joelho colapsar para dentro",
+    "Inclinar demais o tronco",
+    "Usar impulso para subir",
+    "Perder o equilíbrio por falta de controle",
+    "Descer rápido sem controle"
+  ],
+  "observacoes": "Excelente para força unilateral, equilíbrio e correção de assimetrias.",
+  "aparelho": "Halteres + banco"
+},
+{
+  "id": "weighted_crunch",
+  "nome": "Abdominal Crunch com Peso",
+  "grupo": "Tronco",
+  "subgrupo": "Abdômen",
+  "midia": "/static/exercicios/abdomen/membros_superiores_weighted_crunch.gif",
+  "dicas": [
+    "Suba apenas as escápulas, não a lombar",
+    "Mantenha o abdômen sempre contraído",
+    "Expire ao subir",
+    "Segure 1–2 segundos no topo",
+    "Controle a descida"
+  ],
+  "erros": [
+    "Puxar o pescoço",
+    "Subir usando impulso",
+    "Perder a contração no topo",
+    "Descer rápido sem controle",
+    "Arquear a lombar"
+  ],
+  "observacoes": "Ótimo para sobrecarga progressiva no reto abdominal.",
+  "aparelho": "Anilha / Peso livre"
+},
+{
+  "id": "dumbbell_wall_squat",
+  "nome": "Agachamento na Parede com Halteres",
+  "grupo": "Membros inferiores",
+  "subgrupo": "Glúteos",
+  "midia": "/static/exercicios/gluteos/membros_inferiores_dumbbell_wall_squat.gif",
+  "dicas": [
+    "Mantenha as costas totalmente apoiadas na parede",
+    "Desça até as coxas ficarem paralelas ao chão",
+    "Empurre pelo calcanhar ao subir",
+    "Contraia glúteos e quadríceps no topo",
+    "Controle a descida"
+  ],
+  "erros": [
+    "Tirar as costas da parede",
+    "Deixar os joelhos colapsarem para dentro",
+    "Subir com impulso",
+    "Descer rápido sem controle",
+    "Colocar o peso na ponta dos pés"
+  ],
+  "observacoes": "Excelente para força e resistência em quadríceps, com menor sobrecarga na coluna.",
+  "aparelho": "Halteres"
+},
+{
+  "id": "dumbbell_split_jump",
+  "nome": "Afundo com Salto usando Halteres",
+  "grupo": "Membros inferiores",
+  "subgrupo": "Quadríceps / Glúteos / Panturrilhas",
+  "midia": "/static/exercicios/gluteos/membros_inferiores_dumbbell_split_jump.gif",
+  "dicas": [
+    "Mantenha o tronco ereto",
+    "Empurre pelo calcanhar da perna da frente",
+    "Aterre suavemente na volta",
+    "Controle o equilíbrio antes do próximo salto",
+    "Use carga leve a moderada"
+  ],
+  "erros": [
+    "Aterrar com os joelhos fechando",
+    "Perder o equilíbrio ao saltar",
+    "Usar carga excessiva",
+    "Bater os halteres no corpo",
+    "Descer sem controle"
+  ],
+  "observacoes": "Exercício pliométrico para potência de membros inferiores.",
+  "aparelho": "Halteres"
+},
+{
+  "id": "dumbbell_lateral_lunge_bicep_curl",
+  "nome": "Afundo Lateral com Rosca Bíceps",
+  "grupo": "Corpo inteiro",
+  "subgrupo": "Quadríceps / Glúteos / Bíceps",
+  "midia": "/static/exercicios/corpo_inteiro/corpo_inteiro_dumbbell_lateral_lunge_bicep_curl.gif",
+  "dicas": [
+    "Mantenha o tronco ereto durante o movimento",
+    "Empurre pelo calcanhar da perna que agacha",
+    "Contraia o bíceps no topo da rosca",
+    "Controle a descida no afundo e na rosca",
+    "Coordene respiração com o movimento"
+  ],
+  "erros": [
+    "Inclinar demais o tronco",
+    "Deixar o joelho colapsar para dentro",
+    "Usar impulso na rosca",
+    "Perder o equilíbrio no afundo lateral",
+    "Escolher carga excessiva"
+  ],
+  "observacoes": "Exercício composto que integra membros inferiores e superiores.",
+  "aparelho": "Halteres"
+},
+{
+  "id": "dumbbell_jump_squat",
+  "nome": "Agachamento com Salto e Halteres",
+  "grupo": "Membros inferiores",
+  "subgrupo": "Quadríceps / Glúteos / Panturrilhas",
+  "midia": "/static/exercicios/gluteos/membros_inferiores_dumbbell_jump_squat.gif",
+  "dicas": [
+    "Aterre suavemente com os joelhos semiflexionados",
+    "Empurre pelo meio do pé e calcanhar",
+    "Mantenha o tronco ereto",
+    "Use cargas leves",
+    "Controle a fase de descida"
+  ],
+  "erros": [
+    "Aterrar com joelhos para dentro",
+    "Usar carga excessiva",
+    "Perder a postura do tronco",
+    "Descer rápido sem controle",
+    "Bater os halteres no corpo"
+  ],
+  "observacoes": "Exercício pliométrico para potência de membros inferiores.",
+  "aparelho": "Halteres"
+},
+{
+  "id": "dumbbell_wall_squat_hold",
+  "nome": "Agachamento Isométrico na Parede com Halteres",
+  "grupo": "Membros inferiores",
+  "subgrupo": "Quadríceps / Glúteos / Core",
+  "midia": "/static/exercicios/gluteos/membros_inferiores_dumbbell_wall_squat_hold.gif",
+  "dicas": [
+    "Mantenha as costas totalmente apoiadas na parede",
+    "Joelhos alinhados com os pés",
+    "Contraia abdômen e glúteos durante toda a execução",
+    "Respire de forma controlada",
+    "Segure o tempo com postura estável"
+  ],
+  "erros": [
+    "Deixar os joelhos colapsarem para dentro",
+    "Arquear a lombar",
+    "Elevar os calcanhares",
+    "Segurar a respiração",
+    "Apoiar peso excessivo nos braços"
+  ],
+  "observacoes": "Exercício isométrico para força e resistência de membros inferiores.",
+  "aparelho": "Halteres"
+},
+{
+  "id": "dumbbell_single_leg_squat",
+  "nome": "Agachamento Unilateral com Halteres",
+  "grupo": "Membros inferiores",
+  "subgrupo": "Quadríceps / Glúteos / Posteriores",
+  "midia": "/static/exercicios/gluteos/membros_inferiores_dumbbell_single_leg_squat.gif",
+  "dicas": [
+    "Mantenha o tronco ereto durante o movimento",
+    "Empurre pelo calcanhar da perna da frente",
+    "Mantenha o joelho alinhado com o pé",
+    "Desça de forma controlada",
+    "Ative o abdômen para equilíbrio"
+  ],
+  "erros": [
+    "Inclinar o tronco para frente",
+    "Deixar o joelho colapsar para dentro",
+    "Descer rápido sem controle",
+    "Perder o equilíbrio",
+    "Usar carga excessiva"
+  ],
+  "observacoes": "Exercício unilateral que desenvolve força, equilíbrio e estabilidade dos membros inferiores.",
+  "aparelho": "Halteres"
+},
+{
+  "id": "dumbbell_squat_shoulder_press",
+  "nome": "Agachamento com Desenvolvimento de Ombros",
+  "grupo": "Corpo inteiro",
+  "subgrupo": "Quadríceps / Glúteos / Ombros",
+  "midia": "/static/exercicios/corpo_inteiro/corpo_inteiro_dumbbell_squat_shoulder_press.gif",
+  "dicas": [
+    "Mantenha o abdômen contraído durante todo o movimento",
+    "Empurre pelo calcanhar ao subir do agachamento",
+    "Coordene a subida com o desenvolvimento acima da cabeça",
+    "Mantenha os cotovelos levemente à frente do corpo",
+    "Use cargas moderadas e controle o movimento"
+  ],
+  "erros": [
+    "Arquear a lombar ao empurrar os halteres",
+    "Deixar os joelhos fecharem no agachamento",
+    "Usar impulso ao invés de força",
+    "Perder o alinhamento do tronco",
+    "Descer os halteres de forma descontrolada"
+  ],
+  "observacoes": "Exercício composto que integra membros inferiores e superiores, promovendo força e coordenação.",
+  "aparelho": "Halteres"
+},
+{
+  "id": "dumbbell_bench_squat",
+  "nome": "Agachamento no Banco com Halteres",
+  "grupo": "Membros inferiores",
+  "subgrupo": "Quadríceps / Glúteos / Lombar",
+  "midia": "/static/exercicios/gluteos/membros_inferiores_dumbbell_bench_squat.gif",
+  "dicas": [
+    "Mantenha o peito aberto e a coluna neutra",
+    "Empurre o quadril para trás ao descer",
+    "Toque levemente o banco sem relaxar",
+    "Empurre pelo calcanhar para subir",
+    "Controle a descida e a subida"
+  ],
+  "erros": [
+    "Sentar e relaxar completamente no banco",
+    "Deixar os joelhos fecharem para dentro",
+    "Curvar a lombar",
+    "Usar impulso para subir",
+    "Descer rápido sem controle"
+  ],
+  "observacoes": "Variação do agachamento que auxilia no controle da profundidade e na ativação de glúteos.",
+  "aparelho": "Halteres"
+},
+{
+  "id": "dumbbell_plie_squat",
+  "nome": "Agachamento Plie com Halter",
+  "grupo": "Membros inferiores",
+  "subgrupo": "Quadríceps / Glúteos / Panturrilhas",
+  "midia": "/static/exercicios/gluteos/membros_inferiores_dumbbell_plie_squat.gif",
+  "dicas": [
+    "Mantenha os pés mais abertos e os dedos apontados para fora",
+    "Desça empurrando o quadril para baixo, mantendo o tronco ereto",
+    "Mantenha os joelhos alinhados com os pés",
+    "Segure o halter firme com os braços estendidos",
+    "Controle a descida e a subida"
+  ],
+  "erros": [
+    "Deixar os joelhos fecharem para dentro",
+    "Curvar a lombar",
+    "Usar impulso na subida",
+    "Descer rápido sem controle",
+    "Afastar pouco os pés"
+  ],
+  "observacoes": "Exercício focado em glúteos e adutores, além de quadríceps.",
+  "aparelho": "Halteres"
+},
+{
+  "id": "dumbbell_squat",
+  "nome": "Agachamento com Halteres",
+  "grupo": "Membros inferiores",
+  "subgrupo": "Quadríceps / Glúteos / Panturrilhas",
+  "midia": "/static/exercicios/gluteos/membros_inferiores_dumbbell_squat.gif",
+  "dicas": [
+    "Mantenha o tronco ereto e o abdômen contraído",
+    "Empurre o quadril para trás ao descer",
+    "Joelhos alinhados com os pés",
+    "Desça de forma controlada",
+    "Empurre pelo calcanhar para subir"
+  ],
+  "erros": [
+    "Deixar os joelhos colapsarem para dentro",
+    "Inclinar excessivamente o tronco para frente",
+    "Subir usando apenas a ponta dos pés",
+    "Descer rápido sem controle",
+    "Arredondar a lombar"
+  ],
+  "observacoes": "Exercício básico e essencial para fortalecimento global de membros inferiores.",
+  "aparelho": "Halteres"
+},
+{
+  "id": "dumbbell_walking_lunge",
+  "nome": "Avanço Caminhando com Halteres",
+  "grupo": "Membros inferiores",
+  "subgrupo": "Quadríceps / Glúteos / Panturrilhas",
+  "midia": "/static/exercicios/gluteos/membros_inferiores_dumbbell_walking_lunge.gif",
+  "dicas": [
+    "Mantenha o tronco ereto e o abdômen contraído",
+    "Dê passos longos para maior ativação de glúteos",
+    "Desça de forma controlada",
+    "Empurre pelo calcanhar da perna da frente",
+    "Mantenha os joelhos alinhados com os pés"
+  ],
+  "erros": [
+    "Bater o joelho de trás no chão",
+    "Inclinar o tronco para frente",
+    "Passos muito curtos",
+    "Perder o equilíbrio",
+    "Descer sem controle"
+  ],
+  "observacoes": "Excelente exercício para força, equilíbrio e coordenação dos membros inferiores.",
+  "aparelho": "Halteres"
+},
+{
+  "id": "dumbbell_step_up",
+  "nome": "Subida no Banco com Halteres",
+  "grupo": "Membros inferiores",
+  "subgrupo": "Quadríceps / Glúteos / Panturrilhas",
+  "midia": "/static/exercicios/gluteos/membros_inferiores_dumbbell_step_up.gif",
+  "dicas": [
+    "Suba empurrando pelo calcanhar da perna de apoio",
+    "Mantenha o tronco ereto e o abdômen contraído",
+    "Controle a descida, não deixe o peso cair",
+    "Troque a perna inicial a cada repetição",
+    "Use carga leve até dominar o movimento"
+  ],
+  "erros": [
+    "Usar impulso da perna de trás",
+    "Inclinar o tronco para frente",
+    "Descer de forma descontrolada",
+    "Joelhos desalinhados",
+    "Escolher um banco alto demais"
+  ],
+  "observacoes": "Exercício funcional que desenvolve força, equilíbrio e coordenação.",
+  "aparelho": "Halteres"
+},
+{
+  "id": "dumbbell_reverse_lunge",
+  "nome": "Avanço Reverso com Halteres",
+  "grupo": "Membros inferiores",
+  "subgrupo": "Quadríceps / Glúteos / Panturrilhas",
+  "midia": "/static/exercicios/gluteos/membros_inferiores_dumbbell_reverse_lunge.gif",
+  "dicas": [
+    "Dê o passo para trás de forma controlada",
+    "Mantenha o tronco ereto e o abdômen contraído",
+    "Desça até formar aproximadamente 90° no joelho da frente",
+    "Empurre pelo calcanhar da perna da frente para subir",
+    "Alterne as pernas a cada repetição"
+  ],
+  "erros": [
+    "Deixar o joelho de trás tocar o chão",
+    "Inclinar o tronco para frente",
+    "Perder o equilíbrio lateral",
+    "Dar um passo curto demais",
+    "Descer de forma descontrolada"
+  ],
+  "observacoes": "O avanço reverso reduz a sobrecarga nos joelhos em comparação ao avanço tradicional.",
+  "aparelho": "Halteres"
+},
+{
+  "id": "dumbbell_lunge",
+  "nome": "Avanço com Halteres",
+  "grupo": "Membros inferiores",
+  "subgrupo": "Quadríceps / Glúteos / Posterior de coxa / Panturrilhas",
+  "midia": "/static/exercicios/gluteos/membros_inferiores_dumbbell_lunge.gif",
+  "dicas": [
+    "Dê um passo longo mantendo o tronco ereto",
+    "Mantenha o abdômen contraído durante todo o movimento",
+    "Desça até formar ângulos de 90° nos joelhos",
+    "Empurre pelo calcanhar da perna da frente para retornar",
+    "Mantenha o olhar à frente e os ombros alinhados"
+  ],
+  "erros": [
+    "Deixar o joelho da frente ultrapassar a ponta do pé",
+    "Inclinar o tronco para frente",
+    "Bater o joelho de trás no chão",
+    "Perder o equilíbrio durante o movimento",
+    "Usar carga excessiva"
+  ],
+  "observacoes": "Exercício unilateral que desenvolve força, estabilidade e coordenação dos membros inferiores.",
+  "aparelho": "Halteres"
+},
+{
+  "id": "dumbbell_romanian_deadlift",
+  "nome": "Levantamento Terra Romeno com Halteres",
+  "grupo": "Membros inferiores",
+  "subgrupo": "Posterior de coxa / Glúteos / Lombar",
+  "midia": "/static/exercicios/gluteos/membros_inferiores_dumbbell_romanian_deadlift.gif",
+  "dicas": [
+    "Empurre o quadril para trás durante a descida",
+    "Mantenha a coluna neutra e o peito aberto",
+    "Desça até sentir o alongamento dos posteriores",
+    "Mantenha os halteres próximos ao corpo",
+    "Contraia os glúteos ao subir"
+  ],
+  "erros": [
+    "Arredondar as costas",
+    "Flexionar demais os joelhos",
+    "Descer além da mobilidade",
+    "Afastar os halteres do corpo",
+    "Subir sem ativar os glúteos"
+  ],
+  "observacoes": "Exercício essencial para fortalecimento da cadeia posterior e prevenção de lesões.",
+  "aparelho": "Halteres"
+},
+{
+  "id": "bodyweight_lunge",
+  "nome": "Afundo com Peso Corporal",
+  "grupo": "Membros inferiores",
+  "subgrupo": "Quadríceps / Glúteos / Panturrilhas",
+  "midia": "/static/exercicios/gluteos/membros_inferiores_bodyweight_lunge.gif",
+  "dicas": [
+    "Mantenha o tronco ereto durante o movimento",
+    "Desça até a coxa da frente ficar paralela ao chão",
+    "Empurre pelo calcanhar da perna da frente para subir",
+    "Mantenha o abdômen contraído",
+    "Controle a descida e a subida"
+  ],
+  "erros": [
+    "Inclinar o tronco para frente",
+    "Deixar o joelho da frente ultrapassar muito a ponta do pé",
+    "Apoiar o peso no joelho de trás",
+    "Perder o equilíbrio",
+    "Descer rápido sem controle"
+  ],
+  "observacoes": "Excelente exercício para desenvolver força, equilíbrio e coordenação sem carga externa.",
+  "aparelho": "Peso corporal"
+},
+{
+  "id": "dumbbell_bulgarian_split_squat",
+  "nome": "Agachamento Búlgaro com Halteres",
+  "grupo": "Membros inferiores",
+  "subgrupo": "Quadríceps / Glúteos / Core",
+  "midia": "/static/exercicios/gluteos/membros_inferiores_dumbbell_bulgarian_split_squat.gif",
+  "dicas": [
+    "Mantenha o tronco levemente inclinado para frente",
+    "Empurre pelo calcanhar da perna da frente",
+    "Desça de forma controlada",
+    "Mantenha o abdômen contraído para equilíbrio",
+    "Use cargas moderadas no início"
+  ],
+  "erros": [
+    "Apoiar peso na perna de trás",
+    "Perder o equilíbrio",
+    "Deixar o joelho da frente colapsar para dentro",
+    "Descer rápido sem controle",
+    "Usar carga excessiva"
+  ],
+  "observacoes": "Exercício unilateral excelente para força, equilíbrio e correção de assimetrias.",
+  "aparelho": "Halteres"
+},
+{
+  "id": "jump_squat",
+  "nome": "Agachamento com Salto",
+  "grupo": "Membros inferiores",
+  "subgrupo": "Quadríceps / Glúteos / Panturrilhas",
+  "midia": "/static/exercicios/gluteos/membros_inferiores_jump_squat.gif",
+  "dicas": [
+    "Empurre pelo calcanhar na saída do salto",
+    "Aterre suavemente com os joelhos semiflexionados",
+    "Mantenha o tronco ereto durante o movimento",
+    "Contraia o abdômen para estabilizar",
+    "Inicie com ritmo controlado antes de ganhar velocidade"
+  ],
+  "erros": [
+    "Aterrar com os joelhos fechando para dentro",
+    "Descer rápido sem controle",
+    "Inclinar excessivamente o tronco",
+    "Aterrar com os calcanhares levantados",
+    "Perder o equilíbrio na aterrissagem"
+  ],
+  "observacoes": "Exercício pliométrico para potência e explosão dos membros inferiores.",
+  "aparelho": "Peso corporal"
+},
+{
+  "id": "bodyweight_squat",
+  "nome": "Agachamento com Peso Corporal",
+  "grupo": "Membros inferiores",
+  "subgrupo": "Quadríceps / Glúteos / Core",
+  "midia": "/static/exercicios/gluteos/membros_inferiores_bodyweight_squat.gif",
+  "dicas": [
+    "Empurre pelo calcanhar ao subir",
+    "Mantenha o tronco ereto e o abdômen contraído",
+    "Joelhos alinhados com os pés",
+    "Desça até onde conseguir sem perder a postura",
+    "Respire: inspire ao descer e expire ao subir"
+  ],
+  "erros": [
+    "Deixar os joelhos fecharem para dentro",
+    "Inclinar excessivamente o tronco para frente",
+    "Elevar os calcanhares do chão",
+    "Descer rápido sem controle",
+    "Perder a neutralidade da coluna"
+  ],
+  "observacoes": "Exercício base para força, mobilidade e resistência dos membros inferiores.",
+  "aparelho": "Peso corporal"
+},
+{
+  "id": "dumbbell_lateral_raise",
+  "nome": "Elevação Lateral com Halteres",
+  "grupo": "Membros superiores",
+  "subgrupo": "Deltoide lateral / Ombros",
+  "midia": "/static/exercicios/ombros/membros_superiores_dumbbell_lateral_raise.gif",
+  "dicas": [
+    "Mantenha leve flexão nos cotovelos",
+    "Eleve os braços até a linha dos ombros",
+    "Contraia o abdômen para estabilizar o tronco",
+    "Suba e desça de forma controlada",
+    "Use cargas leves a moderadas"
+  ],
+  "erros": [
+    "Balançar o corpo para gerar impulso",
+    "Elevar os halteres acima da linha dos ombros",
+    "Encolher os ombros durante a execução",
+    "Estender totalmente os cotovelos",
+    "Descer os pesos rapidamente"
+  ],
+  "observacoes": "Exercício isolado para fortalecimento e definição dos ombros.",
+  "aparelho": "Halteres"
+}
+
+
+
 ]
