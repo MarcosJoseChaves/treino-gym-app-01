@@ -36,10 +36,20 @@
 
     <div class="col-6 col-md-3">
       <label class="form-label mb-1">Grupo</label>
-      <select class="form-select" name="grupo">
+      <select class="form-select" name="grupo" id="filtro-grupo-biblioteca">
         <option value="">Todos</option>
         {% for g in grupos %}
           <option value="{{ g }}" {% if grupo_selecionado == g %}selected{% endif %}>{{ g }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-6 col-md-3">
+      <label class="form-label mb-1">Subgrupo</label>
+      <select class="form-select" name="subgrupo" id="filtro-subgrupo-biblioteca">
+        <option value="">Todos</option>
+        {% for sg in subgrupos %}
+          <option value="{{ sg }}" {% if subgrupo_selecionado == sg %}selected{% endif %}>{{ sg }}</option>
         {% endfor %}
       </select>
     </div>
@@ -67,7 +77,7 @@
       <button class="btn btn-primary">Filtrar</button>
     </div>
 
-    {% if q or grupo_selecionado or aparelho_selecionado or somente_favoritos %}
+    {% if q or grupo_selecionado or subgrupo_selecionado or aparelho_selecionado or somente_favoritos %}
     <div class="col-12">
       <a class="small text-decoration-none" href="/">Limpar filtros</a>
     </div>
@@ -112,6 +122,9 @@
               <span class="badge text-bg-warning">★ Favorito</span>
               {% endif %}
               <span class="badge text-bg-secondary">{{ ex.grupo }}</span>
+              {% if ex.subgrupo %}
+              <span class="badge text-bg-info">{{ ex.subgrupo }}</span>
+              {% endif %}
               {% if ex.aparelho %}
               <span class="badge text-bg-light border text-dark">{{ ex.aparelho }}</span>
               {% endif %}
@@ -140,5 +153,37 @@
   </div>
 
 </div>
+<script>
+  const filtroGrupoBiblioteca = document.getElementById('filtro-grupo-biblioteca');
+  const filtroSubgrupoBiblioteca = document.getElementById('filtro-subgrupo-biblioteca');
+  const subgruposPorGrupoBiblioteca = {{ subgrupos_por_grupo|tojson }};
+
+  const atualizarSubgruposBiblioteca = () => {
+    if (!filtroSubgrupoBiblioteca) return;
+
+    const grupoSelecionado = (filtroGrupoBiblioteca?.value || '').trim().toLowerCase();
+    const subgrupoAtual = (filtroSubgrupoBiblioteca.value || '').trim();
+    const subgruposPermitidos = grupoSelecionado
+      ? (subgruposPorGrupoBiblioteca[grupoSelecionado] || [])
+      : Object.values(subgruposPorGrupoBiblioteca).flat();
+
+    const opcoesUnicas = [...new Set(subgruposPermitidos)].sort((a, b) => a.localeCompare(b));
+    filtroSubgrupoBiblioteca.innerHTML = '<option value="">Todos</option>' +
+      opcoesUnicas.map((subgrupo) => `<option value="${subgrupo}">${subgrupo}</option>`).join('');
+
+    if (subgrupoAtual && opcoesUnicas.includes(subgrupoAtual)) {
+      filtroSubgrupoBiblioteca.value = subgrupoAtual;
+    }
+  };
+
+  filtroGrupoBiblioteca?.addEventListener('change', () => {
+    atualizarSubgruposBiblioteca();
+    if (filtroSubgrupoBiblioteca) {
+      filtroSubgrupoBiblioteca.value = '';
+    }
+  });
+
+  atualizarSubgruposBiblioteca();
+</script>
 </body>
 </html>

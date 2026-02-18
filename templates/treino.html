@@ -107,6 +107,7 @@
               <div class="d-flex gap-2 mt-3 flex-wrap">
                 <a class="btn btn-sm btn-outline-success" href="{{ salvo.whatsapp_link }}" target="_blank" rel="noopener">Enviar no WhatsApp</a>
                 <a class="btn btn-sm btn-outline-warning" href="/treino?editar={{ salvo.id }}">Editar</a>
+                <a class="btn btn-sm btn-outline-primary" href="/treino?modelo={{ salvo.id }}">Duplicar</a>
                 <form method="POST" action="/treino/{{ salvo.id }}/excluir" onsubmit="return confirm('Excluir este treino?');" class="d-inline">
                   <button class="btn btn-sm btn-outline-danger" type="submit">Excluir</button>
                 </form>
@@ -197,6 +198,15 @@
               </select>
             </div>
             <div class="col-12 col-md-4">
+              <label class="form-label mb-1" for="filtro-subgrupo">Filtrar por subgrupo</label>
+              <select class="form-select" id="filtro-subgrupo">
+                <option value="">Todos os subgrupos</option>
+                {% for sg in subgrupos %}
+                <option value="{{ sg|lower }}">{{ sg }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-12 col-md-4">
               <label class="form-label mb-1" for="filtro-aparelho">Filtrar por aparelho</label>
               <select class="form-select" id="filtro-aparelho">
                 <option value="">Todos os aparelhos</option>
@@ -211,11 +221,11 @@
                 <label class="form-check-label" for="filtro-favoritos-treino">Somente favoritos</label>
               </div>
             </div>
-            <div class="col-12 col-md-2 d-flex gap-2">
+            <div class="col-12 col-md-3 d-flex gap-2">
               <button type="button" class="btn btn-outline-primary btn-sm w-100" id="aplicar-filtros-btn">Filtrar</button>
               <button type="button" class="btn btn-outline-secondary btn-sm w-100" id="limpar-filtros-btn">Limpar</button>
             </div>
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-2">
               <div class="small text-muted" id="contador-exercicios"></div>
             </div>
           </div>
@@ -236,7 +246,7 @@
             {% set aparelho_normalizado = (ex.aparelho or '')|lower %}
             {% set nome_normalizado = (ex.nome or '')|lower %}
             {% set cardio_maquina = aparelho_normalizado in ['esteira', 'bicicleta'] or 'esteira' in nome_normalizado or 'bicicleta' in nome_normalizado or 'bike' in nome_normalizado %}
-            <div class="col-12 col-md-6 col-xl-4 exercicio-card" data-exercicio-id="{{ ex.id }}" data-exercicio-nome="{{ ex.nome }}" data-grupo="{{ (ex.grupo or '')|lower }}" data-aparelho="{{ (ex.aparelho or '')|lower }}" data-cardio-maquina="{{ '1' if cardio_maquina else '0' }}" data-favorito="{{ '1' if ex.id in favoritos_admin else '0' }}">
+            <div class="col-12 col-md-6 col-xl-4 exercicio-card" data-exercicio-id="{{ ex.id }}" data-exercicio-nome="{{ ex.nome }}" data-grupo="{{ (ex.grupo or '')|lower }}" data-subgrupo="{{ (ex.subgrupo or '')|lower }}" data-aparelho="{{ (ex.aparelho or '')|lower }}" data-cardio-maquina="{{ '1' if cardio_maquina else '0' }}" data-favorito="{{ '1' if ex.id in favoritos_admin else '0' }}">
               <div class="border rounded p-2 h-100 bg-white">
                 <div class="ratio ratio-16x9 rounded overflow-hidden bg-light d-flex align-items-center justify-content-center mb-2">
                   {% if ex.midia %}
@@ -260,7 +270,7 @@
                     {% if prefill.encontrado %}checked{% endif %}
                   >
                   <label class="form-check-label fw-semibold" for="check-ex-{{ loop.index }}">{{ ex.nome }}</label>
-                  <div class="small text-muted">{{ ex.grupo or 'Sem grupo' }} · {{ ex.aparelho or 'Aparelho não informado' }}</div>
+                  <div class="small text-muted">{{ ex.grupo or 'Sem grupo' }} · {{ ex.subgrupo or 'Sem subgrupo' }} · {{ ex.aparelho or 'Aparelho não informado' }}</div>
                   {% if ex.id in favoritos_admin %}
                   <span class="badge text-bg-warning mt-1">★ Favorito</span>
                   {% endif %}
@@ -346,7 +356,9 @@
 <script>
   const cards = Array.from(document.querySelectorAll('.exercicio-card'));
   const filtroGrupo = document.getElementById('filtro-grupo');
+  const filtroSubgrupo = document.getElementById('filtro-subgrupo');
   const filtroAparelho = document.getElementById('filtro-aparelho');
+  const subgruposPorGrupoTreino = {{ subgrupos_por_grupo|tojson }};
   const contadorExercicios = document.getElementById('contador-exercicios');
   const filtroFavoritosTreino = document.getElementById('filtro-favoritos-treino');
   const aplicarFiltrosBtn = document.getElementById('aplicar-filtros-btn');
@@ -357,6 +369,24 @@
   const inputsTreinoSelecionado = document.getElementById('inputs-treino-selecionado');
 
   const treinoSelecionado = [];
+
+  const atualizarOpcoesSubgrupoTreino = () => {
+    if (!filtroSubgrupo) return;
+
+    const grupoSelecionado = (filtroGrupo?.value || '').trim().toLowerCase();
+    const subgrupoAtual = (filtroSubgrupo.value || '').trim();
+    const subgruposPermitidos = grupoSelecionado
+      ? (subgruposPorGrupoTreino[grupoSelecionado] || [])
+      : Object.values(subgruposPorGrupoTreino).flat();
+
+    const opcoesUnicas = [...new Set(subgruposPermitidos)].sort((a, b) => a.localeCompare(b));
+    filtroSubgrupo.innerHTML = '<option value="">Todos os subgrupos</option>' +
+      opcoesUnicas.map((subgrupo) => `<option value="${subgrupo.toLowerCase()}">${subgrupo}</option>`).join('');
+
+    if (subgrupoAtual && opcoesUnicas.map((item) => item.toLowerCase()).includes(subgrupoAtual.toLowerCase())) {
+      filtroSubgrupo.value = subgrupoAtual.toLowerCase();
+    }
+  };
 
   const formMontarTreino = document.getElementById('form-montar-treino');
   const btnSalvarTreino = document.getElementById('btn-salvar-treino');
@@ -501,17 +531,20 @@
 
   const aplicarFiltros = () => {
     const grupoSelecionado = (filtroGrupo.value || '').trim();
+    const subgrupoSelecionado = (filtroSubgrupo?.value || '').trim();
     const aparelhoSelecionado = (filtroAparelho.value || '').trim();
     const somenteFavoritos = !!filtroFavoritosTreino?.checked;
 
     cards.forEach((card) => {
       const grupoCard = (card.dataset.grupo || '').trim();
+      const subgrupoCard = (card.dataset.subgrupo || '').trim();
       const aparelhoCard = (card.dataset.aparelho || '').trim();
 
       const grupoOk = !grupoSelecionado || grupoCard === grupoSelecionado;
+      const subgrupoOk = !subgrupoSelecionado || subgrupoCard === subgrupoSelecionado;
       const aparelhoOk = !aparelhoSelecionado || aparelhoCard === aparelhoSelecionado;
       const favoritoOk = !somenteFavoritos || (card.dataset.favorito || '') === '1';
-      card.classList.toggle('d-none', !(grupoOk && aparelhoOk && favoritoOk));
+      card.classList.toggle('d-none', !(grupoOk && subgrupoOk && aparelhoOk && favoritoOk));
     });
 
     atualizarContador();
@@ -549,12 +582,18 @@
     }
   });
 
-  filtroGrupo?.addEventListener('change', aplicarFiltros);
+  filtroGrupo?.addEventListener('change', () => {
+    atualizarOpcoesSubgrupoTreino();
+    if (filtroSubgrupo) filtroSubgrupo.value = '';
+    aplicarFiltros();
+  });
+  filtroSubgrupo?.addEventListener('change', aplicarFiltros);
   filtroAparelho?.addEventListener('change', aplicarFiltros);
   filtroFavoritosTreino?.addEventListener('change', aplicarFiltros);
   aplicarFiltrosBtn?.addEventListener('click', aplicarFiltros);
   limparFiltrosBtn?.addEventListener('click', () => {
     if (filtroGrupo) filtroGrupo.value = '';
+    if (filtroSubgrupo) filtroSubgrupo.value = '';
     if (filtroAparelho) filtroAparelho.value = '';
     if (filtroFavoritosTreino) filtroFavoritosTreino.checked = false;
     aplicarFiltros();
@@ -562,6 +601,7 @@
 
   renderListaTreino();
   atualizarHiddenInputs();
+  atualizarOpcoesSubgrupoTreino();
   aplicarFiltros();
 </script>
 

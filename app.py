@@ -256,6 +256,7 @@ def carregar_exercicios():
         ex.setdefault("id", "")
         ex.setdefault("nome", "Sem nome")
         ex.setdefault("grupo", "Sem grupo")
+        ex.setdefault("subgrupo", "Sem subgrupo")
         ex.setdefault("midia", "")
         ex.setdefault("dicas", [])
         ex.setdefault("erros", [])
@@ -375,6 +376,50 @@ def obter_grupos_validos(exercicios):
         grupos.append(grupo)
 
     return sorted(grupos)
+
+
+def obter_subgrupos_validos(exercicios):
+    """Extrai subgrupos únicos de forma defensiva."""
+    if not isinstance(exercicios, list):
+        return []
+
+    subgrupos = []
+    vistos = set()
+    for ex in exercicios:
+        if not isinstance(ex, dict):
+            continue
+
+        subgrupo = (ex.get("subgrupo") or "").strip()
+        if not subgrupo or subgrupo in vistos:
+            continue
+
+        vistos.add(subgrupo)
+        subgrupos.append(subgrupo)
+
+    return sorted(subgrupos)
+
+
+
+
+def obter_subgrupos_por_grupo(exercicios):
+    """Mapeia grupo (lowercase) -> lista de subgrupos do grupo."""
+    if not isinstance(exercicios, list):
+        return {}
+
+    mapeamento = {}
+    for ex in exercicios:
+        if not isinstance(ex, dict):
+            continue
+
+        grupo = (ex.get("grupo") or "").strip()
+        subgrupo = (ex.get("subgrupo") or "").strip()
+        if not grupo or not subgrupo:
+            continue
+
+        chave = grupo.lower()
+        mapeamento.setdefault(chave, set()).add(subgrupo)
+
+    return {chave: sorted(subgrupos) for chave, subgrupos in mapeamento.items()}
 
 
 def index_por_id(exercicios):
@@ -574,6 +619,7 @@ def index():
 
     q = (request.args.get("q") or "").strip().lower()
     grupo = (request.args.get("grupo") or "").strip().lower()
+    subgrupo = (request.args.get("subgrupo") or "").strip().lower()
     aparelho = (request.args.get("aparelho") or "").strip().lower()
     somente_favoritos = admin_ativo() and (request.args.get("favoritos") or "") == "1"
 
@@ -581,22 +627,27 @@ def index():
     # Mantém `grupos` sempre definido para evitar NameError no render
     # mesmo com dados malformados em `exercicios`.
     grupos = obter_grupos_validos(exercicios)
+    subgrupos = obter_subgrupos_validos(exercicios)
+    subgrupos_por_grupo = obter_subgrupos_por_grupo(exercicios)
     aparelhos = sorted({(ex.get("aparelho") or "").strip() for ex in exercicios if ex.get("aparelho")})
 
     filtrados = []
     for ex in exercicios:
         nome = (ex.get("nome") or "").lower()
         g = (ex.get("grupo") or "").lower()
+        sg = (ex.get("subgrupo") or "").lower()
 
         a = (ex.get("aparelho") or "").lower()
 
         if grupo and g != grupo:
             continue
+        if subgrupo and sg != subgrupo:
+            continue
         if aparelho and a != aparelho:
             continue
         if q:
             # Busca simples por nome + grupo + aparelho
-            if q not in nome and q not in g and q not in a:
+            if q not in nome and q not in g and q not in sg and q not in a:
                 continue
         if somente_favoritos and ex.get("id") not in favoritos_admin:
             continue
@@ -616,9 +667,12 @@ def index():
         "index.html",
         exercicios=filtrados,
         grupos=grupos,
+        subgrupos=subgrupos,
+        subgrupos_por_grupo=subgrupos_por_grupo,
         aparelhos=aparelhos,
         q=request.args.get("q") or "",
         grupo_selecionado=request.args.get("grupo") or "",
+        subgrupo_selecionado=request.args.get("subgrupo") or "",
         aparelho_selecionado=request.args.get("aparelho") or "",
         favoritos_admin=favoritos_admin,
         somente_favoritos=somente_favoritos,
@@ -659,6 +713,8 @@ def montar_treino():
     favoritos_admin = carregar_favoritos_admin()
     mapa_exercicios = index_por_id(exercicios)
     grupos = obter_grupos_validos(exercicios)
+    subgrupos = obter_subgrupos_validos(exercicios)
+    subgrupos_por_grupo = obter_subgrupos_por_grupo(exercicios)
     tipos_treino = TIPOS_TREINO
     objetivos_treino = OBJETIVOS_TREINO
     treinos = [normalizar_item_treino(t) for t in carregar_treinos()]
@@ -889,6 +945,8 @@ def montar_treino():
         "treino.html",
         exercicios=exercicios,
         grupos=grupos,
+        subgrupos=subgrupos,
+        subgrupos_por_grupo=subgrupos_por_grupo,
         musculos_opcoes=opcoes_musculos,
         aparelhos_treino=aparelhos_treino,
         tipos_treino=tipos_treino,

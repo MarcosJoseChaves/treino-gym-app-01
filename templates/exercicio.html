@@ -13,7 +13,10 @@
   <div class="container py-2 d-flex justify-content-between align-items-center">
     <a href="{{ voltar_url }}" class="btn btn-sm btn-outline-secondary">← Voltar</a>
     <span class="fw-semibold">{{ ex.nome }}</span>
-    <span class="badge text-bg-secondary">{{ ex.grupo }}</span>
+    <div class="d-flex gap-1 align-items-center">
+      <span class="badge text-bg-secondary">{{ ex.grupo }}</span>
+      {% if ex.subgrupo %}<span class="badge text-bg-info">{{ ex.subgrupo }}</span>{% endif %}
+    </div>
   </div>
 </nav>
 
@@ -55,8 +58,8 @@
     <div class="card-body">
       <h4 class="mb-1">{{ ex.nome }}</h4>
       <div class="text-muted mb-3">
-        {{ ex.grupo }}
-        {% if ex.aparelho %}• Aparelho: {{ ex.aparelho }}{% endif %}
+        {{ ex.grupo }}{% if ex.subgrupo %} · {{ ex.subgrupo }}{% endif %}
+        {% if ex.aparelho %} • Aparelho: {{ ex.aparelho }}{% endif %}
       </div>
 
       <div class="row g-3">
