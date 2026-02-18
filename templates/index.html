@@ -56,7 +56,7 @@
 
     <div class="col-6 col-md-3">
       <label class="form-label mb-1">Aparelho</label>
-      <select class="form-select" name="aparelho">
+      <select class="form-select" name="aparelho" id="filtro-aparelho-biblioteca">
         <option value="">Todos</option>
         {% for a in aparelhos %}
           <option value="{{ a }}" {% if aparelho_selecionado == a %}selected{% endif %}>{{ a }}</option>
@@ -156,7 +156,9 @@
 <script>
   const filtroGrupoBiblioteca = document.getElementById('filtro-grupo-biblioteca');
   const filtroSubgrupoBiblioteca = document.getElementById('filtro-subgrupo-biblioteca');
+  const filtroAparelhoBiblioteca = document.getElementById('filtro-aparelho-biblioteca');
   const subgruposPorGrupoBiblioteca = {{ subgrupos_por_grupo|tojson }};
+  const aparelhosPorFiltrosBiblioteca = {{ aparelhos_por_filtros|tojson }};
 
   const atualizarSubgruposBiblioteca = () => {
     if (!filtroSubgrupoBiblioteca) return;
@@ -176,14 +178,50 @@
     }
   };
 
+  const atualizarAparelhosBiblioteca = () => {
+    if (!filtroAparelhoBiblioteca) return;
+
+    const grupoSelecionado = (filtroGrupoBiblioteca?.value || '').trim().toLowerCase();
+    const subgrupoSelecionado = (filtroSubgrupoBiblioteca?.value || '').trim().toLowerCase();
+    const aparelhoAtual = (filtroAparelhoBiblioteca.value || '').trim();
+
+    let aparelhosPermitidos = [];
+    if (grupoSelecionado && subgrupoSelecionado) {
+      const chave = `${grupoSelecionado}|||${subgrupoSelecionado}`;
+      aparelhosPermitidos = aparelhosPorFiltrosBiblioteca.por_grupo_subgrupo[chave]
+        || aparelhosPorFiltrosBiblioteca.por_subgrupo[subgrupoSelecionado]
+        || aparelhosPorFiltrosBiblioteca.por_grupo[grupoSelecionado]
+        || [];
+    } else if (grupoSelecionado) {
+      aparelhosPermitidos = aparelhosPorFiltrosBiblioteca.por_grupo[grupoSelecionado] || [];
+    } else if (subgrupoSelecionado) {
+      aparelhosPermitidos = aparelhosPorFiltrosBiblioteca.por_subgrupo[subgrupoSelecionado] || [];
+    } else {
+      aparelhosPermitidos = aparelhosPorFiltrosBiblioteca.todos || [];
+    }
+
+    const opcoesUnicas = [...new Set(aparelhosPermitidos)].sort((a, b) => a.localeCompare(b));
+    filtroAparelhoBiblioteca.innerHTML = '<option value="">Todos</option>' +
+      opcoesUnicas.map((aparelho) => `<option value="${aparelho}">${aparelho}</option>`).join('');
+
+    if (aparelhoAtual && opcoesUnicas.includes(aparelhoAtual)) {
+      filtroAparelhoBiblioteca.value = aparelhoAtual;
+    }
+  };
+
   filtroGrupoBiblioteca?.addEventListener('change', () => {
     atualizarSubgruposBiblioteca();
+  atualizarAparelhosBiblioteca();
     if (filtroSubgrupoBiblioteca) {
       filtroSubgrupoBiblioteca.value = '';
     }
+    atualizarAparelhosBiblioteca();
   });
 
+  filtroSubgrupoBiblioteca?.addEventListener('change', atualizarAparelhosBiblioteca);
+
   atualizarSubgruposBiblioteca();
+  atualizarAparelhosBiblioteca();
 </script>
 </body>
 </html>

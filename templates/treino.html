@@ -359,6 +359,7 @@
   const filtroSubgrupo = document.getElementById('filtro-subgrupo');
   const filtroAparelho = document.getElementById('filtro-aparelho');
   const subgruposPorGrupoTreino = {{ subgrupos_por_grupo|tojson }};
+  const aparelhosPorFiltrosTreino = {{ aparelhos_por_filtros_treino|tojson }};
   const contadorExercicios = document.getElementById('contador-exercicios');
   const filtroFavoritosTreino = document.getElementById('filtro-favoritos-treino');
   const aplicarFiltrosBtn = document.getElementById('aplicar-filtros-btn');
@@ -385,6 +386,38 @@
 
     if (subgrupoAtual && opcoesUnicas.map((item) => item.toLowerCase()).includes(subgrupoAtual.toLowerCase())) {
       filtroSubgrupo.value = subgrupoAtual.toLowerCase();
+    }
+  };
+
+
+  const atualizarOpcoesAparelhoTreino = () => {
+    if (!filtroAparelho) return;
+
+    const grupoSelecionado = (filtroGrupo?.value || '').trim().toLowerCase();
+    const subgrupoSelecionado = (filtroSubgrupo?.value || '').trim().toLowerCase();
+    const aparelhoAtual = (filtroAparelho.value || '').trim();
+
+    let aparelhosPermitidos = [];
+    if (grupoSelecionado && subgrupoSelecionado) {
+      const chave = `${grupoSelecionado}|||${subgrupoSelecionado}`;
+      aparelhosPermitidos = aparelhosPorFiltrosTreino.por_grupo_subgrupo[chave]
+        || aparelhosPorFiltrosTreino.por_subgrupo[subgrupoSelecionado]
+        || aparelhosPorFiltrosTreino.por_grupo[grupoSelecionado]
+        || [];
+    } else if (grupoSelecionado) {
+      aparelhosPermitidos = aparelhosPorFiltrosTreino.por_grupo[grupoSelecionado] || [];
+    } else if (subgrupoSelecionado) {
+      aparelhosPermitidos = aparelhosPorFiltrosTreino.por_subgrupo[subgrupoSelecionado] || [];
+    } else {
+      aparelhosPermitidos = aparelhosPorFiltrosTreino.todos || [];
+    }
+
+    const opcoesUnicas = [...new Set(aparelhosPermitidos)].sort((a, b) => a.localeCompare(b));
+    filtroAparelho.innerHTML = '<option value="">Todos os aparelhos</option>' +
+      opcoesUnicas.map((aparelho) => `<option value="${aparelho.toLowerCase()}">${aparelho}</option>`).join('');
+
+    if (aparelhoAtual && opcoesUnicas.map((item) => item.toLowerCase()).includes(aparelhoAtual.toLowerCase())) {
+      filtroAparelho.value = aparelhoAtual.toLowerCase();
     }
   };
 
@@ -585,9 +618,13 @@
   filtroGrupo?.addEventListener('change', () => {
     atualizarOpcoesSubgrupoTreino();
     if (filtroSubgrupo) filtroSubgrupo.value = '';
+    atualizarOpcoesAparelhoTreino();
     aplicarFiltros();
   });
-  filtroSubgrupo?.addEventListener('change', aplicarFiltros);
+  filtroSubgrupo?.addEventListener('change', () => {
+    atualizarOpcoesAparelhoTreino();
+    aplicarFiltros();
+  });
   filtroAparelho?.addEventListener('change', aplicarFiltros);
   filtroFavoritosTreino?.addEventListener('change', aplicarFiltros);
   aplicarFiltrosBtn?.addEventListener('click', aplicarFiltros);
@@ -596,12 +633,15 @@
     if (filtroSubgrupo) filtroSubgrupo.value = '';
     if (filtroAparelho) filtroAparelho.value = '';
     if (filtroFavoritosTreino) filtroFavoritosTreino.checked = false;
+    atualizarOpcoesSubgrupoTreino();
+    atualizarOpcoesAparelhoTreino();
     aplicarFiltros();
   });
 
   renderListaTreino();
   atualizarHiddenInputs();
   atualizarOpcoesSubgrupoTreino();
+  atualizarOpcoesAparelhoTreino();
   aplicarFiltros();
 </script>
 

@@ -422,6 +422,51 @@ def obter_subgrupos_por_grupo(exercicios):
     return {chave: sorted(subgrupos) for chave, subgrupos in mapeamento.items()}
 
 
+def obter_aparelhos_por_filtros(exercicios):
+    """Mapeia aparelhos por grupo/subgrupo para filtros dinâmicos."""
+    if not isinstance(exercicios, list):
+        return {
+            "todos": [],
+            "por_grupo": {},
+            "por_subgrupo": {},
+            "por_grupo_subgrupo": {},
+        }
+
+    todos = set()
+    por_grupo = {}
+    por_subgrupo = {}
+    por_grupo_subgrupo = {}
+
+    for ex in exercicios:
+        if not isinstance(ex, dict):
+            continue
+
+        aparelho = (ex.get("aparelho") or "").strip()
+        if not aparelho:
+            continue
+
+        grupo = (ex.get("grupo") or "").strip().lower()
+        subgrupo = (ex.get("subgrupo") or "").strip().lower()
+        todos.add(aparelho)
+
+        if grupo:
+            por_grupo.setdefault(grupo, set()).add(aparelho)
+        if subgrupo:
+            por_subgrupo.setdefault(subgrupo, set()).add(aparelho)
+        if grupo and subgrupo:
+            chave = f"{grupo}|||{subgrupo}"
+            por_grupo_subgrupo.setdefault(chave, set()).add(aparelho)
+
+    return {
+        "todos": sorted(todos),
+        "por_grupo": {chave: sorted(aparelhos) for chave, aparelhos in por_grupo.items()},
+        "por_subgrupo": {chave: sorted(aparelhos) for chave, aparelhos in por_subgrupo.items()},
+        "por_grupo_subgrupo": {
+            chave: sorted(aparelhos) for chave, aparelhos in por_grupo_subgrupo.items()
+        },
+    }
+
+
 def index_por_id(exercicios):
     """Mapa id -> exercício."""
     return {ex["id"]: ex for ex in exercicios if ex.get("id")}
@@ -629,7 +674,8 @@ def index():
     grupos = obter_grupos_validos(exercicios)
     subgrupos = obter_subgrupos_validos(exercicios)
     subgrupos_por_grupo = obter_subgrupos_por_grupo(exercicios)
-    aparelhos = sorted({(ex.get("aparelho") or "").strip() for ex in exercicios if ex.get("aparelho")})
+    aparelhos_por_filtros = obter_aparelhos_por_filtros(exercicios)
+    aparelhos = aparelhos_por_filtros["todos"]
 
     filtrados = []
     for ex in exercicios:
@@ -669,6 +715,7 @@ def index():
         grupos=grupos,
         subgrupos=subgrupos,
         subgrupos_por_grupo=subgrupos_por_grupo,
+        aparelhos_por_filtros=aparelhos_por_filtros,
         aparelhos=aparelhos,
         q=request.args.get("q") or "",
         grupo_selecionado=request.args.get("grupo") or "",
@@ -930,7 +977,8 @@ def montar_treino():
 
     grupos = grupos if isinstance(grupos, list) else []
     opcoes_musculos = sorted(set(grupos) | set(MUSCULOS_ALVO_PADRAO), key=lambda nome: nome.lower())
-    aparelhos_treino = sorted({(ex.get("aparelho") or "").strip() for ex in exercicios if (ex.get("aparelho") or "").strip()})
+    aparelhos_por_filtros_treino = obter_aparelhos_por_filtros(exercicios)
+    aparelhos_treino = aparelhos_por_filtros_treino["todos"]
     exercicios.sort(
         key=lambda ex: (
             0 if ex.get("id") in favoritos_admin else 1,
@@ -947,6 +995,7 @@ def montar_treino():
         grupos=grupos,
         subgrupos=subgrupos,
         subgrupos_por_grupo=subgrupos_por_grupo,
+        aparelhos_por_filtros_treino=aparelhos_por_filtros_treino,
         musculos_opcoes=opcoes_musculos,
         aparelhos_treino=aparelhos_treino,
         tipos_treino=tipos_treino,
