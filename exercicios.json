@@ -2,7 +2,8 @@
   {
     "id": "agachamento",
     "nome": "Agachamento",
-    "grupo": "Glúteos",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Glúteos",
     "midia": "/static/exercicios/gluteos/gluteo_agachamento_livre.gif",
     "dicas": [
       "Desça controlando (2–3s)",
@@ -20,7 +21,8 @@
   {
     "id": "elevacao_pelvica",
     "nome": "Elevação Pélvica (Hip Thrust)",
-    "grupo": "Glúteos",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Glúteos",
     "midia": "/static/exercicios/gluteos/gluteo_elevação_pelvica.mp4",
     "dicas": [
       "Pausa de 1–2s no topo",
@@ -33,12 +35,13 @@
       "Pés muito longe do corpo"
     ],
     "observacoes": "",
-    "aparelho": "Banco + barra/halter"
+    "aparelho": "Barra"
   },
   {
     "id": "afundo",
     "nome": "Afundo (Lunge)",
-    "grupo": "Glúteos",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Glúteos",
     "midia": "/static/exercicios/gluteos/gluteo_afundo_lunge.mp4",
     "dicas": [
       "Passo mais longo = mais glúteo",
@@ -56,7 +59,8 @@
   {
     "id": "sumo",
     "nome": "Agachamento Sumô",
-    "grupo": "Glúteos",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Glúteos",
     "midia": "/static/exercicios/gluteos/gluteos_sumo_halteres.mp4",
     "dicas": [
       "Pés abertos e pontas para fora",
@@ -74,7 +78,8 @@
   {
     "id": "extensao_cabo",
     "nome": "Extensão no Cabo",
-    "grupo": "Glúteos",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Glúteos",
     "midia": "/static/exercicios/gluteos/gluteo_extensao_cabo.gif",
     "dicas": [
       "Contração no final do movimento",
@@ -92,7 +97,8 @@
   {
     "id": "levantamento_terra",
     "nome": "Levantamento Terra (Romeno/Stiff)",
-    "grupo": "Glúteos",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Glúteos",
     "midia": "/static/exercicios/gluteos/gluteos_levantamento_terra_romeno.mp4",
     "dicas": [
       "Quadril para trás",
@@ -105,12 +111,13 @@
       "Descer além da mobilidade com perda de forma"
     ],
     "observacoes": "",
-    "aparelho": "Barra ou halteres"
+    "aparelho": "Barra"
   },
   {
     "id": "cadeira_abdutora",
     "nome": "Cadeira Abdutora",
-    "grupo": "Glúteos",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Glúteos",
     "midia": "/static/exercicios/gluteos/gluteo_cadeira_abdutora.mp4",
     "dicas": [
       "Incline o tronco levemente à frente",
@@ -128,7 +135,8 @@
   {
     "id": "elevacao_lateral",
     "nome": "Elevação de Perna Lateral",
-    "grupo": "Glúteos",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Glúteos",
     "midia": "/static/exercicios/gluteos/gluteos_elevacao_lateral.gif",
     "dicas": [
       "Pés alinhados",
@@ -146,7 +154,8 @@
   {
     "id": "ponte_unilateral",
     "nome": "Ponte com Elevação de Perna",
-    "grupo": "Glúteos",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Glúteos",
     "midia": "/static/exercicios/gluteos/gluteo_ponte_elevacao_perna.mp4",
     "dicas": [
       "Quadril nivelado",
@@ -163,8 +172,9 @@
   },
   {
     "id": "supino_reto_barra",
-    "nome": "Supino Reto (Barra ou Halteres)",
-    "grupo": "Peito",
+    "nome": "Supino Reto (Barra)",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Peito",
     "midia": "/static/exercicios/peito/peito_supino_reto_barra.mp4",
     "dicas": [
       "Mantenha os pés firmes no chão",
@@ -177,12 +187,13 @@
       "Quicar a barra"
     ],
     "observacoes": "3–4 séries • Treino Superior A",
-    "aparelho": "Barra ou halteres"
+    "aparelho": "Barra"
   },
   {
     "id": "costas_remada_curvada",
     "nome": "Remada Curvada (Barra)",
-    "grupo": "Costas",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Costas",
     "midia": "/static/exercicios/costas/costas_remada_curvada.mp4",
     "dicas": [
       "Mantenha a coluna neutra",
@@ -200,7 +211,8 @@
   {
     "id": "peito_supino_inclinado_halteres",
     "nome": "Supino Inclinado (Halteres)",
-    "grupo": "Peito",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Peito",
     "midia": "/static/exercicios/peito/peito_supino_inclinado_halteres.mp4",
     "dicas": [
       "Mantenha o banco entre 30° e 45°",
@@ -213,13 +225,14 @@
       "Descer rápido sem controle"
     ],
     "observacoes": "3 séries • Ênfase em peito superior",
-    "aparelho": "Halteres + banco inclinado"
+    "aparelho": "Halteres"
   },
   {
     "id": "costas_puxada_alta_pulldown",
     "nome": "Puxada Alta (Pulldown)",
-    "grupo": "Costas",
-    "subgrupo": "Largura",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Costas",
+    "foco": "Largura",
     "midia": "/static/exercicios/costas/costas_puxada_alta_pulldown.mp4",
     "dicas": [
       "Puxe com os cotovelos",
@@ -237,8 +250,9 @@
   {
     "id": "triceps_extensao_polia_alta",
     "nome": "Extensão de Tríceps na Polia Alta",
-    "grupo": "Tríceps",
-    "subgrupo": "Cabeça Lateral / Medial",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Tríceps",
+    "foco": "Cabeça Lateral / Medial",
     "midia": "/static/exercicios/triceps/triceps_extensao_polia_alta.mp4",
     "dicas": [
       "Mantenha os cotovelos fixos",
@@ -256,8 +270,9 @@
   {
     "id": "triceps_extensao_frente",
     "nome": "Extensão de Tríceps à Frente (Polia)",
-    "grupo": "Tríceps",
-    "subgrupo": "Cabeça Longa",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Tríceps",
+    "foco": "Cabeça Longa",
     "midia": "/static/exercicios/triceps/triceps_extensao_frente.mp4",
     "dicas": [
       "Mantenha os cotovelos estáveis durante toda a execução",
@@ -275,8 +290,9 @@
   {
     "id": "costas_remada_v_cabo",
     "nome": "Remada em V com Cabo",
-    "grupo": "Costas",
-    "subgrupo": "Espessura",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Costas",
+    "foco": "Espessura",
     "midia": "/static/exercicios/costas/costas_remada_v_cabo.gif",
     "dicas": [
       "Coluna neutra e peito aberto",
@@ -301,8 +317,9 @@
   {
     "id": "costas_puxada_supinada_fechada",
     "nome": "Puxada Lat Inversa na Máquina (Pegada Fechada)",
-    "grupo": "Costas",
-    "subgrupo": "Largura",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Costas",
+    "foco": "Largura",
     "midia": "/static/exercicios/costas/costas_puxada_supinada_fechada.gif",
     "musculos_secundarios": [
       "Bíceps",
@@ -328,429 +345,452 @@
     "observacoes": "",
     "aparelho": "Cabo/Polia"
   },
-{
-  "id": "costas_pullover_cabo",
-  "nome": "Pullover no Cabo (Braços Estendidos)",
-  "grupo": "Costas",
-  "subgrupo": "Largura",
-  "midia": "/static/exercicios/costas/costas_pullover_crossover_braco_estendido.mp4",
-  "dicas": [
-    "Mantenha os braços quase estendidos",
-    "Inicie o movimento pelas costas, não pelos braços",
-    "Desça controlando até a linha do quadril"
-  ],
-  "erros": [
-    "Dobrar demais os cotovelos (vira tríceps)",
-    "Usar impulso do tronco",
-    "Soltar o peso rápido"
-  ],
-  "observacoes": "Excelente para ativação de dorsais e conexão mente-músculo",
-  "aparelho": "Cabo/Polia"
-},
-{
-  "id": "abd_wheel_rollout",
-  "nome": "Abdominal com Roda (Wheel Rollout)",
-  "grupo": "Abdômen",
-  "subgrupo": "Core / Estabilidade",
-  "midia": "/static/exercicios/abdomen/abd_wheel_rollout.mp4",
-  "dicas": [
-    "Mantenha o abdômen contraído durante todo o movimento",
-    "Evite arquear a lombar",
-    "Desça apenas até onde conseguir manter controle"
-  ],
-  "erros": [
-    "Hiperextender a lombar",
-    "Soltar o abdômen na fase excêntrica",
-    "Descer além da capacidade de controle"
-  ],
-  "observacoes": "Exercício avançado para fortalecimento do core",
-  "aparelho": "Roda Abdominal"
-},
-{
-  "id": "abd_wheel_rollout_pe",
-  "nome": "Abdominal com Roda em Pé (Standing Wheel Rollout)",
-  "grupo": "Abdômen",
-  "subgrupo": "Core / Anti-extensão",
-  "midia": "/static/exercicios/abdomen/abd_wheel_rollout_pe.mp4",
-  "dicas": [
-    "Contraia o abdômen antes de iniciar o movimento",
-    "Mantenha a coluna neutra durante toda a execução",
-    "Desça apenas até onde conseguir manter controle total"
-  ],
-  "erros": [
-    "Hiperextender a lombar",
-    "Perder a ativação do core",
-    "Descer além da capacidade de retorno"
-  ],
-  "observacoes": "Versão avançada do wheel rollout. Exige alto controle do core.",
-  "aparelho": "Roda Abdominal"
-},
-{
-  "id": "plataforma_vibratoria_em_pe",
-  "nome": "Permanência em Pé na Plataforma Vibratória",
-  "grupo": "Coxas",
-  "subgrupo": "Estabilidade / Ativação",
-  "midia": "/static/exercicios/pernas/plataforma_vibratoria_em_pe.mp4",
-  "dicas": [
-    "Mantenha os joelhos levemente flexionados",
-    "Ative o abdômen durante a vibração",
-    "Distribua o peso igualmente entre os pés"
-  ],
-  "erros": [
-    "Travar completamente os joelhos",
-    "Relaxar totalmente o core",
-    "Inclinar o corpo excessivamente para frente"
-  ],
-  "observacoes": "Exercício de ativação muscular e estímulo neuromuscular.",
-  "aparelho": "Plataforma Vibratória"
-},
-{
-  "id": "plataforma_vibratoria_afundo",
-  "nome": "Afundo na Plataforma Vibratória",
-  "grupo": "Coxas",
-  "subgrupo": "Quadríceps",
-  "midia": "/static/exercicios/pernas/plataforma_vibratoria_afundo.mp4",
-  "dicas": [
-    "Mantenha o joelho alinhado com o pé",
-    "Controle a descida",
-    "Mantenha o core ativado durante o movimento"
-  ],
-  "erros": [
-    "Deixar o joelho ultrapassar excessivamente a ponta do pé",
-    "Perder equilíbrio por falta de controle",
-    "Descer rápido sem estabilização"
-  ],
-  "observacoes": "Exercício que combina estímulo vibratório com trabalho de força para quadríceps.",
-  "aparelho": "Plataforma Vibratória"
-},
-{
-  "id": "plataforma_vibratoria_prancha",
-  "nome": "Prancha na Plataforma Vibratória",
-  "grupo": "Abdômen",
-  "subgrupo": "Core / Estabilidade",
-  "midia": "/static/exercicios/abdomen/plataforma_vibratoria_prancha.mp4",
-  "dicas": [
-    "Mantenha o corpo alinhado dos ombros aos calcanhares",
-    "Ative o abdômen e glúteos durante toda a execução",
-    "Evite deixar o quadril cair"
-  ],
-  "erros": [
-    "Arquear a lombar",
-    "Elevar demais o quadril",
-    "Relaxar o core durante a vibração"
-  ],
-  "observacoes": "Exercício isométrico com estímulo vibratório que aumenta a ativação do core.",
-  "aparelho": "Plataforma Vibratória"
-},
-{
-  "id": "terra_barra_hexagonal",
-  "nome": "Levantamento Terra com Barra Hexagonal (Trap Bar)",
-  "grupo": "Pernas",
-  "subgrupo": "Glúteos / Quadríceps",
-  "midia": "/static/exercicios/pernas/terra_barra_hexagonal.mp4",
-  "dicas": [
-    "Mantenha o peito aberto e coluna neutra",
-    "Empurre o chão com os pés",
-    "Suba mantendo o tronco alinhado"
-  ],
-  "erros": [
-    "Arredondar a lombar",
-    "Subir puxando apenas com as costas",
-    "Descer sem controle"
-  ],
-  "observacoes": "Variante do levantamento terra com menor sobrecarga lombar e maior recrutamento de quadríceps.",
-  "aparelho": "Barra Hexagonal"
-},
-{
-  "id": "encolhimento_barra_hexagonal",
-  "nome": "Encolhimento de Ombros com Barra Hexagonal (Trap Bar)",
-  "grupo": "Costas",
-  "subgrupo": "Trapézio",
-  "midia": "/static/exercicios/costas/encolhimento_barra_hexagonal.mp4",
-  "dicas": [
-    "Mantenha os braços estendidos",
-    "Eleve os ombros verticalmente",
-    "Segure 1 segundo no topo"
-  ],
-  "erros": [
-    "Girar os ombros para trás (não é movimento circular)",
-    "Dobrar os cotovelos",
-    "Usar impulso do corpo"
-  ],
-  "observacoes": "Exercício isolador para trapézio superior com alta capacidade de carga.",
-  "aparelho": "Barra Hexagonal"
-},
-{
-  "id": "farmers_carry_barra_hexagonal",
-  "nome": "Caminhada do Fazendeiro com Barra Hexagonal (Trap Bar)",
-  "grupo": "Corpo Inteiro",
-  "subgrupo": "Core / Estabilidade",
-  "midia": "/static/exercicios/pernas/farmers_carry_barra_hexagonal.mp4",
-  "dicas": [
-    "Mantenha o peito aberto e postura ereta",
-    "Contraia o abdômen durante toda a caminhada",
-    "Dê passos curtos e controlados"
-  ],
-  "erros": [
-    "Curvar a coluna",
-    "Inclinar excessivamente o tronco",
-    "Deixar os ombros caírem"
-  ],
-  "observacoes": "Exercício funcional para força global, pegada e estabilidade do core.",
-  "aparelho": "Barra Hexagonal"
-},
-{
-  "id": "remada_curvada_barra_hexagonal",
-  "nome": "Remada Curvada com Barra Hexagonal (Trap Bar)",
-  "grupo": "Costas",
-  "subgrupo": "Espessura",
-  "midia": "/static/exercicios/costas/remada_curvada_barra_hexagonal.mp4",
-  "dicas": [
-    "Mantenha a coluna neutra",
-    "Puxe com os cotovelos",
-    "Contraia as escápulas no final do movimento"
-  ],
-  "erros": [
-    "Arredondar a lombar",
-    "Usar impulso excessivo",
-    "Subir o tronco durante a puxada"
-  ],
-  "observacoes": "Variante da remada curvada com pegada neutra, proporcionando maior estabilidade.",
-  "aparelho": "Barra Hexagonal"
-},
-{
-  "id": "desenvolvimento_barra_hexagonal",
-  "nome": "Desenvolvimento Acima da Cabeça com Barra Hexagonal (Trap Bar)",
-  "grupo": "Ombros",
-  "subgrupo": "Deltoide Anterior",
-  "midia": "/static/exercicios/ombros/desenvolvimento_barra_hexagonal.mp4",
-  "dicas": [
-    "Mantenha o abdômen contraído",
-    "Empurre a barra verticalmente",
-    "Evite arquear excessivamente a lombar"
-  ],
-  "erros": [
-    "Hiperextender a coluna",
-    "Abrir demais os cotovelos",
-    "Usar impulso das pernas"
-  ],
-  "observacoes": "Variante com pegada neutra que reduz o estresse nos ombros.",
-  "aparelho": "Barra Hexagonal"
-},
-{
-  "id": "step_up_banco",
-  "nome": "Step-up no Banco",
-  "grupo": "Pernas",
-  "subgrupo": "Glúteos / Quadríceps",
-  "midia": "/static/exercicios/pernas/step_up_banco.mp4",
-  "dicas": [
-    "Empurre pelo calcanhar da perna que sobe",
-    "Mantenha o tronco alinhado",
-    "Controle a descida"
-  ],
-  "erros": [
-    "Impulsionar com a perna de trás",
-    "Inclinar excessivamente o tronco",
-    "Descer rápido sem controle"
-  ],
-  "observacoes": "Exercício unilateral excelente para força e estabilidade.",
-  "aparelho": "Peso corporal"
-},
-{
-  "id": "terra_halteres",
-  "nome": "Levantamento Terra com Halteres",
-  "grupo": "Pernas",
-  "subgrupo": "Glúteos / Posterior de Coxa",
-  "midia": "/static/exercicios/pernas/terra_halteres.mp4",
-  "dicas": [
-    "Empurre o quadril para trás",
-    "Mantenha a coluna neutra",
-    "Desça controlando o movimento"
-  ],
-  "erros": [
-    "Arredondar a lombar",
-    "Dobrar demais os joelhos",
-    "Subir puxando apenas com as costas"
-  ],
-  "observacoes": "Variante do levantamento terra utilizando halteres.",
-  "aparelho": "Halteres"
-},
-{
-  "id": "supino_declinado_barra",
-  "nome": "Supino Declinado com Barra",
-  "grupo": "Peito",
-  "subgrupo": "Peito Inferior",
-  "midia": "/static/exercicios/peito/supino_declinado_barra.mp4",
-  "dicas": [
-    "Mantenha escápulas retraídas",
-    "Controle a descida",
-    "Empurre a barra de forma estável"
-  ],
-  "erros": [
-    "Deixar a barra subir desalinhada",
-    "Perder tensão no abdômen",
-    "Descer rápido demais"
-  ],
-  "observacoes": "Ênfase em porção inferior do peitoral.",
-  "aparelho": "Barra"
-},
-{
-  "id": "supino_pegada_fechada",
-  "nome": "Supino com Pegada Fechada",
-  "grupo": "Peito",
-  "subgrupo": "Peito / Tríceps",
-  "midia": "/static/exercicios/peito/supino_pegada_fechada.mp4",
-  "dicas": [
-    "Mantenha os cotovelos próximos ao corpo",
-    "Controle a descida",
-    "Estenda completamente os braços"
-  ],
-  "erros": [
-    "Abrir excessivamente os cotovelos",
-    "Tirar os pés do chão",
-    "Quicar a barra"
-  ],
-  "observacoes": "Maior ativação de tríceps.",
-  "aparelho": "Barra"
-},
-{
-  "id": "supino_pegada_aberta",
-  "nome": "Supino com Pegada Aberta",
-  "grupo": "Peito",
-  "subgrupo": "Peito",
-  "midia": "/static/exercicios/peito/supino_pegada_aberta.mp4",
-  "dicas": [
-    "Mantenha controle da barra",
-    "Desça até linha média do peito",
-    "Estabilize as escápulas"
-  ],
-  "erros": [
-    "Exagerar na largura da pegada",
-    "Perder estabilidade do ombro",
-    "Descer rápido demais"
-  ],
-  "observacoes": "Ênfase maior no peitoral.",
-  "aparelho": "Barra"
-},
-{
-  "id": "supino_chao_barra",
-  "nome": "Supino no Chão (Floor Press)",
-  "grupo": "Peito",
-  "subgrupo": "Peito / Tríceps",
-  "midia": "/static/exercicios/peito/supino_chao_barra.mp4",
-  "dicas": [
-    "Mantenha os cotovelos controlados",
-    "Pause levemente no chão",
-    "Empurre de forma explosiva"
-  ],
-  "erros": [
-    "Relaxar completamente os braços no chão",
-    "Arqueamento excessivo",
-    "Perder estabilidade"
-  ],
-  "observacoes": "Reduz amplitude e protege ombros.",
-  "aparelho": "Barra"
-},
-{
-  "id": "larsen_press",
-  "nome": "Larsen Press",
-  "grupo": "Peito",
-  "subgrupo": "Peito",
-  "midia": "/static/exercicios/peito/larsen_press.mp4",
-  "dicas": [
-    "Mantenha os pés suspensos",
-    "Controle total da barra",
-    "Ative o core durante a execução"
-  ],
-  "erros": [
-    "Perder estabilidade",
-    "Deixar a barra subir desalinhada",
-    "Relaxar o abdômen"
-  ],
-  "observacoes": "Remove ajuda das pernas aumentando exigência do peitoral.",
-  "aparelho": "Barra"
-},
-{
-  "id": "afundo_barra",
-  "nome": "Afundo com Barra",
-  "grupo": "Pernas",
-  "subgrupo": "Glúteos / Quadríceps",
-  "midia": "/static/exercicios/pernas/afundo_barra.mp4",
-  "dicas": [
-    "Passo longo para maior ativação de glúteos",
-    "Mantenha o tronco ereto",
-    "Desça controlando"
-  ],
-  "erros": [
-    "Passo curto demais",
-    "Joelho colapsando",
-    "Inclinar excessivamente o tronco"
-  ],
-  "observacoes": "Versão com barra do afundo tradicional.",
-  "aparelho": "Barra"
-},
-{
-  "id": "agachamento_cossack_barra",
-  "nome": "Agachamento Cossack com Barra",
-  "grupo": "Pernas",
-  "subgrupo": "Glúteos / Quadríceps / Adutores",
-  "midia": "/static/exercicios/pernas/agachamento_cossack_barra.mp4",
-  "dicas": [
-    "Desça mantendo o calcanhar no chão",
-    "Empurre o joelho para fora",
-    "Mantenha o tronco ereto"
-  ],
-  "erros": [
-    "Tirar o calcanhar do chão",
-    "Arredondar as costas",
-    "Descer sem controle"
-  ],
-  "observacoes": "Exercício unilateral lateral com grande exigência de mobilidade.",
-  "aparelho": "Barra"
-},
-{
-  "id": "agachamento_frontal_halter",
-  "nome": "Agachamento Frontal com Halter",
-  "grupo": "Pernas",
-  "subgrupo": "Glúteos / Quadríceps",
-  "midia": "/static/exercicios/pernas/agachamento_frontal_halter.mp4",
-  "dicas": [
-    "Mantenha o halter próximo ao peito",
-    "Cotovelos altos e tronco ereto",
-    "Desça controlando o movimento"
-  ],
-  "erros": [
-    "Inclinar excessivamente o tronco",
-    "Descer rápido sem controle",
-    "Tirar os calcanhares do chão"
-  ],
-  "observacoes": "Versão frontal aumenta demanda de core e postura.",
-  "aparelho": "Halter"
-},
-{
-  "id": "terra_romeno_marcha_halter",
-  "nome": "Levantamento Terra Romeno com Halteres em Marcha",
-  "grupo": "Quadril",
-  "subgrupo": "Glúteos / Posterior de coxa / Estabilidade",
-  "midia": "/static/exercicios/gluteos/terra_romeno_marcha_halter.mp4",
-  "dicas": [
-    "Quadril vai para trás a cada passo",
-    "Mantenha a coluna neutra",
-    "Passos curtos e controlados"
-  ],
-  "erros": [
-    "Arredondar as costas",
-    "Perder equilíbrio por pressa",
-    "Flexionar demais os joelhos"
-  ],
-  "observacoes": "Exercício avançado para cadeia posterior e core.",
-  "aparelho": "Halteres"
-},
-{
+  {
+    "id": "costas_pullover_cabo",
+    "nome": "Pullover no Cabo (Braços Estendidos)",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Costas",
+    "foco": "Largura",
+    "midia": "/static/exercicios/costas/costas_pullover_crossover_braco_estendido.mp4",
+    "dicas": [
+      "Mantenha os braços quase estendidos",
+      "Inicie o movimento pelas costas, não pelos braços",
+      "Desça controlando até a linha do quadril"
+    ],
+    "erros": [
+      "Dobrar demais os cotovelos (vira tríceps)",
+      "Usar impulso do tronco",
+      "Soltar o peso rápido"
+    ],
+    "observacoes": "Excelente para ativação de dorsais e conexão mente-músculo",
+    "aparelho": "Cabo/Polia"
+  },
+  {
+    "id": "abd_wheel_rollout",
+    "nome": "Abdominal com Roda (Wheel Rollout)",
+    "grupo": "Tronco",
+    "subgrupo": "Abdômen",
+    "foco": "Core / Estabilidade",
+    "midia": "/static/exercicios/abdomen/abd_wheel_rollout.mp4",
+    "dicas": [
+      "Mantenha o abdômen contraído durante todo o movimento",
+      "Evite arquear a lombar",
+      "Desça apenas até onde conseguir manter controle"
+    ],
+    "erros": [
+      "Hiperextender a lombar",
+      "Soltar o abdômen na fase excêntrica",
+      "Descer além da capacidade de controle"
+    ],
+    "observacoes": "Exercício avançado para fortalecimento do core",
+    "aparelho": "Roda Abdominal"
+  },
+  {
+    "id": "abd_wheel_rollout_pe",
+    "nome": "Abdominal com Roda em Pé (Standing Wheel Rollout)",
+    "grupo": "Tronco",
+    "subgrupo": "Abdômen",
+    "foco": "Core / Anti-extensão",
+    "midia": "/static/exercicios/abdomen/abd_wheel_rollout_pe.mp4",
+    "dicas": [
+      "Contraia o abdômen antes de iniciar o movimento",
+      "Mantenha a coluna neutra durante toda a execução",
+      "Desça apenas até onde conseguir manter controle total"
+    ],
+    "erros": [
+      "Hiperextender a lombar",
+      "Perder a ativação do core",
+      "Descer além da capacidade de retorno"
+    ],
+    "observacoes": "Versão avançada do wheel rollout. Exige alto controle do core.",
+    "aparelho": "Roda Abdominal"
+  },
+  {
+    "id": "plataforma_vibratoria_em_pe",
+    "nome": "Permanência em Pé na Plataforma Vibratória",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Coxas",
+    "foco": "Estabilidade / Ativação",
+    "midia": "/static/exercicios/pernas/plataforma_vibratoria_em_pe.mp4",
+    "dicas": [
+      "Mantenha os joelhos levemente flexionados",
+      "Ative o abdômen durante a vibração",
+      "Distribua o peso igualmente entre os pés"
+    ],
+    "erros": [
+      "Travar completamente os joelhos",
+      "Relaxar totalmente o core",
+      "Inclinar o corpo excessivamente para frente"
+    ],
+    "observacoes": "Exercício de ativação muscular e estímulo neuromuscular.",
+    "aparelho": "Plataforma Vibratória"
+  },
+  {
+    "id": "plataforma_vibratoria_afundo",
+    "nome": "Afundo na Plataforma Vibratória",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Coxas",
+    "foco": "Quadríceps",
+    "midia": "/static/exercicios/pernas/plataforma_vibratoria_afundo.mp4",
+    "dicas": [
+      "Mantenha o joelho alinhado com o pé",
+      "Controle a descida",
+      "Mantenha o core ativado durante o movimento"
+    ],
+    "erros": [
+      "Deixar o joelho ultrapassar excessivamente a ponta do pé",
+      "Perder equilíbrio por falta de controle",
+      "Descer rápido sem estabilização"
+    ],
+    "observacoes": "Exercício que combina estímulo vibratório com trabalho de força para quadríceps.",
+    "aparelho": "Plataforma Vibratória"
+  },
+  {
+    "id": "plataforma_vibratoria_prancha",
+    "nome": "Prancha na Plataforma Vibratória",
+    "grupo": "Tronco",
+    "subgrupo": "Abdômen",
+    "foco": "Core / Estabilidade",
+    "midia": "/static/exercicios/abdomen/plataforma_vibratoria_prancha.mp4",
+    "dicas": [
+      "Mantenha o corpo alinhado dos ombros aos calcanhares",
+      "Ative o abdômen e glúteos durante toda a execução",
+      "Evite deixar o quadril cair"
+    ],
+    "erros": [
+      "Arquear a lombar",
+      "Elevar demais o quadril",
+      "Relaxar o core durante a vibração"
+    ],
+    "observacoes": "Exercício isométrico com estímulo vibratório que aumenta a ativação do core.",
+    "aparelho": "Plataforma Vibratória"
+  },
+  {
+    "id": "terra_barra_hexagonal",
+    "nome": "Levantamento Terra com Barra Hexagonal (Trap Bar)",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Pernas",
+    "foco": "Glúteos / Quadríceps",
+    "midia": "/static/exercicios/pernas/terra_barra_hexagonal.mp4",
+    "dicas": [
+      "Mantenha o peito aberto e coluna neutra",
+      "Empurre o chão com os pés",
+      "Suba mantendo o tronco alinhado"
+    ],
+    "erros": [
+      "Arredondar a lombar",
+      "Subir puxando apenas com as costas",
+      "Descer sem controle"
+    ],
+    "observacoes": "Variante do levantamento terra com menor sobrecarga lombar e maior recrutamento de quadríceps.",
+    "aparelho": "Barra Hexagonal"
+  },
+  {
+    "id": "encolhimento_barra_hexagonal",
+    "nome": "Encolhimento de Ombros com Barra Hexagonal (Trap Bar)",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Costas",
+    "foco": "Trapézio",
+    "midia": "/static/exercicios/costas/encolhimento_barra_hexagonal.mp4",
+    "dicas": [
+      "Mantenha os braços estendidos",
+      "Eleve os ombros verticalmente",
+      "Segure 1 segundo no topo"
+    ],
+    "erros": [
+      "Girar os ombros para trás (não é movimento circular)",
+      "Dobrar os cotovelos",
+      "Usar impulso do corpo"
+    ],
+    "observacoes": "Exercício isolador para trapézio superior com alta capacidade de carga.",
+    "aparelho": "Barra Hexagonal"
+  },
+  {
+    "id": "farmers_carry_barra_hexagonal",
+    "nome": "Caminhada do Fazendeiro com Barra Hexagonal (Trap Bar)",
+    "grupo": "Corpo Inteiro",
+    "subgrupo": "Corpo Inteiro",
+    "foco": "Core / Estabilidade",
+    "midia": "/static/exercicios/pernas/farmers_carry_barra_hexagonal.mp4",
+    "dicas": [
+      "Mantenha o peito aberto e postura ereta",
+      "Contraia o abdômen durante toda a caminhada",
+      "Dê passos curtos e controlados"
+    ],
+    "erros": [
+      "Curvar a coluna",
+      "Inclinar excessivamente o tronco",
+      "Deixar os ombros caírem"
+    ],
+    "observacoes": "Exercício funcional para força global, pegada e estabilidade do core.",
+    "aparelho": "Barra Hexagonal"
+  },
+  {
+    "id": "remada_curvada_barra_hexagonal",
+    "nome": "Remada Curvada com Barra Hexagonal (Trap Bar)",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Costas",
+    "foco": "Espessura",
+    "midia": "/static/exercicios/costas/remada_curvada_barra_hexagonal.mp4",
+    "dicas": [
+      "Mantenha a coluna neutra",
+      "Puxe com os cotovelos",
+      "Contraia as escápulas no final do movimento"
+    ],
+    "erros": [
+      "Arredondar a lombar",
+      "Usar impulso excessivo",
+      "Subir o tronco durante a puxada"
+    ],
+    "observacoes": "Variante da remada curvada com pegada neutra, proporcionando maior estabilidade.",
+    "aparelho": "Barra Hexagonal"
+  },
+  {
+    "id": "desenvolvimento_barra_hexagonal",
+    "nome": "Desenvolvimento Acima da Cabeça com Barra Hexagonal (Trap Bar)",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Ombros",
+    "foco": "Deltoide Anterior",
+    "midia": "/static/exercicios/ombros/desenvolvimento_barra_hexagonal.mp4",
+    "dicas": [
+      "Mantenha o abdômen contraído",
+      "Empurre a barra verticalmente",
+      "Evite arquear excessivamente a lombar"
+    ],
+    "erros": [
+      "Hiperextender a coluna",
+      "Abrir demais os cotovelos",
+      "Usar impulso das pernas"
+    ],
+    "observacoes": "Variante com pegada neutra que reduz o estresse nos ombros.",
+    "aparelho": "Barra Hexagonal"
+  },
+  {
+    "id": "step_up_banco",
+    "nome": "Step-up no Banco",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Pernas",
+    "foco": "Glúteos / Quadríceps",
+    "midia": "/static/exercicios/pernas/step_up_banco.mp4",
+    "dicas": [
+      "Empurre pelo calcanhar da perna que sobe",
+      "Mantenha o tronco alinhado",
+      "Controle a descida"
+    ],
+    "erros": [
+      "Impulsionar com a perna de trás",
+      "Inclinar excessivamente o tronco",
+      "Descer rápido sem controle"
+    ],
+    "observacoes": "Exercício unilateral excelente para força e estabilidade.",
+    "aparelho": "Peso corporal"
+  },
+  {
+    "id": "terra_halteres",
+    "nome": "Levantamento Terra com Halteres",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Pernas",
+    "foco": "Glúteos / Posterior de Coxa",
+    "midia": "/static/exercicios/pernas/terra_halteres.mp4",
+    "dicas": [
+      "Empurre o quadril para trás",
+      "Mantenha a coluna neutra",
+      "Desça controlando o movimento"
+    ],
+    "erros": [
+      "Arredondar a lombar",
+      "Dobrar demais os joelhos",
+      "Subir puxando apenas com as costas"
+    ],
+    "observacoes": "Variante do levantamento terra utilizando halteres.",
+    "aparelho": "Halteres"
+  },
+  {
+    "id": "supino_declinado_barra",
+    "nome": "Supino Declinado com Barra",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Peito",
+    "foco": "Peito Inferior",
+    "midia": "/static/exercicios/peito/supino_declinado_barra.mp4",
+    "dicas": [
+      "Mantenha escápulas retraídas",
+      "Controle a descida",
+      "Empurre a barra de forma estável"
+    ],
+    "erros": [
+      "Deixar a barra subir desalinhada",
+      "Perder tensão no abdômen",
+      "Descer rápido demais"
+    ],
+    "observacoes": "Ênfase em porção inferior do peitoral.",
+    "aparelho": "Barra"
+  },
+  {
+    "id": "supino_pegada_fechada",
+    "nome": "Supino com Pegada Fechada",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Peito",
+    "foco": "Peito / Tríceps",
+    "midia": "/static/exercicios/peito/supino_pegada_fechada.mp4",
+    "dicas": [
+      "Mantenha os cotovelos próximos ao corpo",
+      "Controle a descida",
+      "Estenda completamente os braços"
+    ],
+    "erros": [
+      "Abrir excessivamente os cotovelos",
+      "Tirar os pés do chão",
+      "Quicar a barra"
+    ],
+    "observacoes": "Maior ativação de tríceps.",
+    "aparelho": "Barra"
+  },
+  {
+    "id": "supino_pegada_aberta",
+    "nome": "Supino com Pegada Aberta",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Peito",
+    "foco": "Peito",
+    "midia": "/static/exercicios/peito/supino_pegada_aberta.mp4",
+    "dicas": [
+      "Mantenha controle da barra",
+      "Desça até linha média do peito",
+      "Estabilize as escápulas"
+    ],
+    "erros": [
+      "Exagerar na largura da pegada",
+      "Perder estabilidade do ombro",
+      "Descer rápido demais"
+    ],
+    "observacoes": "Ênfase maior no peitoral.",
+    "aparelho": "Barra"
+  },
+  {
+    "id": "supino_chao_barra",
+    "nome": "Supino no Chão (Floor Press)",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Peito",
+    "foco": "Peito / Tríceps",
+    "midia": "/static/exercicios/peito/supino_chao_barra.mp4",
+    "dicas": [
+      "Mantenha os cotovelos controlados",
+      "Pause levemente no chão",
+      "Empurre de forma explosiva"
+    ],
+    "erros": [
+      "Relaxar completamente os braços no chão",
+      "Arqueamento excessivo",
+      "Perder estabilidade"
+    ],
+    "observacoes": "Reduz amplitude e protege ombros.",
+    "aparelho": "Barra"
+  },
+  {
+    "id": "larsen_press",
+    "nome": "Larsen Press",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Peito",
+    "foco": "Peito",
+    "midia": "/static/exercicios/peito/larsen_press.mp4",
+    "dicas": [
+      "Mantenha os pés suspensos",
+      "Controle total da barra",
+      "Ative o core durante a execução"
+    ],
+    "erros": [
+      "Perder estabilidade",
+      "Deixar a barra subir desalinhada",
+      "Relaxar o abdômen"
+    ],
+    "observacoes": "Remove ajuda das pernas aumentando exigência do peitoral.",
+    "aparelho": "Barra"
+  },
+  {
+    "id": "afundo_barra",
+    "nome": "Afundo com Barra",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Pernas",
+    "foco": "Glúteos / Quadríceps",
+    "midia": "/static/exercicios/pernas/afundo_barra.mp4",
+    "dicas": [
+      "Passo longo para maior ativação de glúteos",
+      "Mantenha o tronco ereto",
+      "Desça controlando"
+    ],
+    "erros": [
+      "Passo curto demais",
+      "Joelho colapsando",
+      "Inclinar excessivamente o tronco"
+    ],
+    "observacoes": "Versão com barra do afundo tradicional.",
+    "aparelho": "Barra"
+  },
+  {
+    "id": "agachamento_cossack_barra",
+    "nome": "Agachamento Cossack com Barra",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Pernas",
+    "foco": "Glúteos / Quadríceps / Adutores",
+    "midia": "/static/exercicios/pernas/agachamento_cossack_barra.mp4",
+    "dicas": [
+      "Desça mantendo o calcanhar no chão",
+      "Empurre o joelho para fora",
+      "Mantenha o tronco ereto"
+    ],
+    "erros": [
+      "Tirar o calcanhar do chão",
+      "Arredondar as costas",
+      "Descer sem controle"
+    ],
+    "observacoes": "Exercício unilateral lateral com grande exigência de mobilidade.",
+    "aparelho": "Barra"
+  },
+  {
+    "id": "agachamento_frontal_halter",
+    "nome": "Agachamento Frontal com Halter",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Pernas",
+    "foco": "Glúteos / Quadríceps",
+    "midia": "/static/exercicios/pernas/agachamento_frontal_halter.mp4",
+    "dicas": [
+      "Mantenha o halter próximo ao peito",
+      "Cotovelos altos e tronco ereto",
+      "Desça controlando o movimento"
+    ],
+    "erros": [
+      "Inclinar excessivamente o tronco",
+      "Descer rápido sem controle",
+      "Tirar os calcanhares do chão"
+    ],
+    "observacoes": "Versão frontal aumenta demanda de core e postura.",
+    "aparelho": "Halteres"
+  },
+  {
+    "id": "terra_romeno_marcha_halter",
+    "nome": "Levantamento Terra Romeno com Halteres em Marcha",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Quadril",
+    "foco": "Glúteos / Posterior de coxa / Estabilidade",
+    "midia": "/static/exercicios/gluteos/terra_romeno_marcha_halter.mp4",
+    "dicas": [
+      "Quadril vai para trás a cada passo",
+      "Mantenha a coluna neutra",
+      "Passos curtos e controlados"
+    ],
+    "erros": [
+      "Arredondar as costas",
+      "Perder equilíbrio por pressa",
+      "Flexionar demais os joelhos"
+    ],
+    "observacoes": "Exercício avançado para cadeia posterior e core.",
+    "aparelho": "Halteres"
+  },
+  {
     "id": "cadeira_extensora",
     "nome": "Cadeira Extensora",
-    "grupo": "Pernas",
-    "subgrupo": "Quadríceps",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Pernas",
+    "foco": "Quadríceps",
     "midia": "/static/exercicios/pernas/cadeira_extensora.mp4",
     "dicas": [
       "Apoie bem a lombar no encosto",
@@ -768,8 +808,9 @@
   {
     "id": "cadeira_flexora",
     "nome": "Cadeira Flexora",
-    "grupo": "Pernas",
-    "subgrupo": "Posterior de Coxa",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Pernas",
+    "foco": "Posterior de Coxa",
     "midia": "/static/exercicios/pernas/cadeira_flexora.mp4",
     "dicas": [
       "Ajuste o rolo logo acima do calcanhar",
@@ -787,8 +828,9 @@
   {
     "id": "leg_press_45",
     "nome": "Leg Press 45º",
-    "grupo": "Pernas",
-    "subgrupo": "Quadríceps / Glúteos",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Pernas",
+    "foco": "Quadríceps / Glúteos",
     "midia": "/static/exercicios/pernas/leg_press_45.mp4",
     "dicas": [
       "Apoie totalmente as costas no banco",
@@ -806,8 +848,9 @@
   {
     "id": "rosca_direta_barra",
     "nome": "Rosca Direta com Barra",
-    "grupo": "Bíceps",
-    "subgrupo": "Cabeça Longa e Curta",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Bíceps",
+    "foco": "Cabeça Longa e Curta",
     "midia": "/static/exercicios/biceps/rosca_direta_barra.mp4",
     "dicas": [
       "Mantenha os cotovelos colados ao corpo",
@@ -820,13 +863,14 @@
       "Descer a barra despencando"
     ],
     "observacoes": "Pode ser feito com barra reta ou barra W para maior conforto dos punhos.",
-    "aparelho": "Barra livre"
+    "aparelho": "Barra"
   },
   {
     "id": "elevacao_lateral_halteres",
     "nome": "Elevação Lateral com Halteres",
-    "grupo": "Ombros",
-    "subgrupo": "Deltoide Medial",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Ombros",
+    "foco": "Deltoide Medial",
     "midia": "/static/exercicios/ombros/elevacao_lateral_halteres.mp4",
     "dicas": [
       "Flexione levemente os cotovelos",
@@ -844,8 +888,9 @@
   {
     "id": "panturrilha_em_pe_maquina",
     "nome": "Panturrilha em Pé na Máquina",
-    "grupo": "Panturrilhas",
-    "subgrupo": "Gastrocnêmio",
+    "grupo": "Membros Inferiores",
+    "subgrupo": "Panturrilhas",
+    "foco": "Gastrocnêmio",
     "midia": "/static/exercicios/pernas/panturrilha_em_pe_maquina.mp4",
     "dicas": [
       "Faça a amplitude completa (desça o calcanhar ao máximo)",
@@ -863,8 +908,9 @@
   {
     "id": "crucifixo_cabo_sentado",
     "nome": "Crucifixo Sentado no Cabo",
-    "grupo": "Peito",
-    "subgrupo": "Porção superior / medial",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Peito",
+    "foco": "Porção superior / medial",
     "midia": "/static/exercicios/peito/peito_crucifixo_cabo_sentado.mp4",
     "dicas": [
       "Mantenha leve flexão dos cotovelos",
@@ -882,8 +928,9 @@
   {
     "id": "remada_cabo_meio_ajoelhado_unilateral",
     "nome": "Remada no Cabo Meio Ajoelhado Unilateral",
-    "grupo": "Costas",
-    "subgrupo": "Dorsal / Meio das costas",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Costas",
+    "foco": "Dorsal / Meio das costas",
     "midia": "/static/exercicios/costas/costas_remada_cabo_meio_ajoelhado_unilateral.mp4",
     "dicas": [
       "Mantenha o tronco ereto e o abdômen contraído",
@@ -901,8 +948,9 @@
   {
     "id": "prancha_frontal",
     "nome": "Prancha Frontal",
-    "grupo": "Core",
-    "subgrupo": "Abdômen / Estabilização",
+    "grupo": "Tronco",
+    "subgrupo": "Core",
+    "foco": "Abdômen / Estabilização",
     "midia": "/static/exercicios/abdomen/core_prancha_frontal.mp4",
     "dicas": [
       "Mantenha o abdômen contraído durante todo o tempo",
@@ -915,13 +963,14 @@
       "Prender a respiração"
     ],
     "observacoes": "Exercício isométrico fundamental para força e estabilidade do core.",
-    "aparelho": "Peso do corpo"
+    "aparelho": "Peso corporal"
   },
   {
     "id": "triceps_testa_barbell",
     "nome": "Tríceps Testa com Barra",
-    "grupo": "Braços",
-    "subgrupo": "Tríceps",
+    "grupo": "Membros Superiores",
+    "subgrupo": "Braços",
+    "foco": "Tríceps",
     "midia": "/static/exercicios/triceps/bracos_triceps_testa_barbell.mp4",
     "dicas": [
       "Mantenha os cotovelos apontados para cima e fixos",
@@ -937,340 +986,353 @@
     "aparelho": "Barra"
   },
   {
-  "id": "pular_corda",
-  "nome": "Pular Corda",
-  "grupo": "Cardio",
-  "subgrupo": "Coordenação e resistência",
-  "midia": "/static/exercicios/cardio/cardio_pular_corda.mp4",
-  "dicas": [
-    "Mantenha os cotovelos próximos ao corpo",
-    "Gire a corda com os punhos, não com os braços",
-    "Salte com os dois pés e ritmo constante",
-    "Aterre suavemente na ponta dos pés"
-  ],
-  "erros": [
-    "Usar os braços para girar a corda",
-    "Pular muito alto e gastar energia excessiva",
-    "Perder o ritmo da respiração",
-    "Deixar os ombros tensionados"
-  ],
-  "observacoes": "Excelente exercício cardiovascular, melhora coordenação, agilidade e condicionamento.",
-  "aparelho": "Corda"
-},
-{
-  "id": "butt_kick",
-  "nome": "Butt Kick",
-  "grupo": "Cardio",
-  "subgrupo": "Aquecimento e coordenação",
-  "midia": "/static/exercicios/cardio/cardio_butt_kick.mp4",
-  "dicas": [
-    "Mantenha o tronco ereto",
-    "Leve os calcanhares em direção aos glúteos",
-    "Contraia o abdômen durante o movimento",
-    "Balance os braços de forma natural",
-    "Mantenha ritmo constante"
-  ],
-  "erros": [
-    "Inclinar o tronco para frente",
-    "Perder a postura ao acelerar",
-    "Bater os pés com força no chão",
-    "Deixar o abdômen relaxado"
-  ],
-  "observacoes": "Ótimo exercício para aquecimento, coordenação e ativação de posterior de coxa e glúteos.",
-  "aparelho": "Peso corporal"
-},
-{
-  "id": "cardio_box_quick_feet",
-  "nome": "Cardio Box Quick Feet",
-  "grupo": "Cardio",
-  "subgrupo": "Agilidade e coordenação",
-  "midia": "/static/exercicios/cardio/cardio_box_quick_feet.mp4",
-  "dicas": [
-    "Fique leve na ponta dos pés",
-    "Mantenha joelhos levemente flexionados",
-    "Toque os pés no chão rapidamente",
-    "Desenhe um quadrado imaginário no solo",
-    "Mantenha o core contraído"
-  ],
-  "erros": [
-    "Bater os pés com força no chão",
-    "Perder o ritmo",
-    "Travar os joelhos",
-    "Inclinar o tronco excessivamente"
-  ],
-  "observacoes": "Exercício excelente para melhorar agilidade, velocidade e condicionamento cardiovascular.",
-  "aparelho": "Peso corporal"
-},
-{
-  "id": "cardio_criss_cross_jacks",
-  "nome": "Cardio Criss Cross Jacks",
-  "grupo": "Cardio",
-  "subgrupo": "Coordenação e condicionamento",
-  "midia": "/static/exercicios/cardio/cardio_criss_cross_jacks.mp4",
-  "dicas": [
-    "Cruze os pés alternadamente a cada salto",
-    "Mantenha o tronco ereto",
-    "Use os braços para auxiliar no ritmo",
-    "Aterrisse de forma suave",
-    "Mantenha a respiração contínua"
-  ],
-  "erros": [
-    "Pousar com os pés rígidos",
-    "Perder o ritmo dos saltos",
-    "Curvar os ombros",
-    "Não alternar o cruzamento"
-  ],
-  "observacoes": "Variação do jumping jack que aumenta a coordenação e o gasto calórico.",
-  "aparelho": "Peso corporal"
-},
-{
-  "id": "cardio_diamond_hop",
-  "nome": "Cardio Diamond Hop",
-  "grupo": "Cardio",
-  "subgrupo": "Agilidade e coordenação",
-  "midia": "/static/exercicios/cardio/cardio_diamond_hop.mp4",
-  "dicas": [
-    "Salte com os dois pés juntos",
-    "Mantenha o core contraído",
-    "Aterrisse suavemente na ponta dos pés",
-    "Execute o padrão em formato de losango",
-    "Mantenha ritmo constante"
-  ],
-  "erros": [
-    "Aterrissar com os calcanhares",
-    "Perder o padrão do movimento",
-    "Inclinar excessivamente o tronco",
-    "Fazer movimentos lentos demais"
-  ],
-  "observacoes": "Exercício de cardio e agilidade que trabalha coordenação, potência e condicionamento.",
-  "aparelho": "Peso corporal"
-},
-{
-  "id": "cardio_figure_eight_sprint",
-  "nome": "Cardio Figure Eight Sprint",
-  "grupo": "Cardio",
-  "subgrupo": "Agilidade e velocidade",
-  "midia": "/static/exercicios/cardio/cardio_figure_eight_sprint.mp4",
-  "dicas": [
-    "Mantenha o tronco levemente inclinado à frente",
-    "Fique baixo durante as curvas",
-    "Use os braços para gerar impulso",
-    "Mantenha passos curtos e rápidos",
-    "Respire de forma controlada"
-  ],
-  "erros": [
-    "Ficar muito ereto durante o sprint",
-    "Dar passos muito longos",
-    "Perder o formato de oito",
-    "Reduzir a velocidade nas curvas"
-  ],
-  "observacoes": "Excelente para melhorar agilidade, mudança de direção e condicionamento cardiovascular.",
-  "aparelho": "Peso corporal"
-},
-{
-  "id": "cardio_forward_scissor",
-  "nome": "Cardio Forward Scissor",
-  "grupo": "Cardio",
-  "subgrupo": "Coordenação e agilidade",
-  "midia": "/static/exercicios/cardio/cardio_forward_scissor.mp4",
-  "dicas": [
-    "Mantenha o core contraído durante o movimento",
-    "Salte de forma leve e controlada",
-    "Aterre na ponta dos pés",
-    "Alterne as pernas de forma rápida",
-    "Use os braços para auxiliar no equilíbrio"
-  ],
-  "erros": [
-    "Aterrar com os calcanhares",
-    "Perder o ritmo do exercício",
-    "Inclinar excessivamente o tronco",
-    "Movimentar pouco as pernas"
-  ],
-  "observacoes": "Exercício cardiovascular simples para melhorar coordenação e resistência.",
-  "aparelho": "Peso corporal"
-},
-{
-  "id": "cardio_in_and_out_forward",
-  "nome": "Cardio In And Out Forward",
-  "grupo": "Cardio",
-  "subgrupo": "Coordenação e agilidade",
-  "midia": "/static/exercicios/cardio/cardio_in_and_out_forward.mp4",
-  "dicas": [
-    "Mantenha o tronco ereto",
-    "Ative o core durante todo o movimento",
-    "Faça passadas curtas e rápidas",
-    "Respire de forma contínua",
-    "Use os braços para auxiliar no equilíbrio"
-  ],
-  "erros": [
-    "Cruzar excessivamente as pernas",
-    "Bater os pés no chão com força",
-    "Perder o ritmo",
-    "Inclinar o tronco para frente ou para trás"
-  ],
-  "observacoes": "Exercício cardiovascular de baixo impacto que melhora coordenação e ritmo.",
-  "aparelho": "Peso corporal"
-},
-{
-  "id": "cardio_jumping_jacks",
-  "nome": "Cardio Jumping Jacks",
-  "grupo": "Cardio",
-  "subgrupo": "Resistência e coordenação",
-  "midia": "/static/exercicios/cardio/cardio_jumping_jacks.mp4",
-  "dicas": [
-    "Mantenha o abdômen contraído",
-    "Aterre suavemente com a ponta dos pés",
-    "Coordene braços e pernas",
-    "Mantenha o ritmo constante",
-    "Respire de forma contínua"
-  ],
-  "erros": [
-    "Bater os pés com força no chão",
-    "Deixar os joelhos travados",
-    "Perder a coordenação dos braços",
-    "Prender a respiração"
-  ],
-  "observacoes": "Exercício clássico de aquecimento e condicionamento cardiovascular.",
-  "aparelho": "Peso corporal"
-},
-{
-  "id": "cardio_knee_taps",
-  "nome": "Cardio Knee Taps",
-  "grupo": "Cardio",
-  "subgrupo": "Coordenação e resistência",
-  "midia": "/static/exercicios/cardio/cardio_knee_taps.mp4",
-  "dicas": [
-    "Mantenha o tronco ereto",
-    "Ative o abdômen durante o movimento",
-    "Eleve os joelhos de forma alternada",
-    "Coordene mão e perna do mesmo lado",
-    "Comece em ritmo leve e aumente gradualmente"
-  ],
-  "erros": [
-    "Curvar as costas",
-    "Balançar excessivamente o tronco",
-    "Elevar pouco os joelhos",
-    "Perder o ritmo",
-    "Prender a respiração"
-  ],
-  "observacoes": "Excelente para aquecimento, coordenação e ativação do core.",
-  "aparelho": "Peso corporal"
-},
-{
-  "id": "cardio_long_jump",
-  "nome": "Cardio Long Jump",
-  "grupo": "Cardio",
-  "subgrupo": "Potência e explosão",
-  "midia": "/static/exercicios/cardio/cardio_long_jump.mp4",
-  "dicas": [
-    "Mantenha os pés na largura dos ombros",
-    "Flexione levemente os joelhos antes do salto",
-    "Use o balanço dos braços para ganhar impulso",
-    "Aterrisse suavemente com joelhos flexionados",
-    "Mantenha o olhar para frente"
-  ],
-  "erros": [
-    "Aterrissar com os joelhos estendidos",
-    "Inclinar demais o tronco para frente",
-    "Perder o equilíbrio na aterrissagem",
-    "Não usar os braços para impulsão",
-    "Pular sem controle"
-  ],
-  "observacoes": "Excelente exercício para desenvolver potência, coordenação e condicionamento cardiovascular.",
-  "aparelho": "Peso corporal"
-},
-{
-  "id": "cardio_skater_single_leg_burpee",
-  "nome": "Cardio Skater com Burpee Unilateral",
-  "grupo": "Cardio",
-  "subgrupo": "Pliometria e alta intensidade",
-  "midia": "/static/exercicios/cardio/cardio_skater_single_leg_burpee.mp4",
-  "dicas": [
-    "Mantenha o tronco levemente inclinado para frente",
-    "Aterrisse com o joelho flexionado para absorver o impacto",
-    "Ative o core durante o burpee",
-    "Controle a descida das mãos ao chão",
-    "Alterne os lados de forma equilibrada"
-  ],
-  "erros": [
-    "Cair com o joelho estendido",
-    "Perder o equilíbrio no apoio unilateral",
-    "Executar o burpee sem controle",
-    "Deixar o quadril subir demais",
-    "Não alternar os lados"
-  ],
-  "observacoes": "Exercício avançado que combina potência, equilíbrio, coordenação e alto gasto calórico.",
-  "aparelho": "Peso corporal"
-},
-{
-  "id": "treadmill_jog",
-  "nome": "Corrida Leve na Esteira",
-  "grupo": "Cardio",
-  "subgrupo": "Corrida contínua",
-  "midia": "/static/exercicios/cardio/treadmill_jog.mp4",
-  "dicas": [
-    "Mantenha postura ereta e olhar à frente",
-    "Apoie o pé de forma suave, sem bater o calcanhar",
-    "Use os braços para ajudar no ritmo",
-    "Respire de forma contínua e controlada",
-    "Ajuste a velocidade para manter o trote confortável"
-  ],
-  "erros": [
-    "Segurar nas laterais da esteira",
-    "Inclinar excessivamente o tronco",
-    "Dar passadas muito longas",
-    "Bater forte os pés na esteira",
-    "Ignorar sinais de fadiga"
-  ],
-  "observacoes": "Ideal para aquecimento, melhora do condicionamento cardiovascular e queima de gordura.",
-  "aparelho": "Esteira"
-},
-{
-  "id": "treadmill_sprint",
-  "nome": "Sprint na Esteira",
-  "grupo": "Cardio",
-  "subgrupo": "Corrida de alta intensidade",
-  "midia": "/static/exercicios/cardio/treadmill_sprint.mp4",
-  "dicas": [
-    "Mantenha postura ereta e olhar à frente",
-    "Use os braços para gerar potência",
-    "Aumente a velocidade gradualmente antes de sprintar",
-    "Apoie o médio-pé para melhor absorção",
-    "Mantenha o core ativado"
-  ],
-  "erros": [
-    "Segurar nas laterais da esteira",
-    "Inclinar demais o tronco",
-    "Passadas descoordenadas",
-    "Velocidade acima da capacidade",
-    "Parar bruscamente sem desacelerar"
-  ],
-  "observacoes": "Exercício de alta intensidade indicado para protocolos HIIT e ganho de potência cardiovascular.",
-  "aparelho": "Esteira"
-},
-{
-  "id": "treadmill_walk",
-  "nome": "Caminhada na Esteira",
-  "grupo": "Cardio",
-  "subgrupo": "Caminhada",
-  "midia": "/static/exercicios/cardio/treadmill_walk.mp4",
-  "dicas": [
-    "Mantenha postura ereta e olhar à frente",
-    "Balance os braços de forma natural",
-    "Dê passos curtos e contínuos",
-    "Respire de forma controlada",
-    "Ajuste a velocidade conforme seu conforto"
-  ],
-  "erros": [
-    "Segurar nas laterais da esteira",
-    "Olhar para baixo durante a caminhada",
-    "Dar passos muito longos",
-    "Curvar as costas",
-    "Velocidade incompatível com seu nível"
-  ],
-  "observacoes": "Exercício leve e seguro, ideal para aquecimento, reabilitação e condicionamento cardiovascular.",
-  "aparelho": "Esteira"
-}
-
-
+    "id": "pular_corda",
+    "nome": "Pular Corda",
+    "grupo": "Cardio",
+    "subgrupo": "Cardio",
+    "foco": "Coordenação e resistência",
+    "midia": "/static/exercicios/cardio/cardio_pular_corda.mp4",
+    "dicas": [
+      "Mantenha os cotovelos próximos ao corpo",
+      "Gire a corda com os punhos, não com os braços",
+      "Salte com os dois pés e ritmo constante",
+      "Aterre suavemente na ponta dos pés"
+    ],
+    "erros": [
+      "Usar os braços para girar a corda",
+      "Pular muito alto e gastar energia excessiva",
+      "Perder o ritmo da respiração",
+      "Deixar os ombros tensionados"
+    ],
+    "observacoes": "Excelente exercício cardiovascular, melhora coordenação, agilidade e condicionamento.",
+    "aparelho": "Corda"
+  },
+  {
+    "id": "butt_kick",
+    "nome": "Butt Kick",
+    "grupo": "Cardio",
+    "subgrupo": "Cardio",
+    "foco": "Aquecimento e coordenação",
+    "midia": "/static/exercicios/cardio/cardio_butt_kick.mp4",
+    "dicas": [
+      "Mantenha o tronco ereto",
+      "Leve os calcanhares em direção aos glúteos",
+      "Contraia o abdômen durante o movimento",
+      "Balance os braços de forma natural",
+      "Mantenha ritmo constante"
+    ],
+    "erros": [
+      "Inclinar o tronco para frente",
+      "Perder a postura ao acelerar",
+      "Bater os pés com força no chão",
+      "Deixar o abdômen relaxado"
+    ],
+    "observacoes": "Ótimo exercício para aquecimento, coordenação e ativação de posterior de coxa e glúteos.",
+    "aparelho": "Peso corporal"
+  },
+  {
+    "id": "cardio_box_quick_feet",
+    "nome": "Cardio Box Quick Feet",
+    "grupo": "Cardio",
+    "subgrupo": "Cardio",
+    "foco": "Agilidade e coordenação",
+    "midia": "/static/exercicios/cardio/cardio_box_quick_feet.mp4",
+    "dicas": [
+      "Fique leve na ponta dos pés",
+      "Mantenha joelhos levemente flexionados",
+      "Toque os pés no chão rapidamente",
+      "Desenhe um quadrado imaginário no solo",
+      "Mantenha o core contraído"
+    ],
+    "erros": [
+      "Bater os pés com força no chão",
+      "Perder o ritmo",
+      "Travar os joelhos",
+      "Inclinar o tronco excessivamente"
+    ],
+    "observacoes": "Exercício excelente para melhorar agilidade, velocidade e condicionamento cardiovascular.",
+    "aparelho": "Peso corporal"
+  },
+  {
+    "id": "cardio_criss_cross_jacks",
+    "nome": "Cardio Criss Cross Jacks",
+    "grupo": "Cardio",
+    "subgrupo": "Cardio",
+    "foco": "Coordenação e condicionamento",
+    "midia": "/static/exercicios/cardio/cardio_criss_cross_jacks.mp4",
+    "dicas": [
+      "Cruze os pés alternadamente a cada salto",
+      "Mantenha o tronco ereto",
+      "Use os braços para auxiliar no ritmo",
+      "Aterrisse de forma suave",
+      "Mantenha a respiração contínua"
+    ],
+    "erros": [
+      "Pousar com os pés rígidos",
+      "Perder o ritmo dos saltos",
+      "Curvar os ombros",
+      "Não alternar o cruzamento"
+    ],
+    "observacoes": "Variação do jumping jack que aumenta a coordenação e o gasto calórico.",
+    "aparelho": "Peso corporal"
+  },
+  {
+    "id": "cardio_diamond_hop",
+    "nome": "Cardio Diamond Hop",
+    "grupo": "Cardio",
+    "subgrupo": "Cardio",
+    "foco": "Agilidade e coordenação",
+    "midia": "/static/exercicios/cardio/cardio_diamond_hop.mp4",
+    "dicas": [
+      "Salte com os dois pés juntos",
+      "Mantenha o core contraído",
+      "Aterrisse suavemente na ponta dos pés",
+      "Execute o padrão em formato de losango",
+      "Mantenha ritmo constante"
+    ],
+    "erros": [
+      "Aterrissar com os calcanhares",
+      "Perder o padrão do movimento",
+      "Inclinar excessivamente o tronco",
+      "Fazer movimentos lentos demais"
+    ],
+    "observacoes": "Exercício de cardio e agilidade que trabalha coordenação, potência e condicionamento.",
+    "aparelho": "Peso corporal"
+  },
+  {
+    "id": "cardio_figure_eight_sprint",
+    "nome": "Cardio Figure Eight Sprint",
+    "grupo": "Cardio",
+    "subgrupo": "Cardio",
+    "foco": "Agilidade e velocidade",
+    "midia": "/static/exercicios/cardio/cardio_figure_eight_sprint.mp4",
+    "dicas": [
+      "Mantenha o tronco levemente inclinado à frente",
+      "Fique baixo durante as curvas",
+      "Use os braços para gerar impulso",
+      "Mantenha passos curtos e rápidos",
+      "Respire de forma controlada"
+    ],
+    "erros": [
+      "Ficar muito ereto durante o sprint",
+      "Dar passos muito longos",
+      "Perder o formato de oito",
+      "Reduzir a velocidade nas curvas"
+    ],
+    "observacoes": "Excelente para melhorar agilidade, mudança de direção e condicionamento cardiovascular.",
+    "aparelho": "Peso corporal"
+  },
+  {
+    "id": "cardio_forward_scissor",
+    "nome": "Cardio Forward Scissor",
+    "grupo": "Cardio",
+    "subgrupo": "Cardio",
+    "foco": "Coordenação e agilidade",
+    "midia": "/static/exercicios/cardio/cardio_forward_scissor.mp4",
+    "dicas": [
+      "Mantenha o core contraído durante o movimento",
+      "Salte de forma leve e controlada",
+      "Aterre na ponta dos pés",
+      "Alterne as pernas de forma rápida",
+      "Use os braços para auxiliar no equilíbrio"
+    ],
+    "erros": [
+      "Aterrar com os calcanhares",
+      "Perder o ritmo do exercício",
+      "Inclinar excessivamente o tronco",
+      "Movimentar pouco as pernas"
+    ],
+    "observacoes": "Exercício cardiovascular simples para melhorar coordenação e resistência.",
+    "aparelho": "Peso corporal"
+  },
+  {
+    "id": "cardio_in_and_out_forward",
+    "nome": "Cardio In And Out Forward",
+    "grupo": "Cardio",
+    "subgrupo": "Cardio",
+    "foco": "Coordenação e agilidade",
+    "midia": "/static/exercicios/cardio/cardio_in_and_out_forward.mp4",
+    "dicas": [
+      "Mantenha o tronco ereto",
+      "Ative o core durante todo o movimento",
+      "Faça passadas curtas e rápidas",
+      "Respire de forma contínua",
+      "Use os braços para auxiliar no equilíbrio"
+    ],
+    "erros": [
+      "Cruzar excessivamente as pernas",
+      "Bater os pés no chão com força",
+      "Perder o ritmo",
+      "Inclinar o tronco para frente ou para trás"
+    ],
+    "observacoes": "Exercício cardiovascular de baixo impacto que melhora coordenação e ritmo.",
+    "aparelho": "Peso corporal"
+  },
+  {
+    "id": "cardio_jumping_jacks",
+    "nome": "Cardio Jumping Jacks",
+    "grupo": "Cardio",
+    "subgrupo": "Cardio",
+    "foco": "Resistência e coordenação",
+    "midia": "/static/exercicios/cardio/cardio_jumping_jacks.mp4",
+    "dicas": [
+      "Mantenha o abdômen contraído",
+      "Aterre suavemente com a ponta dos pés",
+      "Coordene braços e pernas",
+      "Mantenha o ritmo constante",
+      "Respire de forma contínua"
+    ],
+    "erros": [
+      "Bater os pés com força no chão",
+      "Deixar os joelhos travados",
+      "Perder a coordenação dos braços",
+      "Prender a respiração"
+    ],
+    "observacoes": "Exercício clássico de aquecimento e condicionamento cardiovascular.",
+    "aparelho": "Peso corporal"
+  },
+  {
+    "id": "cardio_knee_taps",
+    "nome": "Cardio Knee Taps",
+    "grupo": "Cardio",
+    "subgrupo": "Cardio",
+    "foco": "Coordenação e resistência",
+    "midia": "/static/exercicios/cardio/cardio_knee_taps.mp4",
+    "dicas": [
+      "Mantenha o tronco ereto",
+      "Ative o abdômen durante o movimento",
+      "Eleve os joelhos de forma alternada",
+      "Coordene mão e perna do mesmo lado",
+      "Comece em ritmo leve e aumente gradualmente"
+    ],
+    "erros": [
+      "Curvar as costas",
+      "Balançar excessivamente o tronco",
+      "Elevar pouco os joelhos",
+      "Perder o ritmo",
+      "Prender a respiração"
+    ],
+    "observacoes": "Excelente para aquecimento, coordenação e ativação do core.",
+    "aparelho": "Peso corporal"
+  },
+  {
+    "id": "cardio_long_jump",
+    "nome": "Cardio Long Jump",
+    "grupo": "Cardio",
+    "subgrupo": "Cardio",
+    "foco": "Potência e explosão",
+    "midia": "/static/exercicios/cardio/cardio_long_jump.mp4",
+    "dicas": [
+      "Mantenha os pés na largura dos ombros",
+      "Flexione levemente os joelhos antes do salto",
+      "Use o balanço dos braços para ganhar impulso",
+      "Aterrisse suavemente com joelhos flexionados",
+      "Mantenha o olhar para frente"
+    ],
+    "erros": [
+      "Aterrissar com os joelhos estendidos",
+      "Inclinar demais o tronco para frente",
+      "Perder o equilíbrio na aterrissagem",
+      "Não usar os braços para impulsão",
+      "Pular sem controle"
+    ],
+    "observacoes": "Excelente exercício para desenvolver potência, coordenação e condicionamento cardiovascular.",
+    "aparelho": "Peso corporal"
+  },
+  {
+    "id": "cardio_skater_single_leg_burpee",
+    "nome": "Cardio Skater com Burpee Unilateral",
+    "grupo": "Cardio",
+    "subgrupo": "Cardio",
+    "foco": "Pliometria e alta intensidade",
+    "midia": "/static/exercicios/cardio/cardio_skater_single_leg_burpee.mp4",
+    "dicas": [
+      "Mantenha o tronco levemente inclinado para frente",
+      "Aterrisse com o joelho flexionado para absorver o impacto",
+      "Ative o core durante o burpee",
+      "Controle a descida das mãos ao chão",
+      "Alterne os lados de forma equilibrada"
+    ],
+    "erros": [
+      "Cair com o joelho estendido",
+      "Perder o equilíbrio no apoio unilateral",
+      "Executar o burpee sem controle",
+      "Deixar o quadril subir demais",
+      "Não alternar os lados"
+    ],
+    "observacoes": "Exercício avançado que combina potência, equilíbrio, coordenação e alto gasto calórico.",
+    "aparelho": "Peso corporal"
+  },
+  {
+    "id": "treadmill_jog",
+    "nome": "Corrida Leve na Esteira",
+    "grupo": "Cardio",
+    "subgrupo": "Cardio",
+    "foco": "Corrida contínua",
+    "midia": "/static/exercicios/cardio/treadmill_jog.mp4",
+    "dicas": [
+      "Mantenha postura ereta e olhar à frente",
+      "Apoie o pé de forma suave, sem bater o calcanhar",
+      "Use os braços para ajudar no ritmo",
+      "Respire de forma contínua e controlada",
+      "Ajuste a velocidade para manter o trote confortável"
+    ],
+    "erros": [
+      "Segurar nas laterais da esteira",
+      "Inclinar excessivamente o tronco",
+      "Dar passadas muito longas",
+      "Bater forte os pés na esteira",
+      "Ignorar sinais de fadiga"
+    ],
+    "observacoes": "Ideal para aquecimento, melhora do condicionamento cardiovascular e queima de gordura.",
+    "aparelho": "Esteira"
+  },
+  {
+    "id": "treadmill_sprint",
+    "nome": "Sprint na Esteira",
+    "grupo": "Cardio",
+    "subgrupo": "Cardio",
+    "foco": "Corrida de alta intensidade",
+    "midia": "/static/exercicios/cardio/treadmill_sprint.mp4",
+    "dicas": [
+      "Mantenha postura ereta e olhar à frente",
+      "Use os braços para gerar potência",
+      "Aumente a velocidade gradualmente antes de sprintar",
+      "Apoie o médio-pé para melhor absorção",
+      "Mantenha o core ativado"
+    ],
+    "erros": [
+      "Segurar nas laterais da esteira",
+      "Inclinar demais o tronco",
+      "Passadas descoordenadas",
+      "Velocidade acima da capacidade",
+      "Parar bruscamente sem desacelerar"
+    ],
+    "observacoes": "Exercício de alta intensidade indicado para protocolos HIIT e ganho de potência cardiovascular.",
+    "aparelho": "Esteira"
+  },
+  {
+    "id": "treadmill_walk",
+    "nome": "Caminhada na Esteira",
+    "grupo": "Cardio",
+    "subgrupo": "Cardio",
+    "foco": "Caminhada",
+    "midia": "/static/exercicios/cardio/treadmill_walk.mp4",
+    "dicas": [
+      "Mantenha postura ereta e olhar à frente",
+      "Balance os braços de forma natural",
+      "Dê passos curtos e contínuos",
+      "Respire de forma controlada",
+      "Ajuste a velocidade conforme seu conforto"
+    ],
+    "erros": [
+      "Segurar nas laterais da esteira",
+      "Olhar para baixo durante a caminhada",
+      "Dar passos muito longos",
+      "Curvar as costas",
+      "Velocidade incompatível com seu nível"
+    ],
+    "observacoes": "Exercício leve e seguro, ideal para aquecimento, reabilitação e condicionamento cardiovascular.",
+    "aparelho": "Esteira"
+  }
 ]
