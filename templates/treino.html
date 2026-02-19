@@ -183,9 +183,25 @@
           </div>
         </div>
 
-        <div>
+        <div class="mt-4 border rounded p-3 bg-light">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0">Lista do treino (antes de salvar)</h6>
+            <span class="badge text-bg-secondary" id="lista-treino-total">0 exercício(s)</span>
+          </div>
+          <p class="text-muted small mb-2">Use "Adicionar na lista do treino" nos cards para montar a ordem. Você pode remover itens antes de salvar.</p>
+          <div id="lista-treino-vazia" class="small text-muted">Nenhum exercício adicionado.</div>
+          <div class="vstack gap-2" id="lista-treino"></div>
+          <div id="inputs-treino-selecionado"></div>
+
+          <div class="d-flex flex-wrap gap-2 mt-3">
+            <button class="btn btn-primary" id="btn-salvar-treino" type="submit" form="form-montar-treino">{% if treino_edicao %}Atualizar treino{% else %}Salvar treino{% endif %}</button>
+            <a class="btn btn-outline-secondary" href="/">Voltar para biblioteca</a>
+          </div>
+        </div>
+
+        <div class="mt-4">
           <h5 class="card-title mb-2">Exercícios</h5>
-          <p class="text-muted small mb-3">Filtre por aparelho e/ou grupo muscular, marque os exercícios e preencha os parâmetros (séries/repetições ou minutos/velocidade para esteira/bicicleta).</p>
+          <p class="text-muted small mb-3">Filtre por aparelho e/ou grupo muscular, marque os exercícios e preencha os parâmetros (séries/repetições ou minutos/velocidade para esteira/bicicleta). Para melhorar o desempenho, os exercícios ficam ocultos até clicar em "Filtrar".</p>
 
           <div class="row g-2 mb-3 align-items-end">
             <div class="col-12 col-md-4">
@@ -230,7 +246,7 @@
             </div>
           </div>
 
-          <div class="row g-3" id="exercicios-grid">
+            <div class="row g-3" id="exercicios-grid">
             {% for ex in exercicios %}
               {% set prefill = namespace(encontrado=false, series='', repeticoes='', minutos='', velocidade='') %}
               {% for item in exercicios_prefill %}
@@ -246,7 +262,7 @@
             {% set aparelho_normalizado = (ex.aparelho or '')|lower %}
             {% set nome_normalizado = (ex.nome or '')|lower %}
             {% set cardio_maquina = aparelho_normalizado in ['esteira', 'bicicleta'] or 'esteira' in nome_normalizado or 'bicicleta' in nome_normalizado or 'bike' in nome_normalizado %}
-            <div class="col-12 col-md-6 col-xl-4 exercicio-card" data-exercicio-id="{{ ex.id }}" data-exercicio-nome="{{ ex.nome }}" data-grupo="{{ (ex.grupo or '')|lower }}" data-subgrupo="{{ (ex.subgrupo or '')|lower }}" data-aparelho="{{ (ex.aparelho or '')|lower }}" data-cardio-maquina="{{ '1' if cardio_maquina else '0' }}" data-favorito="{{ '1' if ex.id in favoritos_admin else '0' }}">
+            <div class="col-12 col-md-6 col-xl-4 exercicio-card d-none" data-exercicio-id="{{ ex.id }}" data-exercicio-nome="{{ ex.nome }}" data-exercicio-midia="{{ ex.midia or '' }}" data-exercicio-video="{{ '1' if ex.midia and ex.midia.lower().endswith('.mp4') else '0' }}" data-grupo="{{ (ex.grupo or '')|lower }}" data-subgrupo="{{ (ex.subgrupo or '')|lower }}" data-aparelho="{{ (ex.aparelho or '')|lower }}" data-cardio-maquina="{{ '1' if cardio_maquina else '0' }}" data-favorito="{{ '1' if ex.id in favoritos_admin else '0' }}">
               <div class="border rounded p-2 h-100 bg-white">
                 <div class="ratio ratio-16x9 rounded overflow-hidden bg-light d-flex align-items-center justify-content-center mb-2">
                   {% if ex.midia %}
@@ -332,22 +348,8 @@
             {% endfor %}
           </div>
 
-          <div class="mt-4 border rounded p-3 bg-light">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <h6 class="mb-0">Lista do treino (antes de salvar)</h6>
-              <span class="badge text-bg-secondary" id="lista-treino-total">0 exercício(s)</span>
-            </div>
-            <p class="text-muted small mb-2">Use "Adicionar na lista do treino" nos cards para montar a ordem. Você pode remover itens antes de salvar.</p>
-            <div id="lista-treino-vazia" class="small text-muted">Nenhum exercício adicionado.</div>
-            <div class="vstack gap-2" id="lista-treino"></div>
-            <div id="inputs-treino-selecionado"></div>
-          </div>
         </div>
 
-        <div class="d-flex flex-wrap gap-2">
-          <button class="btn btn-primary" id="btn-salvar-treino" type="submit" form="form-montar-treino">{% if treino_edicao %}Atualizar treino{% else %}Salvar treino{% endif %}</button>
-          <a class="btn btn-outline-secondary" href="/">Voltar para biblioteca</a>
-        </div>
       </form>
     </div>
   </div>
@@ -370,6 +372,7 @@
   const inputsTreinoSelecionado = document.getElementById('inputs-treino-selecionado');
 
   const treinoSelecionado = [];
+  let filtrosAplicados = false;
 
   const atualizarOpcoesSubgrupoTreino = () => {
     if (!filtroSubgrupo) return;
@@ -481,9 +484,18 @@
     listaTreino.innerHTML = treinoSelecionado
       .map((item, idx) => `
         <div class="border rounded bg-white p-2 d-flex justify-content-between align-items-center gap-2">
-          <div>
+          <div class="d-flex align-items-center gap-2">
+            <div class="border rounded bg-light overflow-hidden flex-shrink-0" style="width:56px; height:56px; display:flex; align-items:center; justify-content:center;">
+              ${item.midia
+                ? item.ehVideo
+                  ? '<video muted playsinline preload="metadata" style="width:100%; height:100%; object-fit:cover;"><source src="' + item.midia + '" type="video/mp4"></video>'
+                  : '<img src="' + item.midia + '" alt="' + item.nome + '" style="width:100%; height:100%; object-fit:cover;">'
+                : '<span class="text-muted" style="font-size:10px;">Sem mídia</span>'}
+            </div>
+            <div>
             <div class="fw-semibold">${idx + 1}. ${item.nome}</div>
             <div class="small text-muted">${item.cardioMaquina ? `Minutos: ${item.minutos} · Velocidade: ${item.velocidade}` : `Séries: ${item.series} · Repetições: ${item.repeticoes}`}</div>
+          </div>
           </div>
           <button type="button" class="btn btn-outline-danger btn-sm remover-lista-btn" data-exercicio-id="${item.exercicioId}">Retirar</button>
         </div>
@@ -517,6 +529,8 @@
   const adicionarOuAtualizarNaLista = (card, validarCampos = true) => {
     const exercicioId = (card.dataset.exercicioId || '').trim();
     const nome = (card.dataset.exercicioNome || 'Exercício').trim();
+    const midia = (card.dataset.exercicioMidia || '').trim();
+    const ehVideo = (card.dataset.exercicioVideo || '') === '1';
     const checkbox = card.querySelector('.exercicio-check');
     const seriesInput = card.querySelector('.exercicio-series-input');
     const repeticoesInput = card.querySelector('.exercicio-repeticoes-input');
@@ -553,8 +567,10 @@
       existente.minutos = minutos;
       existente.velocidade = velocidade;
       existente.cardioMaquina = cardioMaquina;
+      existente.midia = midia;
+      existente.ehVideo = ehVideo;
     } else {
-      treinoSelecionado.push({ exercicioId, nome, series, repeticoes, minutos, velocidade, cardioMaquina });
+      treinoSelecionado.push({ exercicioId, nome, series, repeticoes, minutos, velocidade, cardioMaquina, midia, ehVideo });
     }
 
     renderListaTreino();
@@ -563,6 +579,7 @@
   };
 
   const aplicarFiltros = () => {
+    filtrosAplicados = true;
     const grupoSelecionado = (filtroGrupo.value || '').trim();
     const subgrupoSelecionado = (filtroSubgrupo?.value || '').trim();
     const aparelhoSelecionado = (filtroAparelho.value || '').trim();
@@ -642,7 +659,11 @@
   atualizarHiddenInputs();
   atualizarOpcoesSubgrupoTreino();
   atualizarOpcoesAparelhoTreino();
-  aplicarFiltros();
+  if (!filtrosAplicados) {
+    cards.forEach((card) => card.classList.add('d-none'));
+    atualizarContador();
+  }
+
 </script>
 
 </body>
