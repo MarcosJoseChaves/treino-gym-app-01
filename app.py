@@ -4,10 +4,14 @@ from sqlalchemy.exc import SQLAlchemyError
 import json
 import os
 import io
+import re
+import unicodedata
 import qrcode
 from datetime import datetime
 import uuid
 from urllib.parse import quote, urlparse, parse_qsl, urlencode, urlunparse
+from werkzeug.utils import secure_filename
+from jinja2 import TemplateNotFound
 
 BASE_DIR = os.path.dirname(__file__)
 
@@ -53,6 +57,9 @@ DATA_FILE = os.path.join(BASE_DIR, "exercicios.json")
 TREINOS_FILE = os.path.join(BASE_DIR, "treinos.json")
 QUESTIONARIO_FILE = os.path.join(BASE_DIR, "questionario_respostas.json")
 FAVORITOS_FILE = os.path.join(BASE_DIR, "favoritos_admin.json")
+EXERCICIOS_CATEGORIAS_FILE = os.path.join(BASE_DIR, "exercicios_categorias.json")
+EXERCICIOS_STATIC_DIR = os.path.join(BASE_DIR, "static", "exercicios")
+MIDIAS_PERMITIDAS = {".gif", ".mp4"}
 
 
 def garantir_sslmode_require(database_url):
@@ -294,6 +301,199 @@ def salvar_favoritos_admin(favoritos_ids):
     favoritos_ordenados = sorted({(str(ex_id).strip()) for ex_id in favoritos_ids if str(ex_id).strip()})
     with open(favoritos_file, "w", encoding="utf-8") as f:
         json.dump(favoritos_ordenados, f, ensure_ascii=False, indent=2)
+
+
+def salvar_exercicios(exercicios):
+    with open(DATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(exercicios, f, ensure_ascii=False, indent=2)
+
+
+def slug_texto(texto):
+    base = unicodedata.normalize("NFKD", (texto or "")).encode("ascii", "ignore").decode("ascii")
+    base = re.sub(r"[^a-zA-Z0-9]+", "-", base).strip("-").lower()
+    return base
+
+
+def normalizar_linhas_texto(texto):
+    return [linha.strip() for linha in (texto or "").splitlines() if linha.strip()]
+
+
+def listar_pastas_exercicios():
+    if not os.path.isdir(EXERCICIOS_STATIC_DIR):
+        return []
+
+    pastas = []
+    for nome in os.listdir(EXERCICIOS_STATIC_DIR):
+        caminho = os.path.join(EXERCICIOS_STATIC_DIR, nome)
+        if os.path.isdir(caminho):
+            pastas.append(nome)
+    return sorted(pastas)
+
+
+def carregar_categorias_exercicios(exercicios):
+    grupos_padrao = obter_grupos_validos(exercicios)
+    subgrupos_padrao = obter_subgrupos_por_grupo(exercicios)
+    aparelhos_padrao = obter_aparelhos_por_filtros(exercicios)["todos"]
+
+    data = {}
+    if os.path.exists(EXERCICIOS_CATEGORIAS_FILE):
+        try:
+            with open(EXERCICIOS_CATEGORIAS_FILE, "r", encoding="utf-8") as f:
+                carregado = json.load(f)
+                if isinstance(carregado, dict):
+                    data = carregado
+        except (json.JSONDecodeError, OSError):
+            data = {}
+
+    grupos_extra = normalizar_lista_texto(data.get("grupos"))
+    aparelhos_extra = normalizar_lista_texto(data.get("aparelhos"))
+    subgrupos_extra = {}
+    bruto_subgrupos = data.get("subgrupos_por_grupo")
+    if isinstance(bruto_subgrupos, dict):
+        for grupo, lista in bruto_subgrupos.items():
+            grupo_txt = (grupo or "").strip()
+            if not grupo_txt:
+                continue
+            subgrupos_extra[grupo_txt] = normalizar_lista_texto(lista)
+
+    grupos = normalizar_lista_texto(grupos_padrao + grupos_extra + list(subgrupos_extra.keys()))
+    grupos.sort(key=lambda x: x.lower())
+
+    subgrupos_por_grupo = {}
+    for grupo in grupos:
+        chave_lower = grupo.lower()
+        padrao = subgrupos_padrao.get(chave_lower, [])
+        extra = []
+        for k, v in subgrupos_extra.items():
+            if k.lower() == chave_lower:
+                extra = v
+                break
+        subgrupos_por_grupo[grupo] = normalizar_lista_texto(padrao + extra)
+        subgrupos_por_grupo[grupo].sort(key=lambda x: x.lower())
+
+    aparelhos = normalizar_lista_texto(aparelhos_padrao + aparelhos_extra)
+    aparelhos.sort(key=lambda x: x.lower())
+
+    vinculos_aparelho = []
+    bruto_vinculos = data.get("vinculos_aparelho")
+    if isinstance(bruto_vinculos, list):
+        vistos = set()
+        for item in bruto_vinculos:
+            if not isinstance(item, dict):
+                continue
+            grupo = (item.get("grupo") or "").strip()
+            subgrupo = (item.get("subgrupo") or "").strip()
+            aparelho = (item.get("aparelho") or "").strip()
+            if not grupo or not subgrupo or not aparelho:
+                continue
+            chave = f"{grupo.lower()}|||{subgrupo.lower()}|||{aparelho.lower()}"
+            if chave in vistos:
+                continue
+            vistos.add(chave)
+            vinculos_aparelho.append(
+                {
+                    "grupo": grupo,
+                    "subgrupo": subgrupo,
+                    "aparelho": aparelho,
+                }
+            )
+    vinculos_aparelho.sort(key=lambda x: ((x.get("grupo") or "").lower(), (x.get("subgrupo") or "").lower(), (x.get("aparelho") or "").lower()))
+
+    return {
+        "grupos": grupos,
+        "subgrupos_por_grupo": subgrupos_por_grupo,
+        "aparelhos": aparelhos,
+        "vinculos_aparelho": vinculos_aparelho,
+    }
+
+
+def salvar_categorias_exercicios(categorias):
+    with open(EXERCICIOS_CATEGORIAS_FILE, "w", encoding="utf-8") as f:
+        json.dump(categorias, f, ensure_ascii=False, indent=2)
+
+
+def normalizar_categorias_para_salvar(categorias):
+    grupos = normalizar_lista_texto(categorias.get("grupos"))
+    grupos.sort(key=lambda x: x.lower())
+
+    subgrupos_por_grupo = {}
+    for grupo in grupos:
+        lista = normalizar_lista_texto((categorias.get("subgrupos_por_grupo") or {}).get(grupo, []))
+        lista.sort(key=lambda x: x.lower())
+        subgrupos_por_grupo[grupo] = lista
+
+    aparelhos = normalizar_lista_texto(categorias.get("aparelhos"))
+    aparelhos.sort(key=lambda x: x.lower())
+
+    grupos_por_lower = {g.lower(): g for g in grupos}
+    aparelhos_por_lower = {a.lower(): a for a in aparelhos}
+    vinculos_aparelho = []
+    vistos = set()
+    for item in categorias.get("vinculos_aparelho") or []:
+        if not isinstance(item, dict):
+            continue
+        grupo_bruto = (item.get("grupo") or "").strip()
+        subgrupo_bruto = (item.get("subgrupo") or "").strip()
+        aparelho_bruto = (item.get("aparelho") or "").strip()
+        if not grupo_bruto or not subgrupo_bruto or not aparelho_bruto:
+            continue
+
+        grupo = grupos_por_lower.get(grupo_bruto.lower())
+        if not grupo:
+            continue
+
+        subgrupos_grupo = subgrupos_por_grupo.get(grupo, [])
+        subgrupo = next((s for s in subgrupos_grupo if s.lower() == subgrupo_bruto.lower()), "")
+        if not subgrupo:
+            continue
+
+        aparelho = aparelhos_por_lower.get(aparelho_bruto.lower())
+        if not aparelho:
+            continue
+
+        chave = f"{grupo.lower()}|||{subgrupo.lower()}|||{aparelho.lower()}"
+        if chave in vistos:
+            continue
+        vistos.add(chave)
+        vinculos_aparelho.append({"grupo": grupo, "subgrupo": subgrupo, "aparelho": aparelho})
+
+    vinculos_aparelho.sort(key=lambda x: (x["grupo"].lower(), x["subgrupo"].lower(), x["aparelho"].lower()))
+
+    return {
+        "grupos": grupos,
+        "subgrupos_por_grupo": subgrupos_por_grupo,
+        "aparelhos": aparelhos,
+        "vinculos_aparelho": vinculos_aparelho,
+    }
+
+
+def obter_aparelhos_por_filtros_com_vinculos(exercicios, vinculos_aparelho):
+    base = obter_aparelhos_por_filtros(exercicios)
+    todos = set(base.get("todos") or [])
+    por_grupo = {k: set(v or []) for k, v in (base.get("por_grupo") or {}).items()}
+    por_subgrupo = {k: set(v or []) for k, v in (base.get("por_subgrupo") or {}).items()}
+    por_grupo_subgrupo = {k: set(v or []) for k, v in (base.get("por_grupo_subgrupo") or {}).items()}
+
+    for item in vinculos_aparelho or []:
+        if not isinstance(item, dict):
+            continue
+        grupo = (item.get("grupo") or "").strip().lower()
+        subgrupo = (item.get("subgrupo") or "").strip().lower()
+        aparelho = (item.get("aparelho") or "").strip()
+        if not grupo or not subgrupo or not aparelho:
+            continue
+
+        todos.add(aparelho)
+        por_grupo.setdefault(grupo, set()).add(aparelho)
+        por_subgrupo.setdefault(subgrupo, set()).add(aparelho)
+        por_grupo_subgrupo.setdefault(f"{grupo}|||{subgrupo}", set()).add(aparelho)
+
+    return {
+        "todos": sorted(todos),
+        "por_grupo": {k: sorted(v) for k, v in por_grupo.items()},
+        "por_subgrupo": {k: sorted(v) for k, v in por_subgrupo.items()},
+        "por_grupo_subgrupo": {k: sorted(v) for k, v in por_grupo_subgrupo.items()},
+    }
 
 
 def normalizar_data_iso(valor):
@@ -751,6 +951,546 @@ def alternar_favorito_admin(ex_id):
     return redirect(destino)
 
 
+@app.route("/admin/exercicios/categorias", methods=["GET", "POST"])
+def admin_categorias_exercicios():
+    bloqueio = exigir_admin_ou_redirect()
+    if bloqueio:
+        return bloqueio
+
+    exercicios = carregar_exercicios()
+    categorias = carregar_categorias_exercicios(exercicios)
+    erro = ""
+    sucesso = ""
+
+    if request.method == "POST":
+        acao = (request.form.get("acao") or "").strip()
+        valor = (request.form.get("valor") or "").strip()
+        novo_valor = (request.form.get("novo_valor") or "").strip()
+        grupo = (request.form.get("grupo") or "").strip()
+        subgrupo = (request.form.get("subgrupo") or "").strip()
+
+        grupos = categorias["grupos"]
+        subgrupos_por_grupo = categorias["subgrupos_por_grupo"]
+        aparelhos = categorias["aparelhos"]
+        vinculos_aparelho = categorias.get("vinculos_aparelho") or []
+
+        if acao == "grupo_adicionar":
+            if not valor:
+                erro = "Informe o nome do grupo."
+            elif any(g.lower() == valor.lower() for g in grupos):
+                erro = "Este grupo já existe."
+            else:
+                grupos.append(valor)
+                subgrupos_por_grupo.setdefault(valor, [])
+                sucesso = "Grupo adicionado com sucesso."
+
+        elif acao == "grupo_editar":
+            if not valor or not novo_valor:
+                erro = "Selecione o grupo e informe o novo nome."
+            elif any(g.lower() == novo_valor.lower() and g.lower() != valor.lower() for g in grupos):
+                erro = "Já existe outro grupo com este nome."
+            else:
+                grupos = [novo_valor if g.lower() == valor.lower() else g for g in grupos]
+                subgrupos_antigos = []
+                for chave, lista in list(subgrupos_por_grupo.items()):
+                    if chave.lower() == valor.lower():
+                        subgrupos_antigos = lista
+                        del subgrupos_por_grupo[chave]
+                subgrupos_por_grupo[novo_valor] = subgrupos_antigos
+                for item in vinculos_aparelho:
+                    if (item.get("grupo") or "").strip().lower() == valor.lower():
+                        item["grupo"] = novo_valor
+
+                for ex in exercicios:
+                    if (ex.get("grupo") or "").strip().lower() == valor.lower():
+                        ex["grupo"] = novo_valor
+                salvar_exercicios(exercicios)
+                sucesso = "Grupo atualizado com sucesso."
+
+        elif acao == "grupo_excluir":
+            if not valor:
+                erro = "Selecione o grupo para excluir."
+            else:
+                grupos = [g for g in grupos if g.lower() != valor.lower()]
+                for chave in list(subgrupos_por_grupo.keys()):
+                    if chave.lower() == valor.lower():
+                        del subgrupos_por_grupo[chave]
+                vinculos_aparelho = [
+                    item for item in vinculos_aparelho
+                    if (item.get("grupo") or "").strip().lower() != valor.lower()
+                ]
+                for ex in exercicios:
+                    if (ex.get("grupo") or "").strip().lower() == valor.lower():
+                        ex["grupo"] = "Sem grupo"
+                        ex["subgrupo"] = "Sem subgrupo"
+                salvar_exercicios(exercicios)
+                sucesso = "Grupo excluído com sucesso."
+
+        elif acao == "subgrupo_adicionar":
+            if not grupo or not valor:
+                erro = "Selecione o grupo e informe o subgrupo."
+            else:
+                destino = next((g for g in grupos if g.lower() == grupo.lower()), "")
+                if not destino:
+                    erro = "Grupo inválido."
+                else:
+                    lista = subgrupos_por_grupo.setdefault(destino, [])
+                    if any(s.lower() == valor.lower() for s in lista):
+                        erro = "Este subgrupo já existe neste grupo."
+                    else:
+                        lista.append(valor)
+                        sucesso = "Subgrupo adicionado com sucesso."
+
+        elif acao == "subgrupo_editar":
+            if not grupo or not valor or not novo_valor:
+                erro = "Selecione grupo/subgrupo e informe o novo nome."
+            else:
+                destino = next((g for g in grupos if g.lower() == grupo.lower()), "")
+                if not destino:
+                    erro = "Grupo inválido."
+                else:
+                    lista = subgrupos_por_grupo.setdefault(destino, [])
+                    if any(s.lower() == novo_valor.lower() and s.lower() != valor.lower() for s in lista):
+                        erro = "Já existe outro subgrupo com este nome nesse grupo."
+                    else:
+                        subgrupos_por_grupo[destino] = [novo_valor if s.lower() == valor.lower() else s for s in lista]
+                        for item in vinculos_aparelho:
+                            if (item.get("grupo") or "").strip().lower() == destino.lower() and (item.get("subgrupo") or "").strip().lower() == valor.lower():
+                                item["subgrupo"] = novo_valor
+                        for ex in exercicios:
+                            if (ex.get("grupo") or "").strip().lower() == destino.lower() and (ex.get("subgrupo") or "").strip().lower() == valor.lower():
+                                ex["subgrupo"] = novo_valor
+                        salvar_exercicios(exercicios)
+                        sucesso = "Subgrupo atualizado com sucesso."
+
+        elif acao == "subgrupo_excluir":
+            if not grupo or not valor:
+                erro = "Selecione grupo e subgrupo para excluir."
+            else:
+                destino = next((g for g in grupos if g.lower() == grupo.lower()), "")
+                if not destino:
+                    erro = "Grupo inválido."
+                else:
+                    subgrupos_por_grupo[destino] = [s for s in subgrupos_por_grupo.get(destino, []) if s.lower() != valor.lower()]
+                    vinculos_aparelho = [
+                        item for item in vinculos_aparelho
+                        if not (
+                            (item.get("grupo") or "").strip().lower() == destino.lower()
+                            and (item.get("subgrupo") or "").strip().lower() == valor.lower()
+                        )
+                    ]
+                    for ex in exercicios:
+                        if (ex.get("grupo") or "").strip().lower() == destino.lower() and (ex.get("subgrupo") or "").strip().lower() == valor.lower():
+                            ex["subgrupo"] = "Sem subgrupo"
+                    salvar_exercicios(exercicios)
+                    sucesso = "Subgrupo excluído com sucesso."
+
+        elif acao == "aparelho_adicionar":
+            if not valor:
+                erro = "Informe o nome do aparelho."
+            elif any(a.lower() == valor.lower() for a in aparelhos):
+                erro = "Este aparelho já existe."
+            else:
+                aparelhos.append(valor)
+                sucesso = "Aparelho adicionado com sucesso."
+
+        elif acao == "aparelho_editar":
+            if not valor or not novo_valor:
+                erro = "Selecione o aparelho e informe o novo nome."
+            elif any(a.lower() == novo_valor.lower() and a.lower() != valor.lower() for a in aparelhos):
+                erro = "Já existe outro aparelho com este nome."
+            else:
+                aparelhos = [novo_valor if a.lower() == valor.lower() else a for a in aparelhos]
+                for item in vinculos_aparelho:
+                    if (item.get("aparelho") or "").strip().lower() == valor.lower():
+                        item["aparelho"] = novo_valor
+                for ex in exercicios:
+                    if (ex.get("aparelho") or "").strip().lower() == valor.lower():
+                        ex["aparelho"] = novo_valor
+                salvar_exercicios(exercicios)
+                sucesso = "Aparelho atualizado com sucesso."
+
+        elif acao == "aparelho_excluir":
+            if not valor:
+                erro = "Selecione o aparelho para excluir."
+            else:
+                aparelhos = [a for a in aparelhos if a.lower() != valor.lower()]
+                vinculos_aparelho = [
+                    item for item in vinculos_aparelho
+                    if (item.get("aparelho") or "").strip().lower() != valor.lower()
+                ]
+                for ex in exercicios:
+                    if (ex.get("aparelho") or "").strip().lower() == valor.lower():
+                        ex["aparelho"] = "Peso livre"
+                salvar_exercicios(exercicios)
+                sucesso = "Aparelho excluído com sucesso."
+
+        elif acao == "aparelho_vincular":
+            if not grupo or not subgrupo or not valor:
+                erro = "Selecione grupo, subgrupo e aparelho para vincular."
+            else:
+                grupo_ref = next((g for g in grupos if g.lower() == grupo.lower()), "")
+                if not grupo_ref:
+                    erro = "Grupo inválido."
+                else:
+                    subgrupo_ref = next((s for s in subgrupos_por_grupo.get(grupo_ref, []) if s.lower() == subgrupo.lower()), "")
+                    aparelho_ref = next((a for a in aparelhos if a.lower() == valor.lower()), "")
+                    if not subgrupo_ref:
+                        erro = "Subgrupo inválido para o grupo selecionado."
+                    elif not aparelho_ref:
+                        erro = "Aparelho inválido."
+                    elif any(
+                        (item.get("grupo") or "").strip().lower() == grupo_ref.lower()
+                        and (item.get("subgrupo") or "").strip().lower() == subgrupo_ref.lower()
+                        and (item.get("aparelho") or "").strip().lower() == aparelho_ref.lower()
+                        for item in vinculos_aparelho
+                    ):
+                        erro = "Este aparelho já está vinculado ao grupo/subgrupo selecionado."
+                    else:
+                        vinculos_aparelho.append(
+                            {
+                                "grupo": grupo_ref,
+                                "subgrupo": subgrupo_ref,
+                                "aparelho": aparelho_ref,
+                            }
+                        )
+                        sucesso = "Aparelho vinculado com sucesso."
+
+        elif acao == "aparelho_desvincular":
+            if not valor:
+                erro = "Selecione o vínculo para remover."
+            else:
+                grupo_link, subgrupo_link, aparelho_link = (valor.split("|||", 2) + ["", "", ""])[:3]
+                antes = len(vinculos_aparelho)
+                vinculos_aparelho = [
+                    item
+                    for item in vinculos_aparelho
+                    if not (
+                        (item.get("grupo") or "").strip().lower() == grupo_link.lower()
+                        and (item.get("subgrupo") or "").strip().lower() == subgrupo_link.lower()
+                        and (item.get("aparelho") or "").strip().lower() == aparelho_link.lower()
+                    )
+                ]
+                if len(vinculos_aparelho) < antes:
+                    sucesso = "Vínculo removido com sucesso."
+                else:
+                    erro = "Vínculo não encontrado."
+
+        categorias = normalizar_categorias_para_salvar(
+            {
+                "grupos": grupos,
+                "subgrupos_por_grupo": subgrupos_por_grupo,
+                "aparelhos": aparelhos,
+                "vinculos_aparelho": vinculos_aparelho,
+            }
+        )
+        salvar_categorias_exercicios(categorias)
+
+    subgrupos_lista = []
+    for grupo in categorias["grupos"]:
+        for subgrupo in categorias["subgrupos_por_grupo"].get(grupo, []):
+            subgrupos_lista.append({"grupo": grupo, "subgrupo": subgrupo})
+
+    return render_template(
+        "admin_categorias_exercicios.html",
+        categorias=categorias,
+        subgrupos_lista=subgrupos_lista,
+        aparelhos_por_filtros=obter_aparelhos_por_filtros_com_vinculos(exercicios, categorias.get("vinculos_aparelho") or []),
+        erro=erro,
+        sucesso=sucesso,
+    )
+
+
+@app.route("/admin/exercicios/novo", methods=["GET", "POST"])
+def admin_novo_exercicio():
+    bloqueio = exigir_admin_ou_redirect()
+    if bloqueio:
+        return bloqueio
+
+    pastas_midia = listar_pastas_exercicios()
+    exercicios = carregar_exercicios()
+    ids_existentes = {ex.get("id") for ex in exercicios if ex.get("id")}
+    categorias = carregar_categorias_exercicios(exercicios)
+    grupos = categorias["grupos"]
+    subgrupos_por_grupo = categorias["subgrupos_por_grupo"]
+    subgrupos_por_grupo_lower = {
+        (grupo or "").strip().lower(): (lista or [])
+        for grupo, lista in subgrupos_por_grupo.items()
+    }
+    subgrupos = sorted(
+        {sg for lista in subgrupos_por_grupo.values() for sg in lista},
+        key=lambda x: x.lower(),
+    )
+    aparelhos_por_filtros = obter_aparelhos_por_filtros_com_vinculos(exercicios, categorias.get("vinculos_aparelho") or [])
+    aparelhos = categorias["aparelhos"]
+
+    valores = {
+        "id": "",
+        "nome": "",
+        "grupo": "",
+        "subgrupo": "",
+        "aparelho": "",
+        "pasta_midia": pastas_midia[0] if pastas_midia else "",
+        "dicas": "",
+        "erros": "",
+        "observacoes": "",
+        "foco": "",
+        "musculos_secundarios": "",
+        "instrucoes": "",
+    }
+    erro = ""
+    sucesso = ""
+
+    if request.method == "POST":
+        for chave in valores.keys():
+            valores[chave] = (request.form.get(chave) or "").strip()
+
+        upload = request.files.get("midia_arquivo")
+        nome = valores["nome"]
+        ex_id = valores["id"] or slug_texto(nome)
+        valores["id"] = ex_id
+
+        if not ex_id:
+            erro = "Informe nome ou ID válido para o exercício."
+        elif ex_id in ids_existentes:
+            erro = "Já existe um exercício com este ID."
+        elif not valores["grupo"] or not valores["subgrupo"]:
+            erro = "Grupo e subgrupo são obrigatórios."
+        elif not valores["aparelho"]:
+            erro = "Aparelho é obrigatório para manter o padrão do catálogo."
+        elif not valores["pasta_midia"] or valores["pasta_midia"] not in pastas_midia:
+            erro = "Selecione uma pasta válida para salvar a mídia."
+        elif not upload or not (upload.filename or "").strip():
+            erro = "Envie um arquivo de mídia (.gif ou .mp4)."
+        else:
+            ext = os.path.splitext(upload.filename)[1].lower()
+            if ext not in MIDIAS_PERMITIDAS:
+                erro = "Formato inválido. Use apenas arquivos .gif ou .mp4."
+
+        if not erro:
+            nome_arquivo = secure_filename(f"{ex_id}{ext}")
+            pasta_destino = os.path.join(EXERCICIOS_STATIC_DIR, valores["pasta_midia"])
+            os.makedirs(pasta_destino, exist_ok=True)
+            caminho_arquivo = os.path.join(pasta_destino, nome_arquivo)
+            upload.save(caminho_arquivo)
+
+            novo_exercicio = {
+                "id": ex_id,
+                "nome": nome,
+                "grupo": valores["grupo"],
+                "subgrupo": valores["subgrupo"],
+                "midia": f"/static/exercicios/{valores['pasta_midia']}/{nome_arquivo}",
+                "dicas": normalizar_linhas_texto(valores["dicas"]),
+                "erros": normalizar_linhas_texto(valores["erros"]),
+                "observacoes": valores["observacoes"],
+                "aparelho": valores["aparelho"],
+            }
+
+            if valores["foco"]:
+                novo_exercicio["foco"] = valores["foco"]
+            if valores["musculos_secundarios"]:
+                novo_exercicio["musculos_secundarios"] = normalizar_linhas_texto(valores["musculos_secundarios"])
+            if valores["instrucoes"]:
+                novo_exercicio["instrucoes"] = normalizar_linhas_texto(valores["instrucoes"])
+
+            exercicios.append(novo_exercicio)
+            salvar_exercicios(exercicios)
+            sucesso = "Exercício cadastrado com sucesso."
+
+            valores = {
+                "id": "",
+                "nome": "",
+                "grupo": "",
+                "subgrupo": "",
+                "aparelho": "",
+                "pasta_midia": pastas_midia[0] if pastas_midia else "",
+                "dicas": "",
+                "erros": "",
+                "observacoes": "",
+                "foco": "",
+                "musculos_secundarios": "",
+                "instrucoes": "",
+            }
+
+    try:
+        return render_template(
+            "admin_novo_exercicio.html",
+            valores=valores,
+            erro=erro,
+            sucesso=sucesso,
+            grupos=grupos,
+            subgrupos=subgrupos,
+            subgrupos_por_grupo=subgrupos_por_grupo_lower,
+            aparelhos=aparelhos,
+            aparelhos_por_filtros=aparelhos_por_filtros,
+            pastas_midia=pastas_midia,
+        )
+    except TemplateNotFound:
+        return (
+            "Template admin_novo_exercicio.html não encontrado. "
+            "Confirme se o arquivo existe na pasta templates no servidor/deploy.",
+            500,
+        )
+
+
+@app.route("/admin/exercicios/<ex_id>/editar", methods=["GET", "POST"])
+def admin_editar_exercicio(ex_id):
+    bloqueio = exigir_admin_ou_redirect()
+    if bloqueio:
+        return bloqueio
+
+    exercicios = carregar_exercicios()
+    exercicio_atual = next((ex for ex in exercicios if (ex.get("id") or "").strip() == ex_id), None)
+    if not exercicio_atual:
+        abort(404)
+
+    categorias = carregar_categorias_exercicios(exercicios)
+    grupos = categorias["grupos"]
+    subgrupos_por_grupo = categorias["subgrupos_por_grupo"]
+    subgrupos_por_grupo_lower = {
+        (grupo or "").strip().lower(): (lista or [])
+        for grupo, lista in subgrupos_por_grupo.items()
+    }
+    subgrupos = sorted({sg for lista in subgrupos_por_grupo.values() for sg in lista}, key=lambda x: x.lower())
+    aparelhos = categorias["aparelhos"]
+    aparelhos_por_filtros = obter_aparelhos_por_filtros_com_vinculos(exercicios, categorias.get("vinculos_aparelho") or [])
+    pastas_midia = listar_pastas_exercicios()
+
+    midia_atual = (exercicio_atual.get("midia") or "").strip()
+    pasta_midia_atual = ""
+    if midia_atual.startswith("/static/exercicios/"):
+        relativo = midia_atual.replace("/static/exercicios/", "", 1)
+        partes = relativo.split("/")
+        if partes and partes[0]:
+            pasta_midia_atual = partes[0]
+
+    if not pasta_midia_atual and pastas_midia:
+        pasta_midia_atual = pastas_midia[0]
+
+    valores = {
+        "id": exercicio_atual.get("id") or "",
+        "nome": exercicio_atual.get("nome") or "",
+        "grupo": exercicio_atual.get("grupo") or "",
+        "subgrupo": exercicio_atual.get("subgrupo") or "",
+        "aparelho": exercicio_atual.get("aparelho") or "",
+        "pasta_midia": pasta_midia_atual,
+        "dicas": "\n".join(exercicio_atual.get("dicas") or []),
+        "erros": "\n".join(exercicio_atual.get("erros") or []),
+        "observacoes": exercicio_atual.get("observacoes") or "",
+        "foco": exercicio_atual.get("foco") or "",
+        "musculos_secundarios": "\n".join(exercicio_atual.get("musculos_secundarios") or []),
+        "instrucoes": "\n".join(exercicio_atual.get("instrucoes") or []),
+    }
+
+    erro = ""
+    sucesso = ""
+
+    if request.method == "POST":
+        for chave in valores.keys():
+            valores[chave] = (request.form.get(chave) or "").strip()
+
+        upload = request.files.get("midia_arquivo")
+        id_novo = valores["id"] or slug_texto(valores["nome"])
+        valores["id"] = id_novo
+        id_original = (exercicio_atual.get("id") or "").strip()
+        ids_existentes = {
+            (ex.get("id") or "").strip()
+            for ex in exercicios
+            if (ex.get("id") or "").strip() and (ex.get("id") or "").strip() != id_original
+        }
+
+        if not id_novo:
+            erro = "Informe nome ou ID válido para o exercício."
+        elif id_novo in ids_existentes:
+            erro = "Já existe outro exercício com este ID."
+        elif not valores["grupo"] or not valores["subgrupo"]:
+            erro = "Grupo e subgrupo são obrigatórios."
+        elif not valores["aparelho"]:
+            erro = "Aparelho é obrigatório para manter o padrão do catálogo."
+        elif not valores["pasta_midia"] or valores["pasta_midia"] not in pastas_midia:
+            erro = "Selecione uma pasta válida para salvar a mídia."
+
+        ext = ""
+        if not erro and upload and (upload.filename or "").strip():
+            ext = os.path.splitext(upload.filename)[1].lower()
+            if ext not in MIDIAS_PERMITIDAS:
+                erro = "Formato inválido. Use apenas arquivos .gif ou .mp4."
+
+        if not erro:
+            midia_final = midia_atual
+            if upload and (upload.filename or "").strip():
+                nome_arquivo = secure_filename(f"{id_novo}{ext}")
+                pasta_destino = os.path.join(EXERCICIOS_STATIC_DIR, valores["pasta_midia"])
+                os.makedirs(pasta_destino, exist_ok=True)
+                caminho_arquivo = os.path.join(pasta_destino, nome_arquivo)
+                upload.save(caminho_arquivo)
+                midia_final = f"/static/exercicios/{valores['pasta_midia']}/{nome_arquivo}"
+            elif not midia_final and pastas_midia:
+                midia_final = ""
+
+            exercicio_atual["id"] = id_novo
+            exercicio_atual["nome"] = valores["nome"]
+            exercicio_atual["grupo"] = valores["grupo"]
+            exercicio_atual["subgrupo"] = valores["subgrupo"]
+            exercicio_atual["aparelho"] = valores["aparelho"]
+            exercicio_atual["midia"] = midia_final
+            exercicio_atual["dicas"] = normalizar_linhas_texto(valores["dicas"])
+            exercicio_atual["erros"] = normalizar_linhas_texto(valores["erros"])
+            exercicio_atual["observacoes"] = valores["observacoes"]
+
+            if valores["foco"]:
+                exercicio_atual["foco"] = valores["foco"]
+            else:
+                exercicio_atual.pop("foco", None)
+
+            if valores["musculos_secundarios"]:
+                exercicio_atual["musculos_secundarios"] = normalizar_linhas_texto(valores["musculos_secundarios"])
+            else:
+                exercicio_atual.pop("musculos_secundarios", None)
+
+            if valores["instrucoes"]:
+                exercicio_atual["instrucoes"] = normalizar_linhas_texto(valores["instrucoes"])
+            else:
+                exercicio_atual.pop("instrucoes", None)
+
+            if id_novo != id_original:
+                treinos = [normalizar_item_treino(t) for t in carregar_treinos()]
+                alterou_treino = False
+                for treino in treinos:
+                    for item in treino.get("exercicios") or []:
+                        if (item.get("exercicio_id") or "").strip() == id_original:
+                            item["exercicio_id"] = id_novo
+                            alterou_treino = True
+                if alterou_treino:
+                    salvar_treinos(treinos)
+
+                favoritos = carregar_favoritos_admin()
+                if id_original in favoritos:
+                    favoritos.remove(id_original)
+                    favoritos.add(id_novo)
+                    salvar_favoritos_admin(favoritos)
+
+            salvar_exercicios(exercicios)
+            sucesso = "Exercício atualizado com sucesso."
+            ex_id = id_novo
+            midia_atual = midia_final
+
+    return render_template(
+        "admin_editar_exercicio.html",
+        ex_id=ex_id,
+        valores=valores,
+        erro=erro,
+        sucesso=sucesso,
+        grupos=grupos,
+        subgrupos=subgrupos,
+        subgrupos_por_grupo=subgrupos_por_grupo_lower,
+        aparelhos=aparelhos,
+        aparelhos_por_filtros=aparelhos_por_filtros,
+        pastas_midia=pastas_midia,
+        midia_atual=midia_atual,
+    )
+
+
 @app.route("/treino", methods=["GET", "POST"])
 def montar_treino():
     bloqueio = exigir_admin_ou_redirect()
@@ -874,6 +1614,8 @@ def montar_treino():
         repeticoes_lista = request.form.getlist("repeticoes[]")
         minutos_lista = request.form.getlist("minutos[]")
         velocidade_lista = request.form.getlist("velocidade[]")
+        tempo_exercicio_lista = request.form.getlist("tempo_exercicio[]")
+        descanso_lista = request.form.getlist("descanso[]")
 
         itens = []
         for idx, ex_id in enumerate(exercicios_ids):
@@ -884,6 +1626,8 @@ def montar_treino():
             reps = repeticoes_lista[idx] if idx < len(repeticoes_lista) else ""
             minutos = minutos_lista[idx] if idx < len(minutos_lista) else ""
             velocidade = velocidade_lista[idx] if idx < len(velocidade_lista) else ""
+            tempo_exercicio = tempo_exercicio_lista[idx] if idx < len(tempo_exercicio_lista) else ""
+            descanso = descanso_lista[idx] if idx < len(descanso_lista) else ""
             itens.append(
                 {
                     "exercicio_id": ex_id,
@@ -891,6 +1635,8 @@ def montar_treino():
                     "repeticoes": (reps or "").strip(),
                     "minutos": (minutos or "").strip(),
                     "velocidade": (velocidade or "").strip(),
+                    "tempo_exercicio": (tempo_exercicio or "").strip(),
+                    "descanso": (descanso or "").strip(),
                 }
             )
 
@@ -939,7 +1685,7 @@ def montar_treino():
         salvar_treinos(treinos)
         return redirect(url_for("visualizar_treino", treino_id=treino_id))
 
-    exercicios_prefill = [{"exercicio_id": "", "series": "", "repeticoes": "", "minutos": "", "velocidade": ""}]
+    exercicios_prefill = [{"exercicio_id": "", "series": "", "repeticoes": "", "minutos": "", "velocidade": "", "tempo_exercicio": "", "descanso": ""}]
     treino_id_prefill = ""
     link_id_prefill = ""
     aluno_prefill = ""
@@ -969,11 +1715,13 @@ def montar_treino():
                     "repeticoes": item.get("repeticoes") or "",
                     "minutos": item.get("minutos") or "",
                     "velocidade": item.get("velocidade") or "",
+                    "tempo_exercicio": item.get("tempo_exercicio") or "",
+                    "descanso": item.get("descanso") or "",
                 }
             )
 
         if not exercicios_prefill:
-            exercicios_prefill = [{"exercicio_id": "", "series": "", "repeticoes": "", "minutos": "", "velocidade": ""}]
+            exercicios_prefill = [{"exercicio_id": "", "series": "", "repeticoes": "", "minutos": "", "velocidade": "", "tempo_exercicio": "", "descanso": ""}]
 
     grupos = grupos if isinstance(grupos, list) else []
     opcoes_musculos = sorted(set(grupos) | set(MUSCULOS_ALVO_PADRAO), key=lambda nome: nome.lower())
@@ -1048,6 +1796,8 @@ def visualizar_treino(treino_id):
                 "repeticoes": item.get("repeticoes") or "-",
                 "minutos": item.get("minutos") or "-",
                 "velocidade": item.get("velocidade") or "-",
+                "tempo_exercicio": item.get("tempo_exercicio") or "-",
+                "descanso": item.get("descanso") or "-",
                 "aparelho": ex.get("aparelho") or "",
                 "midia": ex.get("midia") or "",
                 "dicas": ex.get("dicas") or [],
@@ -1104,18 +1854,21 @@ def exercicio(ex_id):
 
     prev_url = None
     next_url = None
+    prescricao_atual = None
 
     if treino_id:
         treinos = [normalizar_item_treino(t) for t in carregar_treinos()]
         treino = treinos_por_id(treinos).get(treino_id)
         if treino:
             ordem_exercicios = []
+            itens_validos = []
             for item in treino.get("exercicios", []):
                 if not isinstance(item, dict):
                     continue
                 ex_treino_id = (item.get("exercicio_id") or "").strip()
                 if ex_treino_id and ex_treino_id in mapa:
                     ordem_exercicios.append(ex_treino_id)
+                    itens_validos.append(item)
 
             if idx_atual is not None:
                 try:
@@ -1131,12 +1884,64 @@ def exercicio(ex_id):
             if 0 <= posicao < len(ordem_exercicios):
                 if posicao > 0:
                     prev_id = ordem_exercicios[posicao - 1]
-                    prev_url = url_for("exercicio", ex_id=prev_id, treino=treino_id, idx=posicao - 1, voltar=voltar_url)
+                    prev_url = url_for(
+                        "exercicio",
+                        ex_id=prev_id,
+                        treino=treino_id,
+                        idx=posicao - 1,
+                        voltar=voltar_url,
+                    )
                 if posicao < len(ordem_exercicios) - 1:
                     next_id = ordem_exercicios[posicao + 1]
-                    next_url = url_for("exercicio", ex_id=next_id, treino=treino_id, idx=posicao + 1, voltar=voltar_url)
+                    next_url = url_for(
+                        "exercicio",
+                        ex_id=next_id,
+                        treino=treino_id,
+                        idx=posicao + 1,
+                        voltar=voltar_url,
+                    )
 
-    return render_template("exercicio.html", ex=ex, prev_url=prev_url, next_url=next_url, voltar_url=voltar_url)
+            item_prescricao = None
+            if 0 <= posicao < len(itens_validos):
+                item_candidato = itens_validos[posicao]
+                if (item_candidato.get("exercicio_id") or "").strip() == ex_id:
+                    item_prescricao = item_candidato
+
+            if item_prescricao is None:
+                for item in itens_validos:
+                    if (item.get("exercicio_id") or "").strip() == ex_id:
+                        item_prescricao = item
+                        break
+
+            if item_prescricao:
+                aparelho = (ex.get("aparelho") or "").strip().lower()
+                nome_exercicio = (ex.get("nome") or "").strip().lower()
+                cardio_maquina = (
+                    aparelho in ["esteira", "bicicleta"]
+                    or "esteira" in nome_exercicio
+                    or "bicicleta" in nome_exercicio
+                    or "bike" in nome_exercicio
+                )
+                corpo_livre = aparelho == "corpo"
+
+                prescricao_atual = {
+                    "tipo": "cardio" if cardio_maquina else ("corpo" if corpo_livre else "forca"),
+                    "series": item_prescricao.get("series") or "-",
+                    "repeticoes": item_prescricao.get("repeticoes") or "-",
+                    "minutos": item_prescricao.get("minutos") or "-",
+                    "velocidade": item_prescricao.get("velocidade") or "-",
+                    "tempo_exercicio": item_prescricao.get("tempo_exercicio") or "-",
+                    "descanso": item_prescricao.get("descanso") or "-",
+                }
+
+    return render_template(
+        "exercicio.html",
+        ex=ex,
+        prev_url=prev_url,
+        next_url=next_url,
+        voltar_url=voltar_url,
+        prescricao_atual=prescricao_atual,
+    )
 
 
 @app.route("/qr/<ex_id>.png")

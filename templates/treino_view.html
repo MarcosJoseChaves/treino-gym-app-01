@@ -46,13 +46,13 @@
                 class="btn w-100 text-start border rounded bg-white p-2 exercicio-thumb"
                 data-index="{{ loop.index0 }}"
               >
-                {% set aparelho_item = (item.aparelho or '')|lower %}
-                {% set nome_item = (item.nome or '')|lower %}
-                {% set cardio_maquina = aparelho_item in ['esteira', 'bicicleta'] or 'esteira' in nome_item or 'bicicleta' in nome_item or 'bike' in nome_item %}
+                {% set corpo_livre = aparelho_item == 'corpo' %}
                 <div class="small text-muted mb-2">
                   {{ item.grupo }} ·
                   {% if cardio_maquina %}
                     {{ item.minutos }} min · Velocidade {{ item.velocidade }}
+                  {% elif corpo_livre %}
+                    Exercício {{ item.tempo_exercicio }}s · Descanso {{ item.descanso }}s
                   {% else %}
                     {{ item.series }} séries · {{ item.repeticoes }} repetições
                   {% endif %}
@@ -186,9 +186,12 @@
     const aparelho = (item.aparelho || '').toLowerCase();
     const nome = (item.nome || '').toLowerCase();
     const cardioMaquina = aparelho === 'esteira' || aparelho === 'bicicleta' || nome.includes('esteira') || nome.includes('bicicleta') || nome.includes('bike');
+    const corpoLivre = aparelho === 'corpo';
     detalheResumo.textContent = cardioMaquina
       ? `${item.grupo || '-'} · ${item.minutos || '-'} min · Velocidade ${item.velocidade || '-'}`
-      : `${item.grupo || '-'} · ${item.series || '-'} séries · ${item.repeticoes || '-'} repetições`;
+      : (corpoLivre
+          ? `${item.grupo || '-'} · Exercício ${item.tempo_exercicio || '-'}s · Descanso ${item.descanso || '-'}s`
+          : `${item.grupo || '-'} · ${item.series || '-'} séries · ${item.repeticoes || '-'} repetições`);
     montarMidia(item);
     montarLista(detalheDicas, 'Dicas rápidas', item.dicas || []);
     montarLista(detalheErros, 'Erros comuns', item.erros || []);

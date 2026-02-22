@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gerenciar categorias</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/app.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<nav class="navbar bg-white border-bottom sticky-top">
+  <div class="container py-2 d-flex justify-content-between align-items-center gap-2 flex-wrap">
+    <span class="navbar-brand fw-semibold">🧩 Gerenciar categorias</span>
+    <div class="d-flex gap-2">
+      <a class="btn btn-sm btn-outline-secondary" href="/admin/exercicios/novo">Novo exercício</a>
+      <a class="btn btn-sm btn-primary" href="/">Biblioteca</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-3">
+  {% if erro %}<div class="alert alert-danger">{{ erro }}</div>{% endif %}
+  {% if sucesso %}<div class="alert alert-success">{{ sucesso }}</div>{% endif %}
+
+  <div class="card shadow-sm mb-3">
+    <div class="card-body row g-2 align-items-end">
+      <div class="col-12 col-md-6">
+        <label class="form-label mb-1">Filtro por grupo</label>
+        <select class="form-select" id="filtro-categorias-grupo">
+          <option value="">Todos</option>
+          {% for item in categorias.grupos %}<option value="{{ item }}">{{ item }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-12 col-md-6">
+        <label class="form-label mb-1">Filtro por subgrupo</label>
+        <select class="form-select" id="filtro-categorias-subgrupo">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <div class="small text-muted">Selecione grupo/subgrupo para reduzir as opções de edição e exclusão.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-12 col-lg-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-header fw-semibold">Grupos</div>
+        <div class="card-body">
+          <div class="accordion" id="accordion-grupos">
+            <div class="accordion-item">
+              <h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#grupo-add">Adicionar</button></h2>
+              <div id="grupo-add" class="accordion-collapse collapse show" data-bs-parent="#accordion-grupos">
+                <div class="accordion-body">
+                  <form method="POST" class="vstack gap-2">
+                    <input type="hidden" name="acao" value="grupo_adicionar">
+                    <input class="form-control" name="valor" placeholder="Nome do grupo" required>
+                    <button class="btn btn-sm btn-primary" type="submit">Adicionar</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#grupo-edit">Editar</button></h2>
+              <div id="grupo-edit" class="accordion-collapse collapse" data-bs-parent="#accordion-grupos">
+                <div class="accordion-body">
+                  <form method="POST" class="vstack gap-2">
+                    <input type="hidden" name="acao" value="grupo_editar">
+                    <select class="form-select" name="valor" required>
+                      <option value="">Selecione</option>
+                      {% for item in categorias.grupos %}<option value="{{ item }}">{{ item }}</option>{% endfor %}
+                    </select>
+                    <input class="form-control" name="novo_valor" placeholder="Novo nome" required>
+                    <button class="btn btn-sm btn-outline-warning" type="submit">Salvar alteração</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#grupo-del">Excluir</button></h2>
+              <div id="grupo-del" class="accordion-collapse collapse" data-bs-parent="#accordion-grupos">
+                <div class="accordion-body">
+                  <form method="POST" class="vstack gap-2" onsubmit="return confirm('Excluir grupo?');">
+                    <input type="hidden" name="acao" value="grupo_excluir">
+                    <select class="form-select" name="valor" required>
+                      <option value="">Selecione</option>
+                      {% for item in categorias.grupos %}<option value="{{ item }}">{{ item }}</option>{% endfor %}
+                    </select>
+                    <button class="btn btn-sm btn-outline-danger" type="submit">Excluir</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-header fw-semibold">Subgrupos</div>
+        <div class="card-body">
+          <div class="accordion" id="accordion-subgrupos">
+            <div class="accordion-item">
+              <h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#subgrupo-add">Adicionar</button></h2>
+              <div id="subgrupo-add" class="accordion-collapse collapse show" data-bs-parent="#accordion-subgrupos">
+                <div class="accordion-body">
+                  <form method="POST" class="vstack gap-2">
+                    <input type="hidden" name="acao" value="subgrupo_adicionar">
+                    <select class="form-select" name="grupo" id="subgrupo-adicionar-grupo" required>
+                      <option value="">Grupo</option>
+                      {% for item in categorias.grupos %}<option value="{{ item }}">{{ item }}</option>{% endfor %}
+                    </select>
+                    <input class="form-control" name="valor" placeholder="Nome do subgrupo" required>
+                    <button class="btn btn-sm btn-primary" type="submit">Adicionar</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#subgrupo-edit">Editar</button></h2>
+              <div id="subgrupo-edit" class="accordion-collapse collapse" data-bs-parent="#accordion-subgrupos">
+                <div class="accordion-body">
+                  <form method="POST" class="vstack gap-2">
+                    <input type="hidden" name="acao" value="subgrupo_editar">
+                    <select class="form-select" name="grupo" id="subgrupo-editar-grupo" required>
+                      <option value="">Grupo</option>
+                      {% for item in categorias.grupos %}<option value="{{ item }}">{{ item }}</option>{% endfor %}
+                    </select>
+                    <select class="form-select" name="valor" id="subgrupo-editar-valor" required>
+                      <option value="">Subgrupo</option>
+                    </select>
+                    <input class="form-control" name="novo_valor" placeholder="Novo nome" required>
+                    <button class="btn btn-sm btn-outline-warning" type="submit">Salvar alteração</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#subgrupo-del">Excluir</button></h2>
+              <div id="subgrupo-del" class="accordion-collapse collapse" data-bs-parent="#accordion-subgrupos">
+                <div class="accordion-body">
+                  <form method="POST" class="vstack gap-2" onsubmit="return confirm('Excluir subgrupo?');">
+                    <input type="hidden" name="acao" value="subgrupo_excluir">
+                    <select class="form-select" name="grupo" id="subgrupo-excluir-grupo" required>
+                      <option value="">Grupo</option>
+                      {% for item in categorias.grupos %}<option value="{{ item }}">{{ item }}</option>{% endfor %}
+                    </select>
+                    <select class="form-select" name="valor" id="subgrupo-excluir-valor" required>
+                      <option value="">Subgrupo</option>
+                    </select>
+                    <button class="btn btn-sm btn-outline-danger" type="submit">Excluir</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-header fw-semibold">Aparelhos</div>
+        <div class="card-body">
+          <div class="accordion" id="accordion-aparelhos">
+            <div class="accordion-item">
+              <h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#aparelho-add">Adicionar</button></h2>
+              <div id="aparelho-add" class="accordion-collapse collapse show" data-bs-parent="#accordion-aparelhos">
+                <div class="accordion-body">
+                  <form method="POST" class="vstack gap-2">
+                    <input type="hidden" name="acao" value="aparelho_adicionar">
+                    <input class="form-control" name="valor" placeholder="Nome do aparelho" required>
+                    <button class="btn btn-sm btn-primary" type="submit">Adicionar</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aparelho-link">Vincular a grupo/subgrupo</button></h2>
+              <div id="aparelho-link" class="accordion-collapse collapse" data-bs-parent="#accordion-aparelhos">
+                <div class="accordion-body">
+                  <form method="POST" class="vstack gap-2">
+                    <input type="hidden" name="acao" value="aparelho_vincular">
+                    <select class="form-select" name="grupo" id="aparelho-vincular-grupo" required>
+                      <option value="">Grupo</option>
+                      {% for item in categorias.grupos %}<option value="{{ item }}">{{ item }}</option>{% endfor %}
+                    </select>
+                    <select class="form-select" name="subgrupo" id="aparelho-vincular-subgrupo" required>
+                      <option value="">Subgrupo</option>
+                    </select>
+                    <select class="form-select" name="valor" id="aparelho-vincular-valor" required>
+                      <option value="">Aparelho</option>
+                    </select>
+                    <button class="btn btn-sm btn-primary" type="submit">Vincular</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aparelho-unlink">Remover vínculo</button></h2>
+              <div id="aparelho-unlink" class="accordion-collapse collapse" data-bs-parent="#accordion-aparelhos">
+                <div class="accordion-body">
+                  <form method="POST" class="vstack gap-2" onsubmit="return confirm('Remover vínculo do aparelho?');">
+                    <input type="hidden" name="acao" value="aparelho_desvincular">
+                    <select class="form-select" name="valor" id="aparelho-desvincular-valor" required>
+                      <option value="">Selecione o vínculo</option>
+                    </select>
+                    <button class="btn btn-sm btn-outline-danger" type="submit">Remover vínculo</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aparelho-edit">Editar</button></h2>
+              <div id="aparelho-edit" class="accordion-collapse collapse" data-bs-parent="#accordion-aparelhos">
+                <div class="accordion-body">
+                  <form method="POST" class="vstack gap-2">
+                    <input type="hidden" name="acao" value="aparelho_editar">
+                    <select class="form-select" name="valor" id="aparelho-editar-valor" required>
+                      <option value="">Selecione</option>
+                    </select>
+                    <input class="form-control" name="novo_valor" placeholder="Novo nome" required>
+                    <button class="btn btn-sm btn-outline-warning" type="submit">Salvar alteração</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aparelho-del">Excluir</button></h2>
+              <div id="aparelho-del" class="accordion-collapse collapse" data-bs-parent="#accordion-aparelhos">
+                <div class="accordion-body">
+                  <form method="POST" class="vstack gap-2" onsubmit="return confirm('Excluir aparelho?');">
+                    <input type="hidden" name="acao" value="aparelho_excluir">
+                    <select class="form-select" name="valor" id="aparelho-excluir-valor" required>
+                      <option value="">Selecione</option>
+                    </select>
+                    <button class="btn btn-sm btn-outline-danger" type="submit">Excluir</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const filtroGrupo = document.getElementById('filtro-categorias-grupo');
+  const filtroSubgrupo = document.getElementById('filtro-categorias-subgrupo');
+  const subgrupoAdicionarGrupo = document.getElementById('subgrupo-adicionar-grupo');
+  const subgrupoEditarGrupo = document.getElementById('subgrupo-editar-grupo');
+  const subgrupoExcluirGrupo = document.getElementById('subgrupo-excluir-grupo');
+  const subgrupoEditarValor = document.getElementById('subgrupo-editar-valor');
+  const subgrupoExcluirValor = document.getElementById('subgrupo-excluir-valor');
+  const aparelhoEditarValor = document.getElementById('aparelho-editar-valor');
+  const aparelhoExcluirValor = document.getElementById('aparelho-excluir-valor');
+  const aparelhoVincularGrupo = document.getElementById('aparelho-vincular-grupo');
+  const aparelhoVincularSubgrupo = document.getElementById('aparelho-vincular-subgrupo');
+  const aparelhoVincularValor = document.getElementById('aparelho-vincular-valor');
+  const aparelhoDesvincularValor = document.getElementById('aparelho-desvincular-valor');
+
+  const subgruposPorGrupo = {{ categorias.subgrupos_por_grupo|tojson }};
+  const aparelhosPorFiltros = {{ aparelhos_por_filtros|tojson }};
+  const aparelhosCatalogo = {{ categorias.aparelhos|tojson }};
+  const vinculosAparelho = {{ categorias.vinculos_aparelho|tojson }};
+
+  const obterSubgrupos = () => {
+    const grupo = (filtroGrupo?.value || '').trim().toLowerCase();
+    const todos = Object.values(subgruposPorGrupo).flat();
+    if (!grupo) return [...new Set(todos)].sort((a, b) => a.localeCompare(b));
+
+    const entrada = Object.entries(subgruposPorGrupo).find(([g]) => (g || '').toLowerCase() === grupo);
+    return [...new Set(entrada?.[1] || [])].sort((a, b) => a.localeCompare(b));
+  };
+
+  const obterAparelhos = () => {
+    const grupo = (filtroGrupo?.value || '').trim().toLowerCase();
+    const subgrupo = (filtroSubgrupo?.value || '').trim().toLowerCase();
+
+    let aparelhos = [];
+    if (grupo && subgrupo) {
+      const chave = `${grupo}|||${subgrupo}`;
+      aparelhos = aparelhosPorFiltros.por_grupo_subgrupo?.[chave]
+        || aparelhosPorFiltros.por_subgrupo?.[subgrupo]
+        || aparelhosPorFiltros.por_grupo?.[grupo]
+        || [];
+    } else if (grupo) {
+      aparelhos = aparelhosPorFiltros.por_grupo?.[grupo] || [];
+    } else if (subgrupo) {
+      aparelhos = aparelhosPorFiltros.por_subgrupo?.[subgrupo] || [];
+    } else {
+      aparelhos = aparelhosCatalogo || [];
+    }
+
+    if (!aparelhos?.length) aparelhos = aparelhosCatalogo || [];
+    return [...new Set(aparelhos)].sort((a, b) => a.localeCompare(b));
+  };
+
+  const preencherSelect = (select, itens, placeholder) => {
+    if (!select) return;
+    const atual = (select.value || '').trim();
+    select.innerHTML = `<option value="">${placeholder}</option>` +
+      itens.map((item) => `<option value="${item}">${item}</option>`).join('');
+    if (atual && itens.includes(atual)) select.value = atual;
+  };
+
+  const sincronizarFiltros = () => {
+    const grupoSelecionado = (filtroGrupo?.value || '').trim();
+    if (subgrupoAdicionarGrupo && grupoSelecionado) subgrupoAdicionarGrupo.value = grupoSelecionado;
+    if (subgrupoEditarGrupo && grupoSelecionado) subgrupoEditarGrupo.value = grupoSelecionado;
+    if (subgrupoExcluirGrupo && grupoSelecionado) subgrupoExcluirGrupo.value = grupoSelecionado;
+    if (aparelhoVincularGrupo && grupoSelecionado) aparelhoVincularGrupo.value = grupoSelecionado;
+
+    const subgrupos = obterSubgrupos();
+    preencherSelect(filtroSubgrupo, subgrupos, 'Todos');
+    preencherSelect(subgrupoEditarValor, subgrupos, 'Subgrupo');
+    preencherSelect(subgrupoExcluirValor, subgrupos, 'Subgrupo');
+    preencherSelect(aparelhoVincularSubgrupo, subgrupos, 'Subgrupo');
+
+    const aparelhos = obterAparelhos();
+    preencherSelect(aparelhoEditarValor, aparelhos, 'Selecione');
+    preencherSelect(aparelhoExcluirValor, aparelhos, 'Selecione');
+    preencherSelect(aparelhoVincularValor, aparelhosCatalogo || [], 'Aparelho');
+
+    const vinculosFiltrados = (vinculosAparelho || []).filter((item) => {
+      const grupoOk = !filtroGrupo?.value || (item.grupo || '').toLowerCase() === (filtroGrupo.value || '').toLowerCase();
+      const subgrupoOk = !filtroSubgrupo?.value || (item.subgrupo || '').toLowerCase() === (filtroSubgrupo.value || '').toLowerCase();
+      return grupoOk && subgrupoOk;
+    });
+    const opcoesVinculo = vinculosFiltrados.map((item) => ({
+      value: `${item.grupo}|||${item.subgrupo}|||${item.aparelho}`,
+      label: `${item.grupo} · ${item.subgrupo} · ${item.aparelho}`,
+    }));
+    if (aparelhoDesvincularValor) {
+      const atual = (aparelhoDesvincularValor.value || '').trim();
+      aparelhoDesvincularValor.innerHTML = '<option value="">Selecione o vínculo</option>' +
+        opcoesVinculo.map((item) => `<option value="${item.value}">${item.label}</option>`).join('');
+      if (atual && opcoesVinculo.some((item) => item.value === atual)) {
+        aparelhoDesvincularValor.value = atual;
+      }
+    }
+  };
+
+  filtroGrupo?.addEventListener('change', () => {
+    if (filtroSubgrupo) filtroSubgrupo.value = '';
+    sincronizarFiltros();
+  });
+  filtroSubgrupo?.addEventListener('change', sincronizarFiltros);
+  aparelhoVincularGrupo?.addEventListener('change', () => {
+    const grupoSelecionado = (aparelhoVincularGrupo.value || '').trim();
+    const subgruposGrupo = grupoSelecionado
+      ? (subgruposPorGrupo[grupoSelecionado] || subgruposPorGrupo[grupoSelecionado.toLowerCase()] || [])
+      : [];
+    preencherSelect(aparelhoVincularSubgrupo, subgruposGrupo, 'Subgrupo');
+  });
+
+  sincronizarFiltros();
+</script>
+
+</body>
+</html>

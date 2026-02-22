@@ -15,6 +15,8 @@
     <div class="d-flex gap-2">
       <a class="btn btn-sm btn-outline-primary" href="/questionario">Questionário</a>
       {% if is_admin %}
+      <a class="btn btn-sm btn-outline-success" href="/admin/exercicios/novo">Novo exercício</a>
+      <a class="btn btn-sm btn-outline-secondary" href="/admin/exercicios/categorias">Categorias</a>
       <a class="btn btn-sm btn-primary" href="/treino">Montar treino</a>
       <form method="POST" action="/admin/logout" class="d-inline">
         <button class="btn btn-sm btn-outline-danger" type="submit">Sair admin</button>
@@ -135,12 +137,15 @@
           {% endif %}
 
           {% if is_admin %}
-          <form method="POST" action="/admin/favoritos/{{ ex.id }}/alternar" class="mt-2">
-            <input type="hidden" name="next" value="{{ request.full_path if request.query_string else request.path }}">
-            <button class="btn btn-sm {% if ex.id in favoritos_admin %}btn-warning{% else %}btn-outline-warning{% endif %}" type="submit">
-              {% if ex.id in favoritos_admin %}Remover dos favoritos{% else %}Marcar como favorito{% endif %}
-            </button>
-          </form>
+          <div class="d-flex gap-2 flex-wrap mt-2">
+            <form method="POST" action="/admin/favoritos/{{ ex.id }}/alternar" class="d-inline">
+              <input type="hidden" name="next" value="{{ request.full_path if request.query_string else request.path }}">
+              <button class="btn btn-sm {% if ex.id in favoritos_admin %}btn-warning{% else %}btn-outline-warning{% endif %}" type="submit">
+                {% if ex.id in favoritos_admin %}Remover dos favoritos{% else %}Marcar como favorito{% endif %}
+              </button>
+            </form>
+            <a class="btn btn-sm btn-outline-primary" href="/admin/exercicios/{{ ex.id }}/editar">Editar exercício</a>
+          </div>
           {% endif %}
         </div>
       </div>

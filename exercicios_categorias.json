@@ -1,0 +1,72 @@
+{
+  "grupos": [
+    "Cardio",
+    "Corpo inteiro",
+    "Membros inferiores",
+    "Membros superiores",
+    "Tronco"
+  ],
+  "subgrupos_por_grupo": {
+    "Cardio": [
+      "Cardio"
+    ],
+    "Corpo inteiro": [
+      "Corpo Inteiro",
+      "Quadríceps / Glúteos / Bíceps",
+      "Quadríceps / Glúteos / Ombros",
+      "Quadríceps, Glúteos, Bíceps"
+    ],
+    "Membros inferiores": [
+      "Coxas",
+      "Glúteos",
+      "Panturrilhas",
+      "Pernas",
+      "Posterior de coxa / Glúteos / Lombar",
+      "Quadril",
+      "Quadríceps / Glúteos / Core",
+      "Quadríceps / Glúteos / Lombar",
+      "Quadríceps / Glúteos / Panturrilhas",
+      "Quadríceps / Glúteos / Posterior de coxa / Panturrilhas",
+      "Quadríceps / Glúteos / Posteriores",
+      "Quadríceps, Glúteos e Panturrilhas"
+    ],
+    "Membros superiores": [
+      "Bíceps",
+      "Costas",
+      "Deltoide lateral / Ombros",
+      "Ombros",
+      "Peito",
+      "Tríceps"
+    ],
+    "Tronco": [
+      "Abdômen",
+      "Core"
+    ]
+  },
+  "aparelhos": [
+    "Anilha",
+    "Anilha / Peso livre",
+    "Barra",
+    "Barra Hexagonal",
+    "Bola Suíça",
+    "Cabo/Polia",
+    "Corda",
+    "Corpo",
+    "Esteira",
+    "Halter",
+    "Halteres",
+    "Halteres + banco",
+    "Máquina",
+    "Peso corporal",
+    "Peso livre",
+    "Plataforma Vibratória",
+    "Roda Abdominal"
+  ],
+  "vinculos_aparelho": [
+    {
+      "grupo": "Corpo inteiro",
+      "subgrupo": "Corpo Inteiro",
+      "aparelho": "Corpo"
+    }
+  ]
+}

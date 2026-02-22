@@ -201,7 +201,7 @@
 
         <div class="mt-4">
           <h5 class="card-title mb-2">Exercícios</h5>
-          <p class="text-muted small mb-3">Filtre por aparelho e/ou grupo muscular, marque os exercícios e preencha os parâmetros (séries/repetições ou minutos/velocidade para esteira/bicicleta). Para melhorar o desempenho, os exercícios ficam ocultos até clicar em "Filtrar".</p>
+          <p class="text-muted small mb-3">Filtre por aparelho e/ou grupo muscular, marque os exercícios e preencha os parâmetros (séries/repetições, minutos/velocidade para esteira/bicicleta, ou tempo de exercício/descanso para aparelho Corpo). Para melhorar o desempenho, os exercícios ficam ocultos até clicar em "Filtrar".</p>
 
           <div class="row g-2 mb-3 align-items-end">
             <div class="col-12 col-md-4">
@@ -248,7 +248,7 @@
 
             <div class="row g-3" id="exercicios-grid">
             {% for ex in exercicios %}
-              {% set prefill = namespace(encontrado=false, series='', repeticoes='', minutos='', velocidade='') %}
+              {% set prefill = namespace(encontrado=false, series='', repeticoes='', minutos='', velocidade='', tempo_exercicio='', descanso='') %}
               {% for item in exercicios_prefill %}
                 {% if item.exercicio_id == ex.id %}
                   {% set prefill.encontrado = true %}
@@ -256,13 +256,16 @@
                   {% set prefill.repeticoes = item.repeticoes %}
                   {% set prefill.minutos = item.minutos %}
                   {% set prefill.velocidade = item.velocidade %}
+                  {% set prefill.tempo_exercicio = item.tempo_exercicio %}
+                  {% set prefill.descanso = item.descanso %}
                 {% endif %}
               {% endfor %}
 
             {% set aparelho_normalizado = (ex.aparelho or '')|lower %}
             {% set nome_normalizado = (ex.nome or '')|lower %}
             {% set cardio_maquina = aparelho_normalizado in ['esteira', 'bicicleta'] or 'esteira' in nome_normalizado or 'bicicleta' in nome_normalizado or 'bike' in nome_normalizado %}
-            <div class="col-12 col-md-6 col-xl-4 exercicio-card d-none" data-exercicio-id="{{ ex.id }}" data-exercicio-nome="{{ ex.nome }}" data-exercicio-midia="{{ ex.midia or '' }}" data-exercicio-video="{{ '1' if ex.midia and ex.midia.lower().endswith('.mp4') else '0' }}" data-grupo="{{ (ex.grupo or '')|lower }}" data-subgrupo="{{ (ex.subgrupo or '')|lower }}" data-aparelho="{{ (ex.aparelho or '')|lower }}" data-cardio-maquina="{{ '1' if cardio_maquina else '0' }}" data-favorito="{{ '1' if ex.id in favoritos_admin else '0' }}">
+            {% set corpo_livre = aparelho_normalizado == 'corpo' %}
+            <div class="col-12 col-md-6 col-xl-4 exercicio-card d-none" data-exercicio-id="{{ ex.id }}" data-exercicio-nome="{{ ex.nome }}" data-exercicio-midia="{{ ex.midia or '' }}" data-exercicio-video="{{ '1' if ex.midia and ex.midia.lower().endswith('.mp4') else '0' }}" data-grupo="{{ (ex.grupo or '')|lower }}" data-subgrupo="{{ (ex.subgrupo or '')|lower }}" data-aparelho="{{ (ex.aparelho or '')|lower }}" data-cardio-maquina="{{ '1' if cardio_maquina else '0' }}" data-corpo-livre="{{ '1' if corpo_livre else '0' }}" data-favorito="{{ '1' if ex.id in favoritos_admin else '0' }}">
               <div class="border rounded p-2 h-100 bg-white">
                 <div class="ratio ratio-16x9 rounded overflow-hidden bg-light d-flex align-items-center justify-content-center mb-2">
                   {% if ex.midia %}
@@ -300,7 +303,7 @@
                 </form>
 
                 <div class="row g-2 exercicio-config {% if not prefill.encontrado %}d-none{% endif %}">
-                  <div class="col-6 exercicio-series-col {% if cardio_maquina %}d-none{% endif %}">
+                  <div class="col-6 exercicio-series-col {% if cardio_maquina or corpo_livre %}d-none{% endif %}">
                     <label class="form-label small mb-1">Séries</label>
                     <input
                       class="form-control exercicio-series-input"
@@ -310,7 +313,7 @@
                       {% if not prefill.encontrado %}disabled{% endif %}
                     >
                   </div>
-                  <div class="col-6 exercicio-repeticoes-col {% if cardio_maquina %}d-none{% endif %}">
+                  <div class="col-6 exercicio-repeticoes-col {% if cardio_maquina or corpo_livre %}d-none{% endif %}">
                     <label class="form-label small mb-1">Repetições</label>
                     <input
                       class="form-control exercicio-repeticoes-input"
@@ -338,6 +341,26 @@
                       <option value="média" {% if prefill.velocidade == 'média' %}selected{% endif %}>Média</option>
                       <option value="rápida" {% if prefill.velocidade == 'rápida' %}selected{% endif %}>Rápida</option>
                     </select>
+                  </div>
+                  <div class="col-6 exercicio-tempo-col {% if not corpo_livre %}d-none{% endif %}">
+                    <label class="form-label small mb-1">Tempo exercício (s)</label>
+                    <input
+                      class="form-control exercicio-tempo-input"
+                      value="{{ prefill.tempo_exercicio }}"
+                      placeholder="Ex: 40"
+                      inputmode="numeric"
+                      {% if not prefill.encontrado %}disabled{% endif %}
+                    >
+                  </div>
+                  <div class="col-6 exercicio-descanso-col {% if not corpo_livre %}d-none{% endif %}">
+                    <label class="form-label small mb-1">Descanso (s)</label>
+                    <input
+                      class="form-control exercicio-descanso-input"
+                      value="{{ prefill.descanso }}"
+                      placeholder="Ex: 20"
+                      inputmode="numeric"
+                      {% if not prefill.encontrado %}disabled{% endif %}
+                    >
                   </div>
                   <div class="col-12">
                     <button type="button" class="btn btn-success btn-sm adicionar-exercicio-btn">Adicionar na lista do treino</button>
@@ -450,13 +473,15 @@
     const repeticoesInput = card.querySelector('.exercicio-repeticoes-input');
     const minutosInput = card.querySelector('.exercicio-minutos-input');
     const velocidadeInput = card.querySelector('.exercicio-velocidade-input');
+    const tempoInput = card.querySelector('.exercicio-tempo-input');
+    const descansoInput = card.querySelector('.exercicio-descanso-input');
     const selecionado = !!checkbox?.checked;
 
     if (config) {
       config.classList.toggle('d-none', !selecionado);
     }
 
-    [seriesInput, repeticoesInput, minutosInput, velocidadeInput].forEach((input) => {
+    [seriesInput, repeticoesInput, minutosInput, velocidadeInput, tempoInput, descansoInput].forEach((input) => {
       if (!input) return;
       input.disabled = !selecionado;
       if (!selecionado) {
@@ -474,6 +499,8 @@
         <input type="hidden" name="repeticoes[]" value="${item.repeticoes}">
         <input type="hidden" name="minutos[]" value="${item.minutos}">
         <input type="hidden" name="velocidade[]" value="${item.velocidade}">
+        <input type="hidden" name="tempo_exercicio[]" value="${item.tempoExercicio}">
+        <input type="hidden" name="descanso[]" value="${item.descanso}">
       `)
       .join('');
   };
@@ -494,7 +521,11 @@
             </div>
             <div>
             <div class="fw-semibold">${idx + 1}. ${item.nome}</div>
-            <div class="small text-muted">${item.cardioMaquina ? `Minutos: ${item.minutos} · Velocidade: ${item.velocidade}` : `Séries: ${item.series} · Repetições: ${item.repeticoes}`}</div>
+            <div class="small text-muted">${item.cardioMaquina
+              ? `Minutos: ${item.minutos} · Velocidade: ${item.velocidade}`
+              : (item.corpoLivre
+                  ? `Exercício: ${item.tempoExercicio}s · Descanso: ${item.descanso}s`
+                  : `Séries: ${item.series} · Repetições: ${item.repeticoes}`)}</div>
           </div>
           </div>
           <button type="button" class="btn btn-outline-danger btn-sm remover-lista-btn" data-exercicio-id="${item.exercicioId}">Retirar</button>
@@ -536,17 +567,27 @@
     const repeticoesInput = card.querySelector('.exercicio-repeticoes-input');
     const minutosInput = card.querySelector('.exercicio-minutos-input');
     const velocidadeInput = card.querySelector('.exercicio-velocidade-input');
+    const tempoInput = card.querySelector('.exercicio-tempo-input');
+    const descansoInput = card.querySelector('.exercicio-descanso-input');
     const cardioMaquina = (card.dataset.cardioMaquina || '') === '1';
+    const corpoLivre = (card.dataset.corpoLivre || '') === '1';
     const series = (seriesInput?.value || '').trim();
     const repeticoes = (repeticoesInput?.value || '').trim();
     const minutos = (minutosInput?.value || '').trim();
     const velocidade = (velocidadeInput?.value || '').trim();
+    const tempoExercicio = (tempoInput?.value || '').trim();
+    const descanso = (descansoInput?.value || '').trim();
 
     if (!exercicioId) return;
     if (validarCampos) {
       if (cardioMaquina) {
         if (!minutos || !velocidade) {
           alert('Preencha minutos e velocidade antes de adicionar.');
+          return;
+        }
+      } else if (corpoLivre) {
+        if (!tempoExercicio || !descanso) {
+          alert('Preencha tempo de exercício e descanso antes de adicionar.');
           return;
         }
       } else if (!series || !repeticoes) {
@@ -566,11 +607,14 @@
       existente.repeticoes = repeticoes;
       existente.minutos = minutos;
       existente.velocidade = velocidade;
+      existente.tempoExercicio = tempoExercicio;
+      existente.descanso = descanso;
       existente.cardioMaquina = cardioMaquina;
+      existente.corpoLivre = corpoLivre;
       existente.midia = midia;
       existente.ehVideo = ehVideo;
     } else {
-      treinoSelecionado.push({ exercicioId, nome, series, repeticoes, minutos, velocidade, cardioMaquina, midia, ehVideo });
+      treinoSelecionado.push({ exercicioId, nome, series, repeticoes, minutos, velocidade, tempoExercicio, descanso, cardioMaquina, corpoLivre, midia, ehVideo });
     }
 
     renderListaTreino();

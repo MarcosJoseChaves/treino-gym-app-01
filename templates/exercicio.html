@@ -62,6 +62,21 @@
         {% if ex.aparelho %} • Aparelho: {{ ex.aparelho }}{% endif %}
       </div>
 
+      {% if prescricao_atual %}
+      <div class="alert alert-warning border mb-3 py-2">
+        <div class="fw-semibold small text-uppercase mb-1">Parâmetros deste treino</div>
+        <div>
+          {% if prescricao_atual.tipo == 'cardio' %}
+            {{ prescricao_atual.minutos }} min · Velocidade {{ prescricao_atual.velocidade }}
+          {% elif prescricao_atual.tipo == 'corpo' %}
+            Exercício {{ prescricao_atual.tempo_exercicio }}s · Descanso {{ prescricao_atual.descanso }}s
+          {% else %}
+            {{ prescricao_atual.series }} séries · {{ prescricao_atual.repeticoes }} repetições
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
       <div class="row g-3">
         <div class="col-12 col-md-7">
           {% if ex.dicas and ex.dicas|length > 0 %}
