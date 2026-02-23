@@ -185,11 +185,19 @@ if db:
         dados = db.Column(db.JSON, nullable=False)
 
 
+    class ExercicioDB(db.Model):
+        __tablename__ = "exercicios"
+
+        id = db.Column(db.String, primary_key=True)
+        dados = db.Column(db.JSON, nullable=False)
+
+
     with app.app_context():
         db.create_all()
 else:
     TreinoDB = None
     RespostaDB = None
+    ExercicioDB = None
 
 
 def caminho_arquivo(nome_constante, fallback_nome_arquivo):
@@ -242,14 +250,24 @@ def injetar_estado_admin():
     return {"is_admin": admin_ativo()}
 
 def carregar_exercicios():
-    """Carrega a lista de exercícios do JSON."""
-    if not os.path.exists(DATA_FILE):
-        return []
-    try:
-        with open(DATA_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
-    except (json.JSONDecodeError, OSError):
-        return []
+    """Carrega a lista de exercícios (banco quando disponível, senão JSON)."""
+    data = []
+
+    if db and ExercicioDB:
+        try:
+            registros = ExercicioDB.query.order_by(ExercicioDB.id.asc()).all()
+            data = [r.dados for r in registros if isinstance(r.dados, dict)]
+        except SQLAlchemyError:
+            data = []
+
+    if not data:
+        if not os.path.exists(DATA_FILE):
+            return []
+        try:
+            with open(DATA_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except (json.JSONDecodeError, OSError):
+            return []
 
     if not isinstance(data, list):
         return []
@@ -304,6 +322,20 @@ def salvar_favoritos_admin(favoritos_ids):
 
 
 def salvar_exercicios(exercicios):
+    if db and ExercicioDB:
+        try:
+            db.session.query(ExercicioDB).delete()
+            for ex in exercicios:
+                if not isinstance(ex, dict):
+                    continue
+                ex_id = str(ex.get("id") or "").strip()
+                if not ex_id:
+                    continue
+                db.session.add(ExercicioDB(id=ex_id, dados=ex))
+            db.session.commit()
+            return
+        except SQLAlchemyError:
+            db.session.rollback()
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(exercicios, f, ensure_ascii=False, indent=2)
 
