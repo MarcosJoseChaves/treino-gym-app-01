@@ -192,12 +192,81 @@ if db:
         dados = db.Column(db.JSON, nullable=False)
 
 
+    class ExercicioMidiaDB(db.Model):
+        __tablename__ = "exercicios_midias"
+
+        exercicio_id = db.Column(db.String, primary_key=True)
+        extensao = db.Column(db.String, nullable=False)
+        mimetype = db.Column(db.String, nullable=False)
+        conteudo = db.Column(db.LargeBinary, nullable=False)
+
+
     with app.app_context():
         db.create_all()
 else:
     TreinoDB = None
     RespostaDB = None
     ExercicioDB = None
+    ExercicioMidiaDB = None
+
+
+def montar_url_midia_exercicio(exercicio_id, extensao):
+    ex_id = (exercicio_id or "").strip()
+    ext = (extensao or "").strip().lower()
+    if not ex_id or ext not in MIDIAS_PERMITIDAS:
+        return ""
+    return f"/midia/exercicios/{ex_id}{ext}"
+
+
+def salvar_midia_exercicio(exercicio_id, upload, extensao):
+    """Salva mídia no banco quando disponível; fallback para arquivo estático."""
+    ex_id = (exercicio_id or "").strip()
+    ext = (extensao or "").strip().lower()
+    if not ex_id or ext not in MIDIAS_PERMITIDAS:
+        return ""
+
+    nome_arquivo = secure_filename(f"{ex_id}{ext}")
+
+    if db and ExercicioMidiaDB:
+        conteudo = upload.read()
+        if not conteudo:
+            return ""
+
+        mimetype = (upload.mimetype or "").strip().lower()
+        if mimetype not in {"video/mp4", "image/gif"}:
+            mimetype = "video/mp4" if ext == ".mp4" else "image/gif"
+
+        try:
+            registro = ExercicioMidiaDB.query.get(ex_id)
+            if registro:
+                registro.extensao = ext
+                registro.mimetype = mimetype
+                registro.conteudo = conteudo
+            else:
+                db.session.add(
+                    ExercicioMidiaDB(
+                        exercicio_id=ex_id,
+                        extensao=ext,
+                        mimetype=mimetype,
+                        conteudo=conteudo,
+                    )
+                )
+            db.session.commit()
+            return montar_url_midia_exercicio(ex_id, ext)
+        except SQLAlchemyError:
+            db.session.rollback()
+        finally:
+            upload.stream.seek(0)
+
+    pasta_midia = (request.form.get("pasta_midia") or "").strip()
+    if not pasta_midia:
+        return ""
+
+    pasta_destino = os.path.join(EXERCICIOS_STATIC_DIR, pasta_midia)
+    os.makedirs(pasta_destino, exist_ok=True)
+    caminho_arquivo = os.path.join(pasta_destino, nome_arquivo)
+    upload.save(caminho_arquivo)
+    return f"/static/exercicios/{pasta_midia}/{nome_arquivo}"
 
 
 def caminho_arquivo(nome_constante, fallback_nome_arquivo):
@@ -1300,18 +1369,18 @@ def admin_novo_exercicio():
                 erro = "Formato inválido. Use apenas arquivos .gif ou .mp4."
 
         if not erro:
-            nome_arquivo = secure_filename(f"{ex_id}{ext}")
-            pasta_destino = os.path.join(EXERCICIOS_STATIC_DIR, valores["pasta_midia"])
-            os.makedirs(pasta_destino, exist_ok=True)
-            caminho_arquivo = os.path.join(pasta_destino, nome_arquivo)
-            upload.save(caminho_arquivo)
+            midia_url = salvar_midia_exercicio(ex_id, upload, ext)
+            if not midia_url:
+                erro = "Não foi possível salvar a mídia enviada. Tente novamente."
+
+        if not erro:
 
             novo_exercicio = {
                 "id": ex_id,
                 "nome": nome,
                 "grupo": valores["grupo"],
                 "subgrupo": valores["subgrupo"],
-                "midia": f"/static/exercicios/{valores['pasta_midia']}/{nome_arquivo}",
+               "midia": midia_url,
                 "dicas": normalizar_linhas_texto(valores["dicas"]),
                 "erros": normalizar_linhas_texto(valores["erros"]),
                 "observacoes": valores["observacoes"],
@@ -1363,6 +1432,31 @@ def admin_novo_exercicio():
             "Confirme se o arquivo existe na pasta templates no servidor/deploy.",
             500,
         )
+
+
+@app.route("/midia/exercicios/<caminho>")
+def obter_midia_exercicio(caminho):
+    if not db or not ExercicioMidiaDB:
+        abort(404)
+
+    nome = os.path.basename((caminho or "").strip())
+    ex_id, ext = os.path.splitext(nome)
+    if not ex_id or ext.lower() not in MIDIAS_PERMITIDAS:
+        abort(404)
+
+    registro = ExercicioMidiaDB.query.get(ex_id)
+    if not registro:
+        abort(404)
+
+    if (registro.extensao or "").lower() != ext.lower():
+        abort(404)
+
+    return send_file(
+        io.BytesIO(registro.conteudo),
+        mimetype=registro.mimetype,
+        download_name=f"{ex_id}{ext.lower()}",
+        as_attachment=False,
+    )
 
 
 @app.route("/admin/exercicios/<ex_id>/editar", methods=["GET", "POST"])
@@ -1451,14 +1545,15 @@ def admin_editar_exercicio(ex_id):
         if not erro:
             midia_final = midia_atual
             if upload and (upload.filename or "").strip():
-                nome_arquivo = secure_filename(f"{id_novo}{ext}")
-                pasta_destino = os.path.join(EXERCICIOS_STATIC_DIR, valores["pasta_midia"])
-                os.makedirs(pasta_destino, exist_ok=True)
-                caminho_arquivo = os.path.join(pasta_destino, nome_arquivo)
-                upload.save(caminho_arquivo)
-                midia_final = f"/static/exercicios/{valores['pasta_midia']}/{nome_arquivo}"
+                midia_processada = salvar_midia_exercicio(id_novo, upload, ext)
+                if not midia_processada:
+                    erro = "Não foi possível salvar a mídia enviada. Tente novamente."
+                else:
+                    midia_final = midia_processada
             elif not midia_final and pastas_midia:
                 midia_final = ""
+
+        if not erro:
 
             exercicio_atual["id"] = id_novo
             exercicio_atual["nome"] = valores["nome"]
