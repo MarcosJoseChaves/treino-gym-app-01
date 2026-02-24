@@ -201,8 +201,6 @@ if db:
         conteudo = db.Column(db.LargeBinary, nullable=False)
 
 
-    with app.app_context():
-        db.create_all()
 else:
     TreinoDB = None
     RespostaDB = None
