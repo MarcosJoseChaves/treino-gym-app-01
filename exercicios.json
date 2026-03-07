@@ -1,6 +1,6 @@
 [
   {
-    "id": "agachamento",
+    "id": "301010001",
     "nome": "Agachamento",
     "grupo": "Membros inferiores",
     "subgrupo": "Glúteos",
@@ -19,7 +19,7 @@
     "aparelho": "Peso livre"
   },
   {
-    "id": "elevacao_pelvica",
+    "id": "301020002",
     "nome": "Elevação Pélvica (Hip Thrust)",
     "grupo": "Membros inferiores",
     "subgrupo": "Glúteos",
@@ -38,7 +38,7 @@
     "aparelho": "Barra"
   },
   {
-    "id": "afundo",
+    "id": "301010003",
     "nome": "Afundo (Lunge)",
     "grupo": "Membros inferiores",
     "subgrupo": "Glúteos",
@@ -57,7 +57,7 @@
     "aparelho": "Peso livre"
   },
   {
-    "id": "sumo",
+    "id": "301010004",
     "nome": "Agachamento Sumô",
     "grupo": "Membros inferiores",
     "subgrupo": "Glúteos",
@@ -76,7 +76,7 @@
     "aparelho": "Peso livre"
   },
   {
-    "id": "extensao_cabo",
+    "id": "301030005",
     "nome": "Extensão no Cabo",
     "grupo": "Membros inferiores",
     "subgrupo": "Glúteos",
@@ -95,7 +95,7 @@
     "aparelho": "Cabo/Polia"
   },
   {
-    "id": "levantamento_terra",
+    "id": "301020006",
     "nome": "Levantamento Terra (Romeno/Stiff)",
     "grupo": "Membros inferiores",
     "subgrupo": "Glúteos",
@@ -114,7 +114,7 @@
     "aparelho": "Barra"
   },
   {
-    "id": "cadeira_abdutora",
+    "id": "301040007",
     "nome": "Cadeira Abdutora",
     "grupo": "Membros inferiores",
     "subgrupo": "Glúteos",
@@ -133,7 +133,7 @@
     "aparelho": "Máquina"
   },
   {
-    "id": "elevacao_lateral",
+    "id": "301050008",
     "nome": "Elevação de Perna Lateral",
     "grupo": "Membros inferiores",
     "subgrupo": "Glúteos",
@@ -152,7 +152,7 @@
     "aparelho": "Peso corporal"
   },
   {
-    "id": "ponte_unilateral",
+    "id": "301050009",
     "nome": "Ponte com Elevação de Perna",
     "grupo": "Membros inferiores",
     "subgrupo": "Glúteos",
@@ -171,7 +171,7 @@
     "aparelho": "Peso corporal"
   },
   {
-    "id": "supino_reto_barra",
+    "id": "402020010",
     "nome": "Supino Reto (Barra)",
     "grupo": "Membros superiores",
     "subgrupo": "Peito",
@@ -190,7 +190,7 @@
     "aparelho": "Barra"
   },
   {
-    "id": "costas_remada_curvada",
+    "id": "403020011",
     "nome": "Remada Curvada (Barra)",
     "grupo": "Membros superiores",
     "subgrupo": "Costas",
@@ -209,7 +209,7 @@
     "aparelho": "Barra"
   },
   {
-    "id": "peito_supino_inclinado_halteres",
+    "id": "402060012",
     "nome": "Supino Inclinado (Halteres)",
     "grupo": "Membros superiores",
     "subgrupo": "Peito",
@@ -228,7 +228,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "costas_puxada_alta_pulldown",
+    "id": "403030013",
     "nome": "Puxada Alta (Pulldown)",
     "grupo": "Membros superiores",
     "subgrupo": "Costas",
@@ -248,7 +248,7 @@
     "aparelho": "Cabo/Polia"
   },
   {
-    "id": "triceps_extensao_polia_alta",
+    "id": "404030014",
     "nome": "Extensão de Tríceps na Polia Alta",
     "grupo": "Membros superiores",
     "subgrupo": "Tríceps",
@@ -268,7 +268,7 @@
     "aparelho": "Cabo/Polia"
   },
   {
-    "id": "triceps_extensao_frente",
+    "id": "404030015",
     "nome": "Extensão de Tríceps à Frente (Polia)",
     "grupo": "Membros superiores",
     "subgrupo": "Tríceps",
@@ -288,7 +288,7 @@
     "aparelho": "Cabo/Polia"
   },
   {
-    "id": "costas_remada_v_cabo",
+    "id": "403030016",
     "nome": "Remada em V com Cabo",
     "grupo": "Membros superiores",
     "subgrupo": "Costas",
@@ -315,7 +315,7 @@
     "aparelho": "Cabo/Polia"
   },
   {
-    "id": "costas_puxada_supinada_fechada",
+    "id": "403030017",
     "nome": "Puxada Lat Inversa na Máquina (Pegada Fechada)",
     "grupo": "Membros superiores",
     "subgrupo": "Costas",
@@ -346,7 +346,7 @@
     "aparelho": "Cabo/Polia"
   },
   {
-    "id": "costas_pullover_cabo",
+    "id": "403030018",
     "nome": "Pullover no Cabo (Braços Estendidos)",
     "grupo": "Membros superiores",
     "subgrupo": "Costas",
@@ -366,7 +366,7 @@
     "aparelho": "Cabo/Polia"
   },
   {
-    "id": "abd_wheel_rollout",
+    "id": "505070019",
     "nome": "Abdominal com Roda (Wheel Rollout)",
     "grupo": "Tronco",
     "subgrupo": "Abdômen",
@@ -386,7 +386,7 @@
     "aparelho": "Roda Abdominal"
   },
   {
-    "id": "abd_wheel_rollout_pe",
+    "id": "505070020",
     "nome": "Abdominal com Roda em Pé (Standing Wheel Rollout)",
     "grupo": "Tronco",
     "subgrupo": "Abdômen",
@@ -406,7 +406,7 @@
     "aparelho": "Roda Abdominal"
   },
   {
-    "id": "plataforma_vibratoria_em_pe",
+    "id": "306080021",
     "nome": "Permanência em Pé na Plataforma Vibratória",
     "grupo": "Membros inferiores",
     "subgrupo": "Coxas",
@@ -426,7 +426,7 @@
     "aparelho": "Plataforma Vibratória"
   },
   {
-    "id": "plataforma_vibratoria_afundo",
+    "id": "306080022",
     "nome": "Afundo na Plataforma Vibratória",
     "grupo": "Membros inferiores",
     "subgrupo": "Coxas",
@@ -446,7 +446,7 @@
     "aparelho": "Plataforma Vibratória"
   },
   {
-    "id": "plataforma_vibratoria_prancha",
+    "id": "505080023",
     "nome": "Prancha na Plataforma Vibratória",
     "grupo": "Tronco",
     "subgrupo": "Abdômen",
@@ -466,7 +466,7 @@
     "aparelho": "Plataforma Vibratória"
   },
   {
-    "id": "terra_barra_hexagonal",
+    "id": "307090024",
     "nome": "Levantamento Terra com Barra Hexagonal (Trap Bar)",
     "grupo": "Membros inferiores",
     "subgrupo": "Pernas",
@@ -486,7 +486,7 @@
     "aparelho": "Barra Hexagonal"
   },
   {
-    "id": "encolhimento_barra_hexagonal",
+    "id": "403090025",
     "nome": "Encolhimento de Ombros com Barra Hexagonal (Trap Bar)",
     "grupo": "Membros superiores",
     "subgrupo": "Costas",
@@ -506,7 +506,7 @@
     "aparelho": "Barra Hexagonal"
   },
   {
-    "id": "farmers_carry_barra_hexagonal",
+    "id": "208090026",
     "nome": "Caminhada do Fazendeiro com Barra Hexagonal (Trap Bar)",
     "grupo": "Corpo inteiro",
     "subgrupo": "Corpo Inteiro",
@@ -526,7 +526,7 @@
     "aparelho": "Barra Hexagonal"
   },
   {
-    "id": "remada_curvada_barra_hexagonal",
+    "id": "403090027",
     "nome": "Remada Curvada com Barra Hexagonal (Trap Bar)",
     "grupo": "Membros superiores",
     "subgrupo": "Costas",
@@ -546,7 +546,7 @@
     "aparelho": "Barra Hexagonal"
   },
   {
-    "id": "desenvolvimento_barra_hexagonal",
+    "id": "409090028",
     "nome": "Desenvolvimento Acima da Cabeça com Barra Hexagonal (Trap Bar)",
     "grupo": "Membros superiores",
     "subgrupo": "Ombros",
@@ -566,7 +566,7 @@
     "aparelho": "Barra Hexagonal"
   },
   {
-    "id": "step_up_banco",
+    "id": "307050029",
     "nome": "Step-up no Banco",
     "grupo": "Membros inferiores",
     "subgrupo": "Pernas",
@@ -586,7 +586,7 @@
     "aparelho": "Peso corporal"
   },
   {
-    "id": "terra_halteres",
+    "id": "307060030",
     "nome": "Levantamento Terra com Halteres",
     "grupo": "Membros inferiores",
     "subgrupo": "Pernas",
@@ -606,7 +606,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "supino_declinado_barra",
+    "id": "402020031",
     "nome": "Supino Declinado com Barra",
     "grupo": "Membros superiores",
     "subgrupo": "Peito",
@@ -626,7 +626,7 @@
     "aparelho": "Barra"
   },
   {
-    "id": "supino_pegada_fechada",
+    "id": "402020032",
     "nome": "Supino com Pegada Fechada",
     "grupo": "Membros superiores",
     "subgrupo": "Peito",
@@ -646,7 +646,7 @@
     "aparelho": "Barra"
   },
   {
-    "id": "supino_pegada_aberta",
+    "id": "402020033",
     "nome": "Supino com Pegada Aberta",
     "grupo": "Membros superiores",
     "subgrupo": "Peito",
@@ -666,7 +666,7 @@
     "aparelho": "Barra"
   },
   {
-    "id": "supino_chao_barra",
+    "id": "402020034",
     "nome": "Supino no Chão (Floor Press)",
     "grupo": "Membros superiores",
     "subgrupo": "Peito",
@@ -686,7 +686,7 @@
     "aparelho": "Barra"
   },
   {
-    "id": "larsen_press",
+    "id": "402020035",
     "nome": "Larsen Press",
     "grupo": "Membros superiores",
     "subgrupo": "Peito",
@@ -706,7 +706,7 @@
     "aparelho": "Barra"
   },
   {
-    "id": "afundo_barra",
+    "id": "307020036",
     "nome": "Afundo com Barra",
     "grupo": "Membros inferiores",
     "subgrupo": "Pernas",
@@ -726,7 +726,7 @@
     "aparelho": "Barra"
   },
   {
-    "id": "agachamento_cossack_barra",
+    "id": "307020037",
     "nome": "Agachamento Cossack com Barra",
     "grupo": "Membros inferiores",
     "subgrupo": "Pernas",
@@ -746,7 +746,7 @@
     "aparelho": "Barra"
   },
   {
-    "id": "agachamento_frontal_halter",
+    "id": "307060038",
     "nome": "Agachamento Frontal com Halter",
     "grupo": "Membros inferiores",
     "subgrupo": "Pernas",
@@ -766,7 +766,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "terra_romeno_marcha_halter",
+    "id": "310060039",
     "nome": "Levantamento Terra Romeno com Halteres em Marcha",
     "grupo": "Membros inferiores",
     "subgrupo": "Quadril",
@@ -786,7 +786,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "cadeira_extensora",
+    "id": "307040040",
     "nome": "Cadeira Extensora",
     "grupo": "Membros inferiores",
     "subgrupo": "Pernas",
@@ -806,7 +806,7 @@
     "aparelho": "Máquina"
   },
   {
-    "id": "cadeira_flexora",
+    "id": "307040041",
     "nome": "Cadeira Flexora",
     "grupo": "Membros inferiores",
     "subgrupo": "Pernas",
@@ -826,7 +826,7 @@
     "aparelho": "Máquina"
   },
   {
-    "id": "leg_press_45",
+    "id": "307040042",
     "nome": "Leg Press 45º",
     "grupo": "Membros inferiores",
     "subgrupo": "Pernas",
@@ -846,7 +846,7 @@
     "aparelho": "Máquina"
   },
   {
-    "id": "rosca_direta_barra",
+    "id": "411020043",
     "nome": "Rosca Direta com Barra",
     "grupo": "Membros superiores",
     "subgrupo": "Bíceps",
@@ -866,7 +866,7 @@
     "aparelho": "Barra"
   },
   {
-    "id": "elevacao_lateral_halteres",
+    "id": "409060044",
     "nome": "Elevação Lateral com Halteres",
     "grupo": "Membros superiores",
     "subgrupo": "Ombros",
@@ -886,7 +886,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "panturrilha_em_pe_maquina",
+    "id": "312040045",
     "nome": "Panturrilha em Pé na Máquina",
     "grupo": "Membros inferiores",
     "subgrupo": "Panturrilhas",
@@ -906,7 +906,7 @@
     "aparelho": "Máquina"
   },
   {
-    "id": "crucifixo_cabo_sentado",
+    "id": "402030046",
     "nome": "Crucifixo Sentado no Cabo",
     "grupo": "Membros superiores",
     "subgrupo": "Peito",
@@ -926,7 +926,7 @@
     "aparelho": "Cabo/Polia"
   },
   {
-    "id": "remada_cabo_meio_ajoelhado_unilateral",
+    "id": "403030047",
     "nome": "Remada no Cabo Meio Ajoelhado Unilateral",
     "grupo": "Membros superiores",
     "subgrupo": "Costas",
@@ -946,7 +946,7 @@
     "aparelho": "Cabo/Polia"
   },
   {
-    "id": "prancha_frontal",
+    "id": "513050048",
     "nome": "Prancha Frontal",
     "grupo": "Tronco",
     "subgrupo": "Core",
@@ -966,7 +966,7 @@
     "aparelho": "Peso corporal"
   },
   {
-    "id": "triceps_testa_barbell",
+    "id": "404020049",
     "nome": "Tríceps Testa com Barra",
     "grupo": "Membros superiores",
     "subgrupo": "Tríceps",
@@ -986,7 +986,7 @@
     "aparelho": "Barra"
   },
   {
-    "id": "pular_corda",
+    "id": "114100050",
     "nome": "Pular Corda",
     "grupo": "Cardio",
     "subgrupo": "Cardio",
@@ -1008,7 +1008,7 @@
     "aparelho": "Corda"
   },
   {
-    "id": "butt_kick",
+    "id": "114050051",
     "nome": "Butt Kick",
     "grupo": "Cardio",
     "subgrupo": "Cardio",
@@ -1031,7 +1031,7 @@
     "aparelho": "Peso corporal"
   },
   {
-    "id": "cardio_box_quick_feet",
+    "id": "114050052",
     "nome": "Cardio Box Quick Feet",
     "grupo": "Cardio",
     "subgrupo": "Cardio",
@@ -1054,7 +1054,7 @@
     "aparelho": "Peso corporal"
   },
   {
-    "id": "cardio_criss_cross_jacks",
+    "id": "114050053",
     "nome": "Cardio Criss Cross Jacks",
     "grupo": "Cardio",
     "subgrupo": "Cardio",
@@ -1077,7 +1077,7 @@
     "aparelho": "Peso corporal"
   },
   {
-    "id": "cardio_diamond_hop",
+    "id": "114050054",
     "nome": "Cardio Diamond Hop",
     "grupo": "Cardio",
     "subgrupo": "Cardio",
@@ -1100,7 +1100,7 @@
     "aparelho": "Peso corporal"
   },
   {
-    "id": "cardio_figure_eight_sprint",
+    "id": "114050055",
     "nome": "Cardio Figure Eight Sprint",
     "grupo": "Cardio",
     "subgrupo": "Cardio",
@@ -1123,7 +1123,7 @@
     "aparelho": "Peso corporal"
   },
   {
-    "id": "cardio_forward_scissor",
+    "id": "114050056",
     "nome": "Cardio Forward Scissor",
     "grupo": "Cardio",
     "subgrupo": "Cardio",
@@ -1146,7 +1146,7 @@
     "aparelho": "Peso corporal"
   },
   {
-    "id": "cardio_in_and_out_forward",
+    "id": "114050057",
     "nome": "Cardio In And Out Forward",
     "grupo": "Cardio",
     "subgrupo": "Cardio",
@@ -1169,7 +1169,7 @@
     "aparelho": "Peso corporal"
   },
   {
-    "id": "cardio_jumping_jacks",
+    "id": "114050058",
     "nome": "Cardio Jumping Jacks",
     "grupo": "Cardio",
     "subgrupo": "Cardio",
@@ -1192,7 +1192,7 @@
     "aparelho": "Peso corporal"
   },
   {
-    "id": "cardio_knee_taps",
+    "id": "114050059",
     "nome": "Cardio Knee Taps",
     "grupo": "Cardio",
     "subgrupo": "Cardio",
@@ -1216,7 +1216,7 @@
     "aparelho": "Peso corporal"
   },
   {
-    "id": "cardio_long_jump",
+    "id": "114050060",
     "nome": "Cardio Long Jump",
     "grupo": "Cardio",
     "subgrupo": "Cardio",
@@ -1240,7 +1240,7 @@
     "aparelho": "Peso corporal"
   },
   {
-    "id": "cardio_skater_single_leg_burpee",
+    "id": "114050061",
     "nome": "Cardio Skater com Burpee Unilateral",
     "grupo": "Cardio",
     "subgrupo": "Cardio",
@@ -1264,7 +1264,7 @@
     "aparelho": "Peso corporal"
   },
   {
-    "id": "treadmill_jog",
+    "id": "114110062",
     "nome": "Corrida Leve na Esteira",
     "grupo": "Cardio",
     "subgrupo": "Cardio",
@@ -1288,7 +1288,7 @@
     "aparelho": "Esteira"
   },
   {
-    "id": "treadmill_sprint",
+    "id": "114110063",
     "nome": "Sprint na Esteira",
     "grupo": "Cardio",
     "subgrupo": "Cardio",
@@ -1312,7 +1312,7 @@
     "aparelho": "Esteira"
   },
   {
-    "id": "treadmill_walk",
+    "id": "114110064",
     "nome": "Caminhada na Esteira",
     "grupo": "Cardio",
     "subgrupo": "Cardio",
@@ -1336,7 +1336,7 @@
     "aparelho": "Esteira"
   },
   {
-    "id": "cable_dual_overhead_curl",
+    "id": "411030065",
     "nome": "Rosca Overhead no Cabo (Dupla)",
     "grupo": "Membros superiores",
     "subgrupo": "Bíceps",
@@ -1359,7 +1359,7 @@
     "aparelho": "Cabo/Polia"
   },
   {
-    "id": "cable_rope_hammer_curl",
+    "id": "411030066",
     "nome": "Rosca Martelo no Cabo com Corda",
     "grupo": "Membros superiores",
     "subgrupo": "Bíceps",
@@ -1382,7 +1382,7 @@
     "aparelho": "Cabo/Polia"
   },
   {
-    "id": "barbell_preacher_curl",
+    "id": "411020067",
     "nome": "Rosca Scott com Barra",
     "grupo": "Membros superiores",
     "subgrupo": "Bíceps",
@@ -1405,7 +1405,7 @@
     "aparelho": "Barra"
   },
   {
-    "id": "cable_bicep_curl",
+    "id": "411030068",
     "nome": "Rosca Bíceps no Cabo em Pé",
     "grupo": "Membros superiores",
     "subgrupo": "Bíceps",
@@ -1428,7 +1428,7 @@
     "aparelho": "Cabo/Polia"
   },
   {
-    "id": "dumbbell_alternating_hammer_curl",
+    "id": "411120069",
     "nome": "Rosca Martelo Alternada com Halteres",
     "grupo": "Membros superiores",
     "subgrupo": "Bíceps",
@@ -1451,7 +1451,7 @@
     "aparelho": "Halter"
   },
   {
-    "id": "dumbbell_one_arm_row",
+    "id": "403120070",
     "nome": "Remada Unilateral com Halter",
     "grupo": "Membros superiores",
     "subgrupo": "Costas",
@@ -1474,7 +1474,7 @@
     "aparelho": "Halter"
   },
   {
-    "id": "dumbbell_one_arm_preacher_curl",
+    "id": "411120071",
     "nome": "Rosca Scott Unilateral com Halter",
     "grupo": "Membros superiores",
     "subgrupo": "Bíceps",
@@ -1497,7 +1497,7 @@
     "aparelho": "Halter"
   },
   {
-    "id": "dumbbell_side_bend",
+    "id": "505120072",
     "nome": "Flexão Lateral com Halter",
     "grupo": "Tronco",
     "subgrupo": "Abdômen",
@@ -1520,7 +1520,7 @@
     "aparelho": "Halter"
   },
   {
-    "id": "dumbbell_alternating_bicep_curl",
+    "id": "411120073",
     "nome": "Rosca Alternada com Halteres",
     "grupo": "Membros superiores",
     "subgrupo": "Bíceps",
@@ -1543,7 +1543,7 @@
     "aparelho": "Halter"
   },
   {
-    "id": "weighted_side_bend",
+    "id": "505130074",
     "nome": "Flexão Lateral com Anilha",
     "grupo": "Tronco",
     "subgrupo": "Abdômen",
@@ -1566,7 +1566,7 @@
     "aparelho": "Anilha"
   },
   {
-    "id": "stability_ball_crunch",
+    "id": "505140075",
     "nome": "Abdominal na Bola Suíça",
     "grupo": "Tronco",
     "subgrupo": "Abdômen",
@@ -1589,7 +1589,7 @@
     "aparelho": "Bola Suíça"
   },
   {
-    "id": "rosca_concentrada_halter",
+    "id": "411120076",
     "nome": "Rosca Concentrada com Halter",
     "grupo": "Membros superiores",
     "subgrupo": "Bíceps",
@@ -1612,7 +1612,7 @@
     "aparelho": "Halter"
   },
   {
-    "id": "toe_touches_abdominal",
+    "id": "505050077",
     "nome": "Toe Touches (Toque nos Pés)",
     "grupo": "Tronco",
     "subgrupo": "Abdômen",
@@ -1635,7 +1635,7 @@
     "aparelho": "Peso corporal"
   },
   {
-    "id": "dumbbell_squat_curl_shoulder_press",
+    "id": "215060078",
     "nome": "Agachamento + Rosca + Desenvolvimento com Halteres",
     "grupo": "Corpo inteiro",
     "subgrupo": "Quadríceps, Glúteos, Bíceps",
@@ -1658,7 +1658,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "dumbbell_single_leg_bench_squat",
+    "id": "316150079",
     "nome": "Agachamento Unilateral no Banco com Halter",
     "grupo": "Membros inferiores",
     "subgrupo": "Quadríceps, Glúteos e Panturrilhas",
@@ -1681,7 +1681,7 @@
     "aparelho": "Halteres + banco"
   },
   {
-    "id": "weighted_crunch",
+    "id": "505160080",
     "nome": "Abdominal Crunch com Peso",
     "grupo": "Tronco",
     "subgrupo": "Abdômen",
@@ -1704,7 +1704,7 @@
     "aparelho": "Anilha / Peso livre"
   },
   {
-    "id": "dumbbell_wall_squat",
+    "id": "301060081",
     "nome": "Agachamento na Parede com Halteres",
     "grupo": "Membros inferiores",
     "subgrupo": "Glúteos",
@@ -1727,7 +1727,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "dumbbell_split_jump",
+    "id": "317060082",
     "nome": "Afundo com Salto usando Halteres",
     "grupo": "Membros inferiores",
     "subgrupo": "Quadríceps / Glúteos / Panturrilhas",
@@ -1750,7 +1750,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "dumbbell_lateral_lunge_bicep_curl",
+    "id": "218060083",
     "nome": "Afundo Lateral com Rosca Bíceps",
     "grupo": "Corpo inteiro",
     "subgrupo": "Quadríceps / Glúteos / Bíceps",
@@ -1773,7 +1773,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "dumbbell_jump_squat",
+    "id": "317060084",
     "nome": "Agachamento com Salto e Halteres",
     "grupo": "Membros inferiores",
     "subgrupo": "Quadríceps / Glúteos / Panturrilhas",
@@ -1796,7 +1796,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "dumbbell_wall_squat_hold",
+    "id": "319060085",
     "nome": "Agachamento Isométrico na Parede com Halteres",
     "grupo": "Membros inferiores",
     "subgrupo": "Quadríceps / Glúteos / Core",
@@ -1819,7 +1819,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "dumbbell_single_leg_squat",
+    "id": "320060086",
     "nome": "Agachamento Unilateral com Halteres",
     "grupo": "Membros inferiores",
     "subgrupo": "Quadríceps / Glúteos / Posteriores",
@@ -1842,7 +1842,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "dumbbell_squat_shoulder_press",
+    "id": "221060087",
     "nome": "Agachamento com Desenvolvimento de Ombros",
     "grupo": "Corpo inteiro",
     "subgrupo": "Quadríceps / Glúteos / Ombros",
@@ -1865,7 +1865,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "dumbbell_bench_squat",
+    "id": "322060088",
     "nome": "Agachamento no Banco com Halteres",
     "grupo": "Membros inferiores",
     "subgrupo": "Quadríceps / Glúteos / Lombar",
@@ -1888,7 +1888,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "dumbbell_plie_squat",
+    "id": "317060089",
     "nome": "Agachamento Plie com Halter",
     "grupo": "Membros inferiores",
     "subgrupo": "Quadríceps / Glúteos / Panturrilhas",
@@ -1911,7 +1911,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "dumbbell_squat",
+    "id": "317060090",
     "nome": "Agachamento com Halteres",
     "grupo": "Membros inferiores",
     "subgrupo": "Quadríceps / Glúteos / Panturrilhas",
@@ -1934,7 +1934,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "dumbbell_walking_lunge",
+    "id": "317060091",
     "nome": "Avanço Caminhando com Halteres",
     "grupo": "Membros inferiores",
     "subgrupo": "Quadríceps / Glúteos / Panturrilhas",
@@ -1957,7 +1957,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "dumbbell_step_up",
+    "id": "317060092",
     "nome": "Subida no Banco com Halteres",
     "grupo": "Membros inferiores",
     "subgrupo": "Quadríceps / Glúteos / Panturrilhas",
@@ -1980,7 +1980,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "dumbbell_reverse_lunge",
+    "id": "317060093",
     "nome": "Avanço Reverso com Halteres",
     "grupo": "Membros inferiores",
     "subgrupo": "Quadríceps / Glúteos / Panturrilhas",
@@ -2003,7 +2003,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "dumbbell_lunge",
+    "id": "323060094",
     "nome": "Avanço com Halteres",
     "grupo": "Membros inferiores",
     "subgrupo": "Quadríceps / Glúteos / Posterior de coxa / Panturrilhas",
@@ -2026,7 +2026,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "dumbbell_romanian_deadlift",
+    "id": "324060095",
     "nome": "Levantamento Terra Romeno com Halteres",
     "grupo": "Membros inferiores",
     "subgrupo": "Posterior de coxa / Glúteos / Lombar",
@@ -2049,7 +2049,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "bodyweight_lunge",
+    "id": "317050096",
     "nome": "Afundo com Peso Corporal",
     "grupo": "Membros inferiores",
     "subgrupo": "Quadríceps / Glúteos / Panturrilhas",
@@ -2072,7 +2072,7 @@
     "aparelho": "Peso corporal"
   },
   {
-    "id": "dumbbell_bulgarian_split_squat",
+    "id": "319060097",
     "nome": "Agachamento Búlgaro com Halteres",
     "grupo": "Membros inferiores",
     "subgrupo": "Quadríceps / Glúteos / Core",
@@ -2095,7 +2095,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "jump_squat",
+    "id": "317050098",
     "nome": "Agachamento com Salto",
     "grupo": "Membros inferiores",
     "subgrupo": "Quadríceps / Glúteos / Panturrilhas",
@@ -2118,7 +2118,7 @@
     "aparelho": "Peso corporal"
   },
   {
-    "id": "bodyweight_squat",
+    "id": "319050099",
     "nome": "Agachamento com Peso Corporal",
     "grupo": "Membros inferiores",
     "subgrupo": "Quadríceps / Glúteos / Core",
@@ -2141,7 +2141,7 @@
     "aparelho": "Peso corporal"
   },
   {
-    "id": "dumbbell_lateral_raise",
+    "id": "425060100",
     "nome": "Elevação Lateral com Halteres",
     "grupo": "Membros superiores",
     "subgrupo": "Deltoide lateral / Ombros",
@@ -2164,7 +2164,7 @@
     "aparelho": "Halteres"
   },
   {
-    "id": "running_in_place",
+    "id": "208170101",
     "nome": "Corrida no lugar",
     "grupo": "Corpo inteiro",
     "subgrupo": "Corpo Inteiro",

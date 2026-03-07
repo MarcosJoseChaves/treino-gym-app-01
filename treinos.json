@@ -16,27 +16,27 @@
     "data_treino": "2026-02-06",
     "exercicios": [
       {
-        "exercicio_id": "supino_reto_barra",
+        "exercicio_id": "402020010",
         "series": "4",
         "repeticoes": "12"
       },
       {
-        "exercicio_id": "costas_remada_curvada",
+        "exercicio_id": "403020011",
         "series": "4",
         "repeticoes": "12"
       },
       {
-        "exercicio_id": "peito_supino_inclinado_halteres",
+        "exercicio_id": "402060012",
         "series": "3",
         "repeticoes": "12"
       },
       {
-        "exercicio_id": "costas_puxada_alta_pulldown",
+        "exercicio_id": "403030013",
         "series": "3",
         "repeticoes": "12"
       },
       {
-        "exercicio_id": "triceps_extensao_polia_alta",
+        "exercicio_id": "404030014",
         "series": "3",
         "repeticoes": "12"
       }
@@ -53,7 +53,7 @@
     "grupo": "Costas",
     "exercicios": [
       {
-        "exercicio_id": "extensao_cabo",
+        "exercicio_id": "301030005",
         "series": "2",
         "repeticoes": "12"
       }
@@ -85,17 +85,17 @@
     "data_treino": "2026-02-10",
     "exercicios": [
       {
-        "exercicio_id": "costas_puxada_alta_pulldown",
+        "exercicio_id": "403030013",
         "series": "2",
         "repeticoes": "12"
       },
       {
-        "exercicio_id": "triceps_extensao_frente",
+        "exercicio_id": "404030015",
         "series": "2",
         "repeticoes": "12"
       },
       {
-        "exercicio_id": "agachamento",
+        "exercicio_id": "301010001",
         "series": "2",
         "repeticoes": "12"
       }
@@ -127,17 +127,17 @@
     ],
     "exercicios": [
       {
-        "exercicio_id": "triceps_extensao_frente",
+        "exercicio_id": "404030015",
         "series": "4",
         "repeticoes": "10"
       },
       {
-        "exercicio_id": "triceps_extensao_polia_alta",
+        "exercicio_id": "404030014",
         "series": "2",
         "repeticoes": "12"
       },
       {
-        "exercicio_id": "costas_remada_curvada",
+        "exercicio_id": "403020011",
         "series": "1",
         "repeticoes": "10"
       }
