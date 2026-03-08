@@ -38,8 +38,9 @@
         <input class="form-control" name="nome" value="{{ valores.nome }}" required>
       </div>
       <div class="col-md-6">
-        <label class="form-label">ID (opcional, auto-gerado se vazio)</label>
-        <input class="form-control" name="id" value="{{ valores.id }}" placeholder="ex: agachamento-sumo">
+        <label class="form-label">ID (auto-gerado)</label>
+        <input class="form-control" name="id" id="novo-exercicio-id" value="{{ valores.id }}" readonly>
+        <div class="form-text">O ID segue o padrão de 9 dígitos e é preenchido automaticamente.</div>
       </div>
 
       <div class="col-md-4">
@@ -120,9 +121,8 @@
   const grupoSelect = document.getElementById('novo-exercicio-grupo');
   const subgrupoSelect = document.getElementById('novo-exercicio-subgrupo');
   const aparelhoSelect = document.getElementById('novo-exercicio-aparelho');
+  const idInput = document.getElementById('novo-exercicio-id');
   const subgruposPorGrupo = {{ subgrupos_por_grupo|tojson }};
-  const aparelhosPorFiltros = {{ aparelhos_por_filtros|tojson }};
-  const aparelhosCatalogo = {{ aparelhos|tojson }};
 
   const atualizarSubgrupos = () => {
     if (!subgrupoSelect) return;
@@ -142,38 +142,24 @@
     }
   };
 
-  const atualizarAparelhos = () => {
-    if (!aparelhoSelect) return;
+  const atualizarId = async () => {
+    if (!idInput) return;
+    const grupo = (grupoSelect?.value || '').trim();
+    const subgrupo = (subgrupoSelect?.value || '').trim();
+    const aparelho = (aparelhoSelect?.value || '').trim();
 
-    const grupoSelecionado = (grupoSelect?.value || '').trim().toLowerCase();
-    const subgrupoSelecionado = (subgrupoSelect?.value || '').trim().toLowerCase();
-    const aparelhoAtual = (aparelhoSelect.value || '').trim();
-
-    let aparelhosPermitidos = [];
-    if (grupoSelecionado && subgrupoSelecionado) {
-      const chave = `${grupoSelecionado}|||${subgrupoSelecionado}`;
-      aparelhosPermitidos = aparelhosPorFiltros.por_grupo_subgrupo[chave]
-        || aparelhosPorFiltros.por_subgrupo[subgrupoSelecionado]
-        || aparelhosPorFiltros.por_grupo[grupoSelecionado]
-        || [];
-    } else if (grupoSelecionado) {
-      aparelhosPermitidos = aparelhosPorFiltros.por_grupo[grupoSelecionado] || [];
-    } else if (subgrupoSelecionado) {
-      aparelhosPermitidos = aparelhosPorFiltros.por_subgrupo[subgrupoSelecionado] || [];
-    } else {
-      aparelhosPermitidos = aparelhosCatalogo || aparelhosPorFiltros.todos || [];
+    if (!grupo || !subgrupo || !aparelho) {
+      idInput.value = '';
+      return;
     }
 
-    if (!aparelhosPermitidos || aparelhosPermitidos.length === 0) {
-      aparelhosPermitidos = aparelhosCatalogo || [];
-    }
-
-    const opcoesUnicas = [...new Set(aparelhosPermitidos)].sort((a, b) => a.localeCompare(b));
-    aparelhoSelect.innerHTML = '<option value="">Selecione</option>' +
-      opcoesUnicas.map((aparelho) => `<option value="${aparelho}">${aparelho}</option>`).join('');
-
-    if (aparelhoAtual && opcoesUnicas.includes(aparelhoAtual)) {
-      aparelhoSelect.value = aparelhoAtual;
+    const params = new URLSearchParams({ grupo, subgrupo, aparelho });
+    try {
+      const response = await fetch(`/admin/exercicios/sugerir-id?${params.toString()}`);
+      const data = await response.json();
+      idInput.value = data.id || '';
+    } catch (err) {
+      idInput.value = '';
     }
   };
 
@@ -182,13 +168,14 @@
     if (subgrupoSelect) {
       subgrupoSelect.value = '';
     }
-    atualizarAparelhos();
+    atualizarId();
   });
 
-  subgrupoSelect?.addEventListener('change', atualizarAparelhos);
+  subgrupoSelect?.addEventListener('change', atualizarId);
+  aparelhoSelect?.addEventListener('change', atualizarId);
 
   atualizarSubgrupos();
-  atualizarAparelhos();
+  atualizarId();
 </script>
 
 </body>

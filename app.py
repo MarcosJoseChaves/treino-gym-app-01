@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, abort, send_file, url_for, redirect, session
+from flask import Flask, render_template, request, abort, send_file, url_for, redirect, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SQLAlchemyError
 import json
@@ -60,6 +60,14 @@ FAVORITOS_FILE = os.path.join(BASE_DIR, "favoritos_admin.json")
 EXERCICIOS_CATEGORIAS_FILE = os.path.join(BASE_DIR, "exercicios_categorias.json")
 EXERCICIOS_STATIC_DIR = os.path.join(BASE_DIR, "static", "exercicios")
 MIDIAS_PERMITIDAS = {".gif", ".mp4"}
+PADRAO_ID_EXERCICIO = re.compile(r"^\d{9}$")
+GRUPOS_CODIGOS_PADRAO = {
+    "cardio": "1",
+    "corpo inteiro": "2",
+    "membros inferiores": "3",
+    "membros superiores": "4",
+    "tronco": "5",
+}
 
 
 def garantir_sslmode_require(database_url):
@@ -593,6 +601,106 @@ def obter_aparelhos_por_filtros_com_vinculos(exercicios, vinculos_aparelho):
         "por_subgrupo": {k: sorted(v) for k, v in por_subgrupo.items()},
         "por_grupo_subgrupo": {k: sorted(v) for k, v in por_grupo_subgrupo.items()},
     }
+
+
+
+
+def normalizar_chave_codigo(texto):
+    base = unicodedata.normalize("NFKD", str(texto or "")).encode("ascii", "ignore").decode("ascii")
+    return " ".join(base.lower().strip().split())
+
+
+def obter_codigo_grupo(grupo):
+    return GRUPOS_CODIGOS_PADRAO.get(normalizar_chave_codigo(grupo))
+
+
+def construir_codigos_segmento(exercicios, campo, inicio, fim, referencias=None):
+    codigos = {}
+    usados = set()
+
+    for ex in exercicios or []:
+        if not isinstance(ex, dict):
+            continue
+
+        ex_id = str(ex.get("id") or "").strip()
+        nome = (ex.get(campo) or "").strip()
+        if not nome:
+            continue
+
+        chave_nome = nome.lower()
+        if PADRAO_ID_EXERCICIO.fullmatch(ex_id):
+            codigo = ex_id[inicio:fim]
+            if codigo.isdigit() and 1 <= int(codigo) <= 99:
+                codigos.setdefault(chave_nome, codigo)
+                usados.add(codigo)
+
+    referencias_validas = sorted({(r or "").strip() for r in (referencias or []) if (r or "").strip()}, key=lambda x: x.lower())
+    for nome in referencias_validas:
+        chave_nome = nome.lower()
+        if chave_nome in codigos:
+            continue
+
+        for n in range(1, 100):
+            codigo = f"{n:02d}"
+            if codigo in usados:
+                continue
+            codigos[chave_nome] = codigo
+            usados.add(codigo)
+            break
+
+    return codigos
+
+
+def gerar_id_exercicio_por_categorias(exercicios, grupo, subgrupo, aparelho, id_exercicio_atual=None, subgrupos_referencia=None, aparelhos_referencia=None):
+    codigo_grupo = obter_codigo_grupo(grupo)
+    if not codigo_grupo:
+        return "", "Grupo inválido para composição automática do ID."
+
+    mapa_subgrupos = construir_codigos_segmento(
+        exercicios,
+        campo="subgrupo",
+        inicio=1,
+        fim=3,
+        referencias=subgrupos_referencia,
+    )
+    mapa_aparelhos = construir_codigos_segmento(
+        exercicios,
+        campo="aparelho",
+        inicio=3,
+        fim=5,
+        referencias=aparelhos_referencia,
+    )
+
+    codigo_subgrupo = mapa_subgrupos.get((subgrupo or "").strip().lower())
+    if not codigo_subgrupo:
+        return "", "Subgrupo inválido para composição automática do ID."
+
+    codigo_aparelho = mapa_aparelhos.get((aparelho or "").strip().lower())
+    if not codigo_aparelho:
+        return "", "Aparelho inválido para composição automática do ID."
+
+    prefixo = f"{codigo_grupo}{codigo_subgrupo}{codigo_aparelho}"
+    em_uso = set()
+    atual = str(id_exercicio_atual or "").strip()
+
+    for ex in exercicios or []:
+        if not isinstance(ex, dict):
+            continue
+        ex_id = str(ex.get("id") or "").strip()
+        if not PADRAO_ID_EXERCICIO.fullmatch(ex_id):
+            continue
+        if atual and ex_id == atual:
+            continue
+        if not ex_id.startswith(prefixo):
+            continue
+        em_uso.add(int(ex_id[-4:]))
+
+    for sequencial in range(1, 10000):
+        if sequencial in em_uso:
+            continue
+        return f"{prefixo}{sequencial:04d}", ""
+
+    return "", f"Não há sequenciais disponíveis para o prefixo {prefixo}."
 
 
 def normalizar_data_iso(valor):
@@ -1184,6 +1292,40 @@ def admin_categorias_exercicios():
                     salvar_exercicios(exercicios)
                     sucesso = "Subgrupo excluído com sucesso."
 
+        elif acao == "subgrupo_mover":
+            grupo_origem = (request.form.get("grupo_origem") or "").strip()
+            grupo_destino = (request.form.get("grupo_destino") or "").strip()
+            if not grupo_origem or not grupo_destino or not valor:
+                erro = "Selecione grupo de origem, subgrupo e grupo de destino."
+            else:
+                origem_ref = next((g for g in grupos if g.lower() == grupo_origem.lower()), "")
+                destino_ref = next((g for g in grupos if g.lower() == grupo_destino.lower()), "")
+                if not origem_ref or not destino_ref:
+                    erro = "Grupo de origem/destino inválido."
+                elif origem_ref.lower() == destino_ref.lower():
+                    erro = "Grupo de origem e destino devem ser diferentes."
+                else:
+                    lista_origem = subgrupos_por_grupo.setdefault(origem_ref, [])
+                    subgrupo_ref = next((s for s in lista_origem if s.lower() == valor.lower()), "")
+                    if not subgrupo_ref:
+                        erro = "Subgrupo inválido para o grupo de origem."
+                    elif any(s.lower() == subgrupo_ref.lower() for s in subgrupos_por_grupo.setdefault(destino_ref, [])):
+                        erro = "O grupo de destino já possui esse subgrupo."
+                    else:
+                        subgrupos_por_grupo[origem_ref] = [s for s in lista_origem if s.lower() != subgrupo_ref.lower()]
+                        subgrupos_por_grupo.setdefault(destino_ref, []).append(subgrupo_ref)
+
+                        for item in vinculos_aparelho:
+                            if (item.get("grupo") or "").strip().lower() == origem_ref.lower() and (item.get("subgrupo") or "").strip().lower() == subgrupo_ref.lower():
+                                item["grupo"] = destino_ref
+
+                        for ex in exercicios:
+                            if (ex.get("grupo") or "").strip().lower() == origem_ref.lower() and (ex.get("subgrupo") or "").strip().lower() == subgrupo_ref.lower():
+                                ex["grupo"] = destino_ref
+
+                        salvar_exercicios(exercicios)
+                        sucesso = "Subgrupo movido com sucesso."
+
         elif acao == "aparelho_adicionar":
             if not valor:
                 erro = "Informe o nome do aparelho."
@@ -1223,6 +1365,29 @@ def admin_categorias_exercicios():
                         ex["aparelho"] = "Peso livre"
                 salvar_exercicios(exercicios)
                 sucesso = "Aparelho excluído com sucesso."
+
+        elif acao == "aparelho_substituir":
+            if not valor or not novo_valor:
+                erro = "Selecione o aparelho de origem e o aparelho de destino."
+            elif valor.lower() == novo_valor.lower():
+                erro = "Escolha aparelhos diferentes para a substituição."
+            else:
+                origem_ref = next((a for a in aparelhos if a.lower() == valor.lower()), "")
+                destino_ref = next((a for a in aparelhos if a.lower() == novo_valor.lower()), "")
+                if not origem_ref or not destino_ref:
+                    erro = "Aparelho de origem ou destino inválido."
+                else:
+                    for item in vinculos_aparelho:
+                        if (item.get("aparelho") or "").strip().lower() == origem_ref.lower():
+                            item["aparelho"] = destino_ref
+
+                    for ex in exercicios:
+                        if (ex.get("aparelho") or "").strip().lower() == origem_ref.lower():
+                            ex["aparelho"] = destino_ref
+
+                    aparelhos = [a for a in aparelhos if a.lower() != origem_ref.lower()]
+                    salvar_exercicios(exercicios)
+                    sucesso = "Aparelho substituído e consolidado com sucesso."
 
         elif acao == "aparelho_vincular":
             if not grupo or not subgrupo or not valor:
@@ -1322,6 +1487,7 @@ def admin_novo_exercicio():
     )
     aparelhos_por_filtros = obter_aparelhos_por_filtros_com_vinculos(exercicios, categorias.get("vinculos_aparelho") or [])
     aparelhos = categorias["aparelhos"]
+    subgrupos_referencia = [sg for lista in subgrupos_por_grupo.values() for sg in (lista or [])]
 
     valores = {
         "id": "",
@@ -1346,17 +1512,25 @@ def admin_novo_exercicio():
 
         upload = request.files.get("midia_arquivo")
         nome = valores["nome"]
-        ex_id = valores["id"] or slug_texto(nome)
+        sugestao_id, erro_id = gerar_id_exercicio_por_categorias(
+            exercicios,
+            grupo=valores["grupo"],
+            subgrupo=valores["subgrupo"],
+            aparelho=valores["aparelho"],
+            subgrupos_referencia=subgrupos_referencia,
+            aparelhos_referencia=aparelhos,
+        )
+        ex_id = sugestao_id
         valores["id"] = ex_id
 
-        if not ex_id:
-            erro = "Informe nome ou ID válido para o exercício."
+        if not nome:
+            erro = "Informe o nome do exercício."
+        elif erro_id:
+            erro = erro_id
+        elif not ex_id:
+            erro = "Não foi possível gerar o ID do exercício."
         elif ex_id in ids_existentes:
             erro = "Já existe um exercício com este ID."
-        elif not valores["grupo"] or not valores["subgrupo"]:
-            erro = "Grupo e subgrupo são obrigatórios."
-        elif not valores["aparelho"]:
-            erro = "Aparelho é obrigatório para manter o padrão do catálogo."
         elif not valores["pasta_midia"] or valores["pasta_midia"] not in pastas_midia:
             erro = "Selecione uma pasta válida para salvar a mídia."
         elif not upload or not (upload.filename or "").strip():
@@ -1432,6 +1606,37 @@ def admin_novo_exercicio():
         )
 
 
+@app.route("/admin/exercicios/sugerir-id")
+def admin_sugerir_id_exercicio():
+    bloqueio = exigir_admin_ou_redirect()
+    if bloqueio:
+        return jsonify({"erro": "Não autorizado."}), 401
+
+    grupo = (request.args.get("grupo") or "").strip()
+    subgrupo = (request.args.get("subgrupo") or "").strip()
+    aparelho = (request.args.get("aparelho") or "").strip()
+    id_atual = (request.args.get("id_atual") or "").strip()
+
+    if not grupo or not subgrupo or not aparelho:
+        return jsonify({"id": "", "erro": "Selecione grupo, subgrupo e aparelho."})
+
+    exercicios = carregar_exercicios()
+    categorias = carregar_categorias_exercicios(exercicios)
+    subgrupos_ref = [sg for lista in (categorias.get("subgrupos_por_grupo") or {}).values() for sg in (lista or [])]
+
+    sugestao_id, erro = gerar_id_exercicio_por_categorias(
+        exercicios,
+        grupo=grupo,
+        subgrupo=subgrupo,
+        aparelho=aparelho,
+        id_exercicio_atual=id_atual,
+        subgrupos_referencia=subgrupos_ref,
+        aparelhos_referencia=categorias.get("aparelhos") or [],
+    )
+
+    return jsonify({"id": sugestao_id, "erro": erro})
+
+
 @app.route("/midia/exercicios/<caminho>")
 def obter_midia_exercicio(caminho):
     if not db or not ExercicioMidiaDB:
@@ -1478,6 +1683,7 @@ def admin_editar_exercicio(ex_id):
     subgrupos = sorted({sg for lista in subgrupos_por_grupo.values() for sg in lista}, key=lambda x: x.lower())
     aparelhos = categorias["aparelhos"]
     aparelhos_por_filtros = obter_aparelhos_por_filtros_com_vinculos(exercicios, categorias.get("vinculos_aparelho") or [])
+    subgrupos_referencia = [sg for lista in subgrupos_por_grupo.values() for sg in (lista or [])]
     pastas_midia = listar_pastas_exercicios()
 
     midia_atual = (exercicio_atual.get("midia") or "").strip()
@@ -1514,23 +1720,41 @@ def admin_editar_exercicio(ex_id):
             valores[chave] = (request.form.get(chave) or "").strip()
 
         upload = request.files.get("midia_arquivo")
-        id_novo = valores["id"] or slug_texto(valores["nome"])
-        valores["id"] = id_novo
         id_original = (exercicio_atual.get("id") or "").strip()
+        id_novo = id_original
+        erro_id = ""
+
+        if (
+            valores["grupo"] != (exercicio_atual.get("grupo") or "")
+            or valores["subgrupo"] != (exercicio_atual.get("subgrupo") or "")
+            or valores["aparelho"] != (exercicio_atual.get("aparelho") or "")
+            or not PADRAO_ID_EXERCICIO.fullmatch(id_original)
+        ):
+            id_novo, erro_id = gerar_id_exercicio_por_categorias(
+                exercicios,
+                grupo=valores["grupo"],
+                subgrupo=valores["subgrupo"],
+                aparelho=valores["aparelho"],
+                id_exercicio_atual=id_original,
+                subgrupos_referencia=subgrupos_referencia,
+                aparelhos_referencia=aparelhos,
+            )
+
+        valores["id"] = id_novo
         ids_existentes = {
             (ex.get("id") or "").strip()
             for ex in exercicios
             if (ex.get("id") or "").strip() and (ex.get("id") or "").strip() != id_original
         }
 
-        if not id_novo:
-            erro = "Informe nome ou ID válido para o exercício."
+        if not valores["nome"]:
+            erro = "Informe o nome do exercício."
+        elif erro_id:
+            erro = erro_id
+        elif not id_novo:
+            erro = "Não foi possível gerar o ID do exercício."
         elif id_novo in ids_existentes:
             erro = "Já existe outro exercício com este ID."
-        elif not valores["grupo"] or not valores["subgrupo"]:
-            erro = "Grupo e subgrupo são obrigatórios."
-        elif not valores["aparelho"]:
-            erro = "Aparelho é obrigatório para manter o padrão do catálogo."
         elif not valores["pasta_midia"] or valores["pasta_midia"] not in pastas_midia:
             erro = "Selecione uma pasta válida para salvar a mídia."
 

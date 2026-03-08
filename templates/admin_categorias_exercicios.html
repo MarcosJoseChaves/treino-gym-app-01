@@ -22,6 +22,10 @@
   {% if erro %}<div class="alert alert-danger">{{ erro }}</div>{% endif %}
   {% if sucesso %}<div class="alert alert-success">{{ sucesso }}</div>{% endif %}
 
+  <div class="alert alert-info py-2 mb-3" role="alert">
+    <strong>Dica:</strong> use os filtros e os botões de ação rápida para encontrar e gerenciar categorias mais rápido.
+  </div>
+
   <div class="card shadow-sm mb-3">
     <div class="card-body row g-2 align-items-end">
       <div class="col-12 col-md-6">
@@ -37,6 +41,15 @@
           <option value="">Todos</option>
         </select>
       </div>
+      <div class="col-12 col-md-6 col-lg-3">
+        <button class="btn btn-outline-secondary w-100" type="button" id="btn-limpar-filtros">Limpar filtros</button>
+      </div>
+      <div class="col-12 col-md-6 col-lg-3">
+        <button class="btn btn-outline-primary w-100" type="button" id="btn-expandir-tudo">Expandir tudo</button>
+      </div>
+      <div class="col-12 col-md-6 col-lg-3">
+        <button class="btn btn-outline-dark w-100" type="button" id="btn-fechar-tudo">Recolher tudo</button>
+      </div>
       <div class="col-12">
         <div class="small text-muted">Selecione grupo/subgrupo para reduzir as opções de edição e exclusão.</div>
       </div>
@@ -46,17 +59,17 @@
   <div class="row g-3">
     <div class="col-12 col-lg-4">
       <div class="card shadow-sm h-100">
-        <div class="card-header fw-semibold">Grupos</div>
+        <div class="card-header fw-semibold d-flex justify-content-between"><span>Grupos</span><span class="badge text-bg-light">{{ categorias.grupos|length }}</span></div>
         <div class="card-body">
           <div class="accordion" id="accordion-grupos">
             <div class="accordion-item">
-              <h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#grupo-add">Adicionar</button></h2>
+              <h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#grupo-add">➕ Adicionar</button></h2>
               <div id="grupo-add" class="accordion-collapse collapse show" data-bs-parent="#accordion-grupos">
                 <div class="accordion-body">
                   <form method="POST" class="vstack gap-2">
                     <input type="hidden" name="acao" value="grupo_adicionar">
                     <input class="form-control" name="valor" placeholder="Nome do grupo" required>
-                    <button class="btn btn-sm btn-primary" type="submit">Adicionar</button>
+                    <button class="btn btn-sm btn-primary" type="submit">➕ Adicionar</button>
                   </form>
                 </div>
               </div>
@@ -73,14 +86,14 @@
                       {% for item in categorias.grupos %}<option value="{{ item }}">{{ item }}</option>{% endfor %}
                     </select>
                     <input class="form-control" name="novo_valor" placeholder="Novo nome" required>
-                    <button class="btn btn-sm btn-outline-warning" type="submit">Salvar alteração</button>
+                    <button class="btn btn-sm btn-outline-warning" type="submit">💾 Salvar alteração</button>
                   </form>
                 </div>
               </div>
             </div>
 
             <div class="accordion-item">
-              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#grupo-del">Excluir</button></h2>
+              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#grupo-del">🗑️ Excluir</button></h2>
               <div id="grupo-del" class="accordion-collapse collapse" data-bs-parent="#accordion-grupos">
                 <div class="accordion-body">
                   <form method="POST" class="vstack gap-2" onsubmit="return confirm('Excluir grupo?');">
@@ -89,7 +102,7 @@
                       <option value="">Selecione</option>
                       {% for item in categorias.grupos %}<option value="{{ item }}">{{ item }}</option>{% endfor %}
                     </select>
-                    <button class="btn btn-sm btn-outline-danger" type="submit">Excluir</button>
+                    <button class="btn btn-sm btn-outline-danger" type="submit">🗑️ Excluir</button>
                   </form>
                 </div>
               </div>
@@ -101,11 +114,11 @@
 
     <div class="col-12 col-lg-4">
       <div class="card shadow-sm h-100">
-        <div class="card-header fw-semibold">Subgrupos</div>
+        <div class="card-header fw-semibold d-flex justify-content-between"><span>Subgrupos</span><span class="badge text-bg-light">{{ subgrupos_lista|length }}</span></div>
         <div class="card-body">
           <div class="accordion" id="accordion-subgrupos">
             <div class="accordion-item">
-              <h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#subgrupo-add">Adicionar</button></h2>
+              <h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#subgrupo-add">➕ Adicionar</button></h2>
               <div id="subgrupo-add" class="accordion-collapse collapse show" data-bs-parent="#accordion-subgrupos">
                 <div class="accordion-body">
                   <form method="POST" class="vstack gap-2">
@@ -115,7 +128,7 @@
                       {% for item in categorias.grupos %}<option value="{{ item }}">{{ item }}</option>{% endfor %}
                     </select>
                     <input class="form-control" name="valor" placeholder="Nome do subgrupo" required>
-                    <button class="btn btn-sm btn-primary" type="submit">Adicionar</button>
+                    <button class="btn btn-sm btn-primary" type="submit">➕ Adicionar</button>
                   </form>
                 </div>
               </div>
@@ -135,14 +148,14 @@
                       <option value="">Subgrupo</option>
                     </select>
                     <input class="form-control" name="novo_valor" placeholder="Novo nome" required>
-                    <button class="btn btn-sm btn-outline-warning" type="submit">Salvar alteração</button>
+                    <button class="btn btn-sm btn-outline-warning" type="submit">💾 Salvar alteração</button>
                   </form>
                 </div>
               </div>
             </div>
 
             <div class="accordion-item">
-              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#subgrupo-del">Excluir</button></h2>
+              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#subgrupo-del">🗑️ Excluir</button></h2>
               <div id="subgrupo-del" class="accordion-collapse collapse" data-bs-parent="#accordion-subgrupos">
                 <div class="accordion-body">
                   <form method="POST" class="vstack gap-2" onsubmit="return confirm('Excluir subgrupo?');">
@@ -154,7 +167,30 @@
                     <select class="form-select" name="valor" id="subgrupo-excluir-valor" required>
                       <option value="">Subgrupo</option>
                     </select>
-                    <button class="btn btn-sm btn-outline-danger" type="submit">Excluir</button>
+                    <button class="btn btn-sm btn-outline-danger" type="submit">🗑️ Excluir</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#subgrupo-move">Mover entre grupos</button></h2>
+              <div id="subgrupo-move" class="accordion-collapse collapse" data-bs-parent="#accordion-subgrupos">
+                <div class="accordion-body">
+                  <form method="POST" class="vstack gap-2">
+                    <input type="hidden" name="acao" value="subgrupo_mover">
+                    <select class="form-select" name="grupo_origem" id="subgrupo-mover-origem" required>
+                      <option value="">Grupo origem</option>
+                      {% for item in categorias.grupos %}<option value="{{ item }}">{{ item }}</option>{% endfor %}
+                    </select>
+                    <select class="form-select" name="valor" id="subgrupo-mover-valor" required>
+                      <option value="">Subgrupo</option>
+                    </select>
+                    <select class="form-select" name="grupo_destino" id="subgrupo-mover-destino" required>
+                      <option value="">Grupo destino</option>
+                      {% for item in categorias.grupos %}<option value="{{ item }}">{{ item }}</option>{% endfor %}
+                    </select>
+                    <button class="btn btn-sm btn-outline-primary" type="submit">↔️ Mover subgrupo</button>
                   </form>
                 </div>
               </div>
@@ -166,17 +202,17 @@
 
     <div class="col-12 col-lg-4">
       <div class="card shadow-sm h-100">
-        <div class="card-header fw-semibold">Aparelhos</div>
+        <div class="card-header fw-semibold d-flex justify-content-between"><span>Aparelhos</span><span class="badge text-bg-light">{{ categorias.aparelhos|length }}</span></div>
         <div class="card-body">
           <div class="accordion" id="accordion-aparelhos">
             <div class="accordion-item">
-              <h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#aparelho-add">Adicionar</button></h2>
+              <h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#aparelho-add">➕ Adicionar</button></h2>
               <div id="aparelho-add" class="accordion-collapse collapse show" data-bs-parent="#accordion-aparelhos">
                 <div class="accordion-body">
                   <form method="POST" class="vstack gap-2">
                     <input type="hidden" name="acao" value="aparelho_adicionar">
                     <input class="form-control" name="valor" placeholder="Nome do aparelho" required>
-                    <button class="btn btn-sm btn-primary" type="submit">Adicionar</button>
+                    <button class="btn btn-sm btn-primary" type="submit">➕ Adicionar</button>
                   </form>
                 </div>
               </div>
@@ -198,14 +234,14 @@
                     <select class="form-select" name="valor" id="aparelho-vincular-valor" required>
                       <option value="">Aparelho</option>
                     </select>
-                    <button class="btn btn-sm btn-primary" type="submit">Vincular</button>
+                    <button class="btn btn-sm btn-primary" type="submit">🔗 Vincular</button>
                   </form>
                 </div>
               </div>
             </div>
 
             <div class="accordion-item">
-              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aparelho-unlink">Remover vínculo</button></h2>
+              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aparelho-unlink">❌ Remover vínculo</button></h2>
               <div id="aparelho-unlink" class="accordion-collapse collapse" data-bs-parent="#accordion-aparelhos">
                 <div class="accordion-body">
                   <form method="POST" class="vstack gap-2" onsubmit="return confirm('Remover vínculo do aparelho?');">
@@ -213,7 +249,7 @@
                     <select class="form-select" name="valor" id="aparelho-desvincular-valor" required>
                       <option value="">Selecione o vínculo</option>
                     </select>
-                    <button class="btn btn-sm btn-outline-danger" type="submit">Remover vínculo</button>
+                    <button class="btn btn-sm btn-outline-danger" type="submit">❌ Remover vínculo</button>
                   </form>
                 </div>
               </div>
@@ -229,14 +265,14 @@
                       <option value="">Selecione</option>
                     </select>
                     <input class="form-control" name="novo_valor" placeholder="Novo nome" required>
-                    <button class="btn btn-sm btn-outline-warning" type="submit">Salvar alteração</button>
+                    <button class="btn btn-sm btn-outline-warning" type="submit">💾 Salvar alteração</button>
                   </form>
                 </div>
               </div>
             </div>
 
             <div class="accordion-item">
-              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aparelho-del">Excluir</button></h2>
+              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aparelho-del">🗑️ Excluir</button></h2>
               <div id="aparelho-del" class="accordion-collapse collapse" data-bs-parent="#accordion-aparelhos">
                 <div class="accordion-body">
                   <form method="POST" class="vstack gap-2" onsubmit="return confirm('Excluir aparelho?');">
@@ -244,7 +280,25 @@
                     <select class="form-select" name="valor" id="aparelho-excluir-valor" required>
                       <option value="">Selecione</option>
                     </select>
-                    <button class="btn btn-sm btn-outline-danger" type="submit">Excluir</button>
+                    <button class="btn btn-sm btn-outline-danger" type="submit">🗑️ Excluir</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aparelho-merge">Substituir/Consolidar</button></h2>
+              <div id="aparelho-merge" class="accordion-collapse collapse" data-bs-parent="#accordion-aparelhos">
+                <div class="accordion-body">
+                  <form method="POST" class="vstack gap-2" onsubmit="return confirm('Substituir aparelho de origem pelo de destino?');">
+                    <input type="hidden" name="acao" value="aparelho_substituir">
+                    <select class="form-select" name="valor" id="aparelho-substituir-origem" required>
+                      <option value="">Aparelho de origem</option>
+                    </select>
+                    <select class="form-select" name="novo_valor" id="aparelho-substituir-destino" required>
+                      <option value="">Aparelho de destino</option>
+                    </select>
+                    <button class="btn btn-sm btn-outline-primary" type="submit">🔁 Substituir e consolidar</button>
                   </form>
                 </div>
               </div>
@@ -260,13 +314,21 @@
 <script>
   const filtroGrupo = document.getElementById('filtro-categorias-grupo');
   const filtroSubgrupo = document.getElementById('filtro-categorias-subgrupo');
+
+  const btnLimparFiltros = document.getElementById('btn-limpar-filtros');
+  const btnExpandirTudo = document.getElementById('btn-expandir-tudo');
+  const btnFecharTudo = document.getElementById('btn-fechar-tudo');
   const subgrupoAdicionarGrupo = document.getElementById('subgrupo-adicionar-grupo');
   const subgrupoEditarGrupo = document.getElementById('subgrupo-editar-grupo');
   const subgrupoExcluirGrupo = document.getElementById('subgrupo-excluir-grupo');
   const subgrupoEditarValor = document.getElementById('subgrupo-editar-valor');
   const subgrupoExcluirValor = document.getElementById('subgrupo-excluir-valor');
+  const subgrupoMoverOrigem = document.getElementById('subgrupo-mover-origem');
+  const subgrupoMoverValor = document.getElementById('subgrupo-mover-valor');
   const aparelhoEditarValor = document.getElementById('aparelho-editar-valor');
   const aparelhoExcluirValor = document.getElementById('aparelho-excluir-valor');
+  const aparelhoSubstituirOrigem = document.getElementById('aparelho-substituir-origem');
+  const aparelhoSubstituirDestino = document.getElementById('aparelho-substituir-destino');
   const aparelhoVincularGrupo = document.getElementById('aparelho-vincular-grupo');
   const aparelhoVincularSubgrupo = document.getElementById('aparelho-vincular-subgrupo');
   const aparelhoVincularValor = document.getElementById('aparelho-vincular-valor');
@@ -328,11 +390,19 @@
     preencherSelect(filtroSubgrupo, subgrupos, 'Todos');
     preencherSelect(subgrupoEditarValor, subgrupos, 'Subgrupo');
     preencherSelect(subgrupoExcluirValor, subgrupos, 'Subgrupo');
+    const grupoMoverSelecionado = (subgrupoMoverOrigem?.value || '').trim().toLowerCase();
+    const entradaMover = Object.entries(subgruposPorGrupo).find(([g]) => (g || '').toLowerCase() === grupoMoverSelecionado);
+    const subgruposMover = grupoMoverSelecionado
+      ? [...new Set(entradaMover?.[1] || [])].sort((a, b) => a.localeCompare(b))
+      : subgrupos;
+    preencherSelect(subgrupoMoverValor, subgruposMover, 'Subgrupo');
     preencherSelect(aparelhoVincularSubgrupo, subgrupos, 'Subgrupo');
 
     const aparelhos = obterAparelhos();
     preencherSelect(aparelhoEditarValor, aparelhos, 'Selecione');
     preencherSelect(aparelhoExcluirValor, aparelhos, 'Selecione');
+    preencherSelect(aparelhoSubstituirOrigem, aparelhosCatalogo || [], 'Aparelho de origem');
+    preencherSelect(aparelhoSubstituirDestino, aparelhosCatalogo || [], 'Aparelho de destino');
     preencherSelect(aparelhoVincularValor, aparelhosCatalogo || [], 'Aparelho');
 
     const vinculosFiltrados = (vinculosAparelho || []).filter((item) => {
@@ -359,6 +429,7 @@
     sincronizarFiltros();
   });
   filtroSubgrupo?.addEventListener('change', sincronizarFiltros);
+  subgrupoMoverOrigem?.addEventListener('change', sincronizarFiltros);
   aparelhoVincularGrupo?.addEventListener('change', () => {
     const grupoSelecionado = (aparelhoVincularGrupo.value || '').trim();
     const subgruposGrupo = grupoSelecionado
@@ -368,6 +439,24 @@
   });
 
   sincronizarFiltros();
+
+  btnLimparFiltros?.addEventListener('click', () => {
+    if (filtroGrupo) filtroGrupo.value = '';
+    if (filtroSubgrupo) filtroSubgrupo.value = '';
+    sincronizarFiltros();
+  });
+
+  btnExpandirTudo?.addEventListener('click', () => {
+    document.querySelectorAll('.accordion-collapse').forEach((el) => {
+      bootstrap.Collapse.getOrCreateInstance(el, { toggle: false }).show();
+    });
+  });
+
+  btnFecharTudo?.addEventListener('click', () => {
+    document.querySelectorAll('.accordion-collapse').forEach((el) => {
+      bootstrap.Collapse.getOrCreateInstance(el, { toggle: false }).hide();
+    });
+  });
 </script>
 
 </body>
