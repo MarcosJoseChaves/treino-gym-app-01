@@ -47,6 +47,11 @@
         <div class="form-text">O ID é atualizado automaticamente ao alterar grupo, subgrupo ou aparelho.</div>
       </div>
 
+      <div class="col-12 d-flex flex-column align-items-end gap-2">
+        <button class="btn btn-outline-primary" type="button" id="editar-exercicio-gerar-ia">Gerar campos com IA</button>
+        <div class="small text-muted" id="editar-exercicio-ia-status"></div>
+      </div>
+
       <div class="col-md-4">
         <label class="form-label">Grupo *</label>
         <select class="form-select" name="grupo" id="editar-exercicio-grupo" required>
@@ -99,29 +104,29 @@
 
       <div class="col-md-6">
         <label class="form-label">Dicas (1 por linha)</label>
-        <textarea class="form-control" name="dicas" rows="4">{{ valores.dicas }}</textarea>
+        <textarea class="form-control" name="dicas" id="editar-exercicio-dicas" rows="4">{{ valores.dicas }}</textarea>
       </div>
       <div class="col-md-6">
         <label class="form-label">Erros comuns (1 por linha)</label>
-        <textarea class="form-control" name="erros" rows="4">{{ valores.erros }}</textarea>
+        <textarea class="form-control" name="erros" id="editar-exercicio-erros" rows="4">{{ valores.erros }}</textarea>
       </div>
 
       <div class="col-12">
         <label class="form-label">Observações</label>
-        <textarea class="form-control" name="observacoes" rows="2">{{ valores.observacoes }}</textarea>
+        <textarea class="form-control" name="observacoes" id="editar-exercicio-observacoes" rows="2">{{ valores.observacoes }}</textarea>
       </div>
 
       <div class="col-md-4">
         <label class="form-label">Foco (opcional)</label>
-        <input class="form-control" name="foco" value="{{ valores.foco }}">
+        <input class="form-control" name="foco" id="editar-exercicio-foco" value="{{ valores.foco }}">
       </div>
       <div class="col-md-4">
         <label class="form-label">Músculos secundários (1 por linha)</label>
-        <textarea class="form-control" name="musculos_secundarios" rows="3">{{ valores.musculos_secundarios }}</textarea>
+        <textarea class="form-control" name="musculos_secundarios" id="editar-exercicio-musculos-secundarios" rows="3">{{ valores.musculos_secundarios }}</textarea>
       </div>
       <div class="col-md-4">
         <label class="form-label">Instruções (1 por linha)</label>
-        <textarea class="form-control" name="instrucoes" rows="3">{{ valores.instrucoes }}</textarea>
+        <textarea class="form-control" name="instrucoes" id="editar-exercicio-instrucoes" rows="3">{{ valores.instrucoes }}</textarea>
       </div>
     </div>
     <div class="card-footer bg-white d-flex justify-content-end">
@@ -135,8 +140,41 @@
   const subgrupoSelect = document.getElementById('editar-exercicio-subgrupo');
   const aparelhoSelect = document.getElementById('editar-exercicio-aparelho');
   const idInput = document.getElementById('editar-exercicio-id');
+  const gerarIaButton = document.getElementById('editar-exercicio-gerar-ia');
+  const dicasInput = document.getElementById('editar-exercicio-dicas');
+  const errosInput = document.getElementById('editar-exercicio-erros');
+  const observacoesInput = document.getElementById('editar-exercicio-observacoes');
+  const focoInput = document.getElementById('editar-exercicio-foco');
+  const musculosSecundariosInput = document.getElementById('editar-exercicio-musculos-secundarios');
+  const instrucoesInput = document.getElementById('editar-exercicio-instrucoes');
+  const nomeInput = document.querySelector('input[name="nome"]');
+  const nomeOriginalInput = document.getElementById('editar-exercicio-nome-original');
+  const iaStatus = document.getElementById('editar-exercicio-ia-status');
   const subgruposPorGrupo = {{ subgrupos_por_grupo|tojson }};
   const idAtual = {{ ex_id|tojson }};
+
+  const preencherLinhas = (campo, itens) => {
+    if (!campo) return;
+    if (Array.isArray(itens)) {
+      campo.value = itens.filter(Boolean).join('\n');
+      return;
+    }
+    if (typeof itens === 'string') {
+      campo.value = itens.replaceAll('\\n', '\n');
+      return;
+    }
+    campo.value = '';
+  };
+
+  const definirStatusIa = (mensagem, tipo = 'muted') => {
+    if (!iaStatus) return;
+    iaStatus.className = 'small';
+    if (tipo === 'success') iaStatus.classList.add('text-success');
+    else if (tipo === 'warning') iaStatus.classList.add('text-warning');
+    else if (tipo === 'danger') iaStatus.classList.add('text-danger');
+    else iaStatus.classList.add('text-muted');
+    iaStatus.textContent = mensagem || '';
+  };
 
   const atualizarSubgrupos = () => {
     if (!subgrupoSelect) return;
@@ -186,8 +224,68 @@
     atualizarId();
   });
 
+  const gerarCamposComIa = async () => {
+    const nome = (nomeInput?.value || '').trim();
+    const nomeOriginal = (nomeOriginalInput?.value || '').trim();
+    const grupo = (grupoSelect?.value || '').trim();
+    const subgrupo = (subgrupoSelect?.value || '').trim();
+    const aparelho = (aparelhoSelect?.value || '').trim();
+
+    if (!nome || !nomeOriginal || !grupo || !subgrupo || !aparelho) {
+      definirStatusIa('Preencha nome em português, nome original, grupo, subgrupo e aparelho para gerar os campos.', 'danger');
+      return;
+    }
+
+    if (gerarIaButton) {
+      gerarIaButton.disabled = true;
+      gerarIaButton.textContent = 'Gerando...';
+    }
+    definirStatusIa('Gerando sugestões...');
+
+    try {
+      const response = await fetch('/admin/exercicios/gerar-campos-ia', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, nome_original: nomeOriginal, grupo, subgrupo, aparelho, id_atual: idAtual }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        definirStatusIa(data?.mensagem || data?.erro || 'Não foi possível gerar os campos com IA.', 'danger');
+        return;
+      }
+
+      if (data?.duplicado) {
+        definirStatusIa(data?.mensagem || `Exercício duplicado: ${nome}`, 'warning');
+        return;
+      }
+
+      preencherLinhas(dicasInput, data?.campos?.dicas || []);
+      preencherLinhas(errosInput, data?.campos?.erros || []);
+      preencherLinhas(musculosSecundariosInput, data?.campos?.musculos_secundarios || []);
+      preencherLinhas(instrucoesInput, data?.campos?.instrucoes || []);
+      if (observacoesInput) observacoesInput.value = data?.campos?.observacoes || '';
+      if (focoInput) focoInput.value = data?.campos?.foco || '';
+      if (data?.aviso) {
+        definirStatusIa(data.aviso, 'warning');
+      } else {
+        definirStatusIa('Campos gerados com IA com sucesso.', 'success');
+      }
+    } catch (err) {
+      definirStatusIa('Falha de comunicação ao gerar campos.', 'danger');
+    } finally {
+      if (gerarIaButton) {
+        gerarIaButton.disabled = false;
+        gerarIaButton.textContent = 'Gerar campos com IA';
+      }
+    }
+  };
+
   subgrupoSelect?.addEventListener('change', atualizarId);
   aparelhoSelect?.addEventListener('change', atualizarId);
+  gerarIaButton?.addEventListener('click', gerarCamposComIa);
+
+  definirStatusIa('');
 
   atualizarSubgrupos();
   atualizarId();

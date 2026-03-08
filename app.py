@@ -766,7 +766,7 @@ def normalizar_chave_busca(texto):
     return normalizar_chave_codigo(texto)
 
 
-def encontrar_exercicio_duplicado(exercicios, nome, grupo, subgrupo, aparelho):
+def encontrar_exercicio_duplicado(exercicios, nome, grupo, subgrupo, aparelho, id_ignorar=""):
     chave_nome = normalizar_chave_busca(nome)
     chave_grupo = normalizar_chave_busca(grupo)
     chave_subgrupo = normalizar_chave_busca(subgrupo)
@@ -775,8 +775,12 @@ def encontrar_exercicio_duplicado(exercicios, nome, grupo, subgrupo, aparelho):
     if not all([chave_nome, chave_grupo, chave_subgrupo, chave_aparelho]):
         return None
 
+    id_ignorar = (id_ignorar or "").strip()
+    
     for ex in exercicios or []:
         if not isinstance(ex, dict):
+            continue
+        if id_ignorar and (ex.get("id") or "").strip() == id_ignorar:
             continue
         if (
             normalizar_chave_busca(ex.get("nome")) == chave_nome
@@ -2270,13 +2274,14 @@ def admin_gerar_campos_ia_exercicio():
     grupo = (payload.get("grupo") or request.form.get("grupo") or "").strip()
     subgrupo = (payload.get("subgrupo") or request.form.get("subgrupo") or "").strip()
     aparelho = (payload.get("aparelho") or request.form.get("aparelho") or "").strip()
+    id_atual = (payload.get("id_atual") or request.form.get("id_atual") or "").strip()
 
     if not nome or not nome_original or not grupo or not subgrupo or not aparelho:
         return jsonify({"duplicado": False, "campos": {}, "mensagem": "Preencha nome em português, nome original, grupo, subgrupo e aparelho."}), 400
 
 
     exercicios = carregar_exercicios()
-    duplicado = encontrar_exercicio_duplicado(exercicios, nome, grupo, subgrupo, aparelho)
+    duplicado = encontrar_exercicio_duplicado(exercicios, nome, grupo, subgrupo, aparelho, id_ignorar=id_atual)
     if duplicado:
         return jsonify(
             {
