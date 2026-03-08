@@ -34,8 +34,12 @@
   <form method="POST" enctype="multipart/form-data" class="card shadow-sm">
     <div class="card-body row g-3">
       <div class="col-md-6">
-        <label class="form-label">Nome do exercício *</label>
+        <label class="form-label">Nome do exercício (PT-BR) *</label>
         <input class="form-control" name="nome" value="{{ valores.nome }}" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Nome original (inglês) *</label>
+        <input class="form-control" name="nome_original" value="{{ valores.nome_original }}" required>
       </div>
       <div class="col-md-6">
         <label class="form-label">ID (auto-gerado) *</label>

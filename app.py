@@ -362,6 +362,7 @@ def carregar_exercicios():
             continue
         ex.setdefault("id", "")
         ex.setdefault("nome", "Sem nome")
+        ex.setdefault("nome_original", "")
         ex.setdefault("grupo", "Sem grupo")
         ex.setdefault("subgrupo", "Sem subgrupo")
         ex.setdefault("midia", "")
@@ -878,86 +879,153 @@ def extrair_json_de_texto_ia(texto):
     return {}
 
 
+def normalizar_campo_ia_lista(valor):
+    itens = []
+
+    if isinstance(valor, list):
+        itens = [str(v).strip() for v in valor if str(v).strip()]
+    else:
+        texto = str(valor or "").replace("\r", "").strip()
+        if not texto:
+            return ""
+
+        texto = texto.replace("\\n", "\n")
+        linhas = [linha.strip() for linha in texto.split("\n") if linha.strip()]
+        if len(linhas) <= 1:
+            linhas = [
+                pedaco.strip(" -•	")
+                for pedaco in re.split(r"[;|]", texto)
+                if pedaco.strip(" -•	")
+            ]
+        itens = [
+            re.sub(r"^\d+[.)-]?\s*", "", linha).strip(" -•	")
+            for linha in linhas
+            if linha.strip(" -•	")
+        ]
+
+    itens_unicos = []
+    vistos = set()
+    for item in itens:
+        chave = normalizar_chave_busca(item)
+        if not chave or chave in vistos:
+            continue
+        vistos.add(chave)
+        itens_unicos.append(item)
+
+    return "\n".join(itens_unicos)
+
+
 def normalizar_campo_ia_texto(valor):
     if isinstance(valor, list):
         return "\n".join(str(v).strip() for v in valor if str(v).strip())
-    return str(valor or "").strip()
+    return str(valor or "").replace("\\n", "\n").strip()
 
 
-def gerar_campos_com_ia(nome, grupo, subgrupo, aparelho):
-    api_key = (os.environ.get("OPENAI_API_KEY") or "").strip()
+def foco_ia_parece_generico(foco):
+    texto = normalizar_chave_busca(foco)
+    if not texto:
+        return True
+
+    termos_genericos = [
+        "seguranca",
+        "execucao tecnica",
+        "execucao segura",
+        "beneficio geral",
+        "condicionamento",
+    ]
+    return any(termo in texto for termo in termos_genericos)
+
+
+def gerar_campos_com_ia(nome, nome_original, grupo, subgrupo, aparelho):
+    api_key = (os.environ.get("GROQ_API_KEY") or "").strip()
     if not api_key:
-        return {}, "IA não configurada. Defina OPENAI_API_KEY no ambiente."
+        return {}, "IA não configurada. Defina GROQ_API_KEY no ambiente."
 
-    endpoint = (os.environ.get("OPENAI_API_URL") or "https://api.openai.com/v1/chat/completions").strip()
-    modelo = (os.environ.get("OPENAI_MODEL") or "gpt-4o-mini").strip()
+    modelo_configurado = (os.environ.get("GROQ_MODEL") or "llama-3.3-70b-versatile").strip()
+    modelos_tentativa = [modelo_configurado]
+    for candidato in ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]:
+        if candidato not in modelos_tentativa:
+            modelos_tentativa.append(candidato)
 
     prompt_sistema = (
-        "Você é especialista em educação física e biomecânica. "
+        "Você é especialista em educação física, biomecânica e prescrição de exercícios. "
         "Responda SOMENTE JSON válido, sem markdown, com as chaves: "
-        "dicas (array de strings), erros (array de strings), observacoes (string), "
-        "foco (string), musculos_secundarios (array de strings), instrucoes (array de strings)."
+        "dicas (array), erros (array), observacoes (string), foco (string), "
+        "musculos_secundarios (array), instrucoes (array). "
+        "Todo o conteúdo em Português do Brasil. "
+        "NÃO use orientações genéricas nem frases vagas."
     )
 
     prompt_usuario = (
-        "Gere o conteúdo para cadastro de exercício.\n"
-        f"Nome: {nome}\n"
+        "Gere conteúdo para cadastro de exercício com foco em qualidade técnica.\n"
+        f"Nome em português: {nome}\n"
+        f"Nome original em inglês: {nome_original}\n"
         f"Grupo: {grupo}\n"
         f"Subgrupo: {subgrupo}\n"
         f"Aparelho: {aparelho}\n"
-        "Use linguagem objetiva em português do Brasil e foco em execução segura."
+        "Regras obrigatórias:\n"
+        "1) dicas: 4 a 6 itens curtos e específicos para esse exercício.\n"
+        "2) erros: 4 a 6 itens reais e específicos para esse exercício.\n"
+        "3) observacoes: texto obrigatório com 2 a 4 frases, incluindo progressão/regressão quando fizer sentido.\n"
+        "4) foco: frase curta de objetivo biomecânico/fisiológico (evite 'Segurança e Execução Técnica').\n"
+        "5) musculos_secundarios: 3 a 6 músculos/grupos anatômicos plausíveis.\n"
+        "6) instrucoes: 4 a 8 passos de execução do movimento informado, sem inventar outro exercício."
     )
 
-    payload = {
-        "model": modelo,
-        "temperature": 0.7,
-        "messages": [
-            {"role": "system", "content": prompt_sistema},
-            {"role": "user", "content": prompt_usuario},
-        ],
-        "response_format": {"type": "json_object"},
-    }
+    resposta = None
+    ultimo_erro = ""
+    for modelo in modelos_tentativa:
+        try:
+            client = Groq(api_key=api_key)
+            resposta = client.chat.completions.create(
+                model=modelo,
+                temperature=0.3,
+                response_format={"type": "json_object"},
+                messages=[
+                    {"role": "system", "content": prompt_sistema},
+                    {"role": "user", "content": prompt_usuario},
+                ],
+            )
+            break
+        except Exception as e:
+            ultimo_erro = str(e)
+            erro_txt = ultimo_erro.lower()
+            modelo_invalido = "decommission" in erro_txt or "invalid_request_error" in erro_txt or "model" in erro_txt
+            if not modelo_invalido:
+                return {}, f"Falha ao consultar IA da Groq. {ultimo_erro[:300]}"
 
-    req = Request(
-        endpoint,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {api_key}",
-        },
-        method="POST",
-    )
-
-    try:
-        with urlopen(req, timeout=30) as resp:
-            bruto = resp.read().decode("utf-8")
-            data = json.loads(bruto)
-    except HTTPError as e:
-        detalhe = e.read().decode("utf-8", errors="ignore") if hasattr(e, "read") else ""
-        return {}, f"Falha ao consultar IA (HTTP {e.code}). {detalhe[:300]}"
-    except URLError:
-        return {}, "Falha de conexão ao consultar IA."
-    except (OSError, json.JSONDecodeError):
-        return {}, "Resposta inválida ao consultar IA."
+    if not resposta:
+        return {}, f"Falha ao consultar IA da Groq. {ultimo_erro[:300]}"
 
     conteudo = ""
-    escolhas = data.get("choices") or []
-    if escolhas and isinstance(escolhas[0], dict):
-        msg = escolhas[0].get("message") or {}
-        conteudo = msg.get("content") or ""
+    if resposta and resposta.choices:
+        conteudo = (resposta.choices[0].message.content or "").strip()
 
     estrutura = extrair_json_de_texto_ia(conteudo)
     if not estrutura:
         return {}, "A IA não retornou JSON válido para os campos solicitados."
 
+    if isinstance(estrutura.get("campos"), dict):
+        estrutura = estrutura.get("campos") or {}
+
     campos = {
-        "dicas": normalizar_campo_ia_texto(estrutura.get("dicas")),
-        "erros": normalizar_campo_ia_texto(estrutura.get("erros")),
+        "dicas": normalizar_campo_ia_lista(estrutura.get("dicas")),
+        "erros": normalizar_campo_ia_lista(estrutura.get("erros")),
         "observacoes": normalizar_campo_ia_texto(estrutura.get("observacoes")),
         "foco": normalizar_campo_ia_texto(estrutura.get("foco")),
-        "musculos_secundarios": normalizar_campo_ia_texto(estrutura.get("musculos_secundarios")),
-        "instrucoes": normalizar_campo_ia_texto(estrutura.get("instrucoes")),
+        "musculos_secundarios": normalizar_campo_ia_lista(estrutura.get("musculos_secundarios")),
+        "instrucoes": normalizar_campo_ia_lista(estrutura.get("instrucoes")),
     }
+
+    if not campos["observacoes"]:
+        campos["observacoes"] = (
+            f"{nome} exige controle de tronco e execução consciente. "
+            "Ajuste amplitude e tempo de contração conforme seu nível para manter técnica e estabilidade."
+        )
+
+    if foco_ia_parece_generico(campos["foco"]):
+        subgrupo_base = (subgrupo or "movimento").strip().lower() or "movimento"
+        campos["foco"] = f"Melhora do controle do {subgrupo_base} com estabilidade do core"
 
     if not any(campos.values()):
         return {}, "A IA retornou vazio para os campos sugeridos."
@@ -2031,6 +2099,7 @@ def admin_novo_exercicio():
     valores = {
         "id": "",
         "nome": "",
+        "nome_original": "",
         "grupo": "",
         "subgrupo": "",
         "aparelho": "",
@@ -2071,6 +2140,8 @@ def admin_novo_exercicio():
 
         if not nome:
             erro = "Informe o nome do exercício."
+        elif not valores["nome_original"]:
+            erro = "Informe o nome original (inglês) do exercício."
         elif exercicio_duplicado:
             erro = "Já existe um exercício com mesmo nome, grupo, subgrupo e aparelho."
         elif erro_id:
@@ -2098,6 +2169,7 @@ def admin_novo_exercicio():
             novo_exercicio = {
                 "id": ex_id,
                 "nome": nome,
+                "nome_original": valores["nome_original"],
                 "grupo": valores["grupo"],
                 "subgrupo": valores["subgrupo"],
                "midia": midia_url,
@@ -2121,6 +2193,7 @@ def admin_novo_exercicio():
             valores = {
                 "id": "",
                 "nome": "",
+                "nome_original": "",
                 "grupo": "",
                 "subgrupo": "",
                 "aparelho": "",
@@ -2154,57 +2227,6 @@ def admin_novo_exercicio():
         )
 
 
-@app.route("/admin/exercicios/gerar-campos-ia", methods=["GET", "POST"])
-def gerar_campos_ia():
-    # Pega o nome vindo por GET ou no formato form-data
-    nome_exercicio = request.args.get("nome") or request.form.get("nome")
-    
-    # SE o nome ainda for vazio, tenta pegar do corpo JSON (que é o que o seu JS está enviando)
-    if not nome_exercicio and request.is_json:
-        nome_exercicio = request.json.get("nome")
-    
-    if not nome_exercicio:
-        return jsonify({"erro": "Nome do exercício é obrigatório."}), 400
-
-    chave_groq = os.environ.get("GROQ_API_KEY")
-    if not chave_groq:
-        return jsonify({"erro": "Chave da Groq não configurada no .env"}), 500
-
-    try:
-        client = Groq(api_key=chave_groq)
-        
-        # Prompt super detalhado exigindo JSON e Português do Brasil
-        prompt = f"""
-        Você é um especialista em biomecânica e musculação.
-        O usuário quer cadastrar o exercício: '{nome_exercicio}'.
-        Retorne APENAS um objeto JSON válido, em Português do Brasil claro e técnico, com a seguinte estrutura exata:
-        {{
-            "campos": {{
-                "dicas": ["Dica prática 1", "Dica prática 2", "Dica prática 3"],
-                "erros": ["Erro comum 1", "Erro comum 2"],
-                "musculos_secundarios": ["Músculo 1", "Músculo 2"],
-                "instrucoes": ["Passo 1 de execução", "Passo 2 de execução"],
-                "observacoes": "Uma breve observação geral sobre o exercício",
-                "foco": "Qual o foco principal ou benefício deste exercício"
-            }}
-        }}
-        Não adicione nenhuma formatação markdown (como ```json) ao redor da resposta, retorne apenas o JSON puro.
-        """
-
-        # Pedido à IA forçando o formato JSON
-        resposta = client.chat.completions.create(
-            messages=[{"role": "user", "content": prompt}],
-            model="llama-3.1-8b-instant",
-            response_format={"type": "json_object"}
-        )
-
-        # Converte a resposta de string para dicionário Python e envia para o frontend
-        conteudo_json = json.loads(resposta.choices[0].message.content)
-        return jsonify(conteudo_json)
-
-    except Exception as e:
-        return jsonify({"erro": f"Erro na IA: {str(e)}"}), 500
-
 @app.route("/admin/exercicios/sugerir-id")
 def admin_sugerir_id_exercicio():
     bloqueio = exigir_admin_ou_redirect()
@@ -2236,19 +2258,22 @@ def admin_sugerir_id_exercicio():
     return jsonify({"id": sugestao_id, "erro": erro})
 
 
-@app.route("/admin/exercicios/gerar-campos-ia")
+@app.route("/admin/exercicios/gerar-campos-ia", methods=["POST"])
 def admin_gerar_campos_ia_exercicio():
     bloqueio = exigir_admin_ou_redirect()
     if bloqueio:
         return jsonify({"erro": "Não autorizado."}), 401
 
-    nome = (request.args.get("nome") or "").strip()
-    grupo = (request.args.get("grupo") or "").strip()
-    subgrupo = (request.args.get("subgrupo") or "").strip()
-    aparelho = (request.args.get("aparelho") or "").strip()
+    payload = request.get_json(silent=True) or {}
+    nome = (payload.get("nome") or request.form.get("nome") or "").strip()
+    nome_original = (payload.get("nome_original") or request.form.get("nome_original") or "").strip()
+    grupo = (payload.get("grupo") or request.form.get("grupo") or "").strip()
+    subgrupo = (payload.get("subgrupo") or request.form.get("subgrupo") or "").strip()
+    aparelho = (payload.get("aparelho") or request.form.get("aparelho") or "").strip()
 
-    if not nome or not grupo or not subgrupo or not aparelho:
-        return jsonify({"duplicado": False, "campos": {}, "mensagem": "Preencha nome, grupo, subgrupo e aparelho."}), 400
+    if not nome or not nome_original or not grupo or not subgrupo or not aparelho:
+        return jsonify({"duplicado": False, "campos": {}, "mensagem": "Preencha nome em português, nome original, grupo, subgrupo e aparelho."}), 400
+
 
     exercicios = carregar_exercicios()
     duplicado = encontrar_exercicio_duplicado(exercicios, nome, grupo, subgrupo, aparelho)
@@ -2261,7 +2286,7 @@ def admin_gerar_campos_ia_exercicio():
             }
         )
 
-    campos, erro_ia = gerar_campos_com_ia(nome, grupo, subgrupo, aparelho)
+    campos, erro_ia = gerar_campos_com_ia(nome, nome_original, grupo, subgrupo, aparelho)
     if erro_ia:
         return jsonify({"duplicado": False, "campos": {}, "mensagem": erro_ia}), 400
 
@@ -2335,6 +2360,7 @@ def admin_editar_exercicio(ex_id):
     valores = {
         "id": exercicio_atual.get("id") or "",
         "nome": exercicio_atual.get("nome") or "",
+        "nome_original": exercicio_atual.get("nome_original") or "",
         "grupo": exercicio_atual.get("grupo") or "",
         "subgrupo": exercicio_atual.get("subgrupo") or "",
         "aparelho": exercicio_atual.get("aparelho") or "",
@@ -2384,6 +2410,8 @@ def admin_editar_exercicio(ex_id):
 
         if not valores["nome"]:
             erro = "Informe o nome do exercício."
+        elif not valores["nome_original"]:
+            erro = "Informe o nome original (inglês) do exercício."
         elif erro_id:
             erro = erro_id
         elif not id_novo:
@@ -2414,6 +2442,7 @@ def admin_editar_exercicio(ex_id):
 
             exercicio_atual["id"] = id_novo
             exercicio_atual["nome"] = valores["nome"]
+            exercicio_atual["nome_original"] = valores["nome_original"]
             exercicio_atual["grupo"] = valores["grupo"]
             exercicio_atual["subgrupo"] = valores["subgrupo"]
             exercicio_atual["aparelho"] = valores["aparelho"]

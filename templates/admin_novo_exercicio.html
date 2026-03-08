@@ -34,8 +34,12 @@
   <form method="POST" enctype="multipart/form-data" class="card shadow-sm">
     <div class="card-body row g-3">
       <div class="col-md-6">
-        <label class="form-label">Nome do exercício *</label>
+        <label class="form-label">Nome do exercício (PT-BR) *</label>
         <input class="form-control" name="nome" value="{{ valores.nome }}" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Nome original (inglês) *</label>
+        <input class="form-control" name="nome_original" id="novo-exercicio-nome-original" value="{{ valores.nome_original }}" required>
       </div>
       <div class="col-md-6">
         <label class="form-label">ID (auto-gerado)</label>
@@ -135,6 +139,7 @@
   const musculosSecundariosInput = document.getElementById('novo-exercicio-musculos-secundarios');
   const instrucoesInput = document.getElementById('novo-exercicio-instrucoes');
   const nomeInput = document.querySelector('input[name="nome"]');
+  const nomeOriginalInput = document.getElementById('novo-exercicio-nome-original');
   const iaStatus = document.getElementById('novo-exercicio-ia-status');
   const subgruposPorGrupo = {{ subgrupos_por_grupo|tojson }};
 
@@ -187,8 +192,15 @@
 
   const preencherLinhas = (campo, itens) => {
     if (!campo) return;
-    const linhas = Array.isArray(itens) ? itens.filter(Boolean) : [];
-    campo.value = linhas.join('\n');
+    if (Array.isArray(itens)) {
+      campo.value = itens.filter(Boolean).join('\n');
+      return;
+    }
+    if (typeof itens === 'string') {
+      campo.value = itens.replaceAll('\\n', '\n');
+      return;
+    }
+    campo.value = '';
   };
 
   const definirStatusIa = (mensagem, tipo = 'muted') => {
@@ -207,8 +219,10 @@
     const subgrupo = (subgrupoSelect?.value || '').trim();
     const aparelho = (aparelhoSelect?.value || '').trim();
 
-    if (!nome || !grupo || !subgrupo || !aparelho) {
-      definirStatusIa('Preencha nome, grupo, subgrupo e aparelho para gerar os campos.', 'danger');
+    const nomeOriginal = (nomeOriginalInput?.value || '').trim();
+
+    if (!nome || !nomeOriginal || !grupo || !subgrupo || !aparelho) {
+      definirStatusIa('Preencha nome em português, nome original, grupo, subgrupo e aparelho para gerar os campos.', 'danger');
       return;
     }
 
@@ -222,16 +236,17 @@
       const response = await fetch('/admin/exercicios/gerar-campos-ia', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, grupo, subgrupo, aparelho }),
+        body: JSON.stringify({ nome, nome_original: nomeOriginal, grupo, subgrupo, aparelho }),
       });
       const data = await response.json();
 
       if (!response.ok) {
-        if (response.status === 409) {
-          definirStatusIa(`Exercício duplicado: ${data?.exercicio?.nome || nome} (ID: ${data?.exercicio?.id || '-'})`, 'warning');
-          return;
-        }
-        definirStatusIa(data.erro || 'Não foi possível gerar os campos com IA.', 'danger');
+        definirStatusIa(data?.mensagem || data?.erro || 'Não foi possível gerar os campos com IA.', 'danger');
+        return;
+      }
+
+      if (data?.duplicado) {
+        definirStatusIa(data?.mensagem || `Exercício duplicado: ${nome}`, 'warning');
         return;
       }
 
