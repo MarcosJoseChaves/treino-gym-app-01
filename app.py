@@ -1,3 +1,5 @@
+from groq import Groq
+import json
 from flask import Flask, render_template, request, abort, send_file, url_for, redirect, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SQLAlchemyError
@@ -6,10 +8,15 @@ import os
 import io
 import re
 import unicodedata
+import urllib.error
+import urllib.request
+from difflib import SequenceMatcher
 import qrcode
 from datetime import datetime
 import uuid
 from urllib.parse import quote, urlparse, parse_qsl, urlencode, urlunparse
+from urllib.request import Request, urlopen
+from urllib.error import URLError, HTTPError
 from werkzeug.utils import secure_filename
 from jinja2 import TemplateNotFound
 
@@ -424,6 +431,538 @@ def slug_texto(texto):
 def normalizar_linhas_texto(texto):
     return [linha.strip() for linha in (texto or "").splitlines() if linha.strip()]
 
+
+def normalizar_texto_comparacao(texto):
+    texto_base = unicodedata.normalize("NFKD", (texto or "")).encode("ascii", "ignore").decode("ascii")
+    texto_base = re.sub(r"\s+", " ", texto_base).strip().lower()
+    return texto_base
+
+
+def encontrar_exercicio_duplicado(exercicios, nome, grupo, subgrupo, aparelho, id_ignorar=""):
+    nome_cmp = normalizar_texto_comparacao(nome)
+    grupo_cmp = normalizar_texto_comparacao(grupo)
+    subgrupo_cmp = normalizar_texto_comparacao(subgrupo)
+    aparelho_cmp = normalizar_texto_comparacao(aparelho)
+    id_ignorar = (id_ignorar or "").strip()
+
+    if not nome_cmp or not grupo_cmp or not subgrupo_cmp or not aparelho_cmp:
+        return None
+
+    for exercicio in exercicios:
+        if not isinstance(exercicio, dict):
+            continue
+        if id_ignorar and (exercicio.get("id") or "").strip() == id_ignorar:
+            continue
+
+        if (
+            normalizar_texto_comparacao(exercicio.get("nome")) == nome_cmp
+            and normalizar_texto_comparacao(exercicio.get("grupo")) == grupo_cmp
+            and normalizar_texto_comparacao(exercicio.get("subgrupo")) == subgrupo_cmp
+            and normalizar_texto_comparacao(exercicio.get("aparelho")) == aparelho_cmp
+        ):
+            return exercicio
+
+    return None
+
+
+def gerar_campos_exercicio_padrao(nome, grupo, subgrupo, aparelho):
+    base_nome = (nome or "exercício").strip()
+    base_grupo = (grupo or "grupo muscular").strip()
+    base_subgrupo = (subgrupo or "subgrupo").strip()
+    base_aparelho = (aparelho or "equipamento").strip()
+    return {
+        "dicas": [
+            f"Mantenha postura estável durante todo o {base_nome.lower()}.",
+            "Controle a fase de subida e a fase de retorno sem impulso.",
+            f"Ajuste a carga para priorizar execução técnica no {base_aparelho.lower()}.",
+        ],
+        "erros": [
+            "Usar carga excessiva e compensar com balanço do tronco.",
+            "Reduzir amplitude e encurtar o movimento.",
+            "Prender a respiração durante as repetições.",
+        ],
+        "observacoes": (
+            f"Exercício voltado para {base_grupo.lower()} com ênfase em {base_subgrupo.lower()}. "
+            "Priorize ritmo constante, amplitude segura e progressão gradual de carga."
+        ),
+        "foco": base_subgrupo,
+        "musculos_secundarios": ["Core", "Estabilizadores da escápula"],
+        "instrucoes": [
+            f"Posicione-se corretamente no {base_aparelho.lower()}.",
+            "Ative o abdômen e alinhe coluna e ombros.",
+            "Execute a fase concêntrica de forma controlada.",
+            "Retorne lentamente na fase excêntrica mantendo tensão.",
+            "Repita o número de repetições planejado sem perder técnica.",
+        ],
+    }
+
+
+def gerar_campos_exercicio_por_referencia(exercicios, nome, grupo, subgrupo, aparelho):
+    candidatos = []
+    grupo_cmp = normalizar_texto_comparacao(grupo)
+    subgrupo_cmp = normalizar_texto_comparacao(subgrupo)
+    aparelho_cmp = normalizar_texto_comparacao(aparelho)
+
+    for ex in exercicios or []:
+        if not isinstance(ex, dict):
+            continue
+
+        score = 0
+        if normalizar_texto_comparacao(ex.get("grupo")) == grupo_cmp:
+            score += 1
+        if normalizar_texto_comparacao(ex.get("subgrupo")) == subgrupo_cmp:
+            score += 2
+        if normalizar_texto_comparacao(ex.get("aparelho")) == aparelho_cmp:
+            score += 3
+
+        if score > 0:
+            candidatos.append((score, ex))
+
+    candidatos.sort(key=lambda item: (-item[0], (item[1].get("nome") or "").lower()))
+    referencia = candidatos[0][1] if candidatos else {}
+
+    padrao = gerar_campos_exercicio_padrao(nome, grupo, subgrupo, aparelho)
+
+    dicas_ref = normalizar_lista_texto(referencia.get("dicas") or [])
+    erros_ref = normalizar_lista_texto(referencia.get("erros") or [])
+    musculos_ref = normalizar_lista_texto(referencia.get("musculos_secundarios") or [])
+    instrucoes_ref = normalizar_lista_texto(referencia.get("instrucoes") or [])
+    observacoes_ref = (referencia.get("observacoes") or "").strip()
+
+    return {
+        "dicas": (dicas_ref[:5] if dicas_ref else padrao["dicas"]),
+        "erros": (erros_ref[:5] if erros_ref else padrao["erros"]),
+        "observacoes": observacoes_ref or padrao["observacoes"],
+        "foco": (referencia.get("foco") or subgrupo or "").strip(),
+        "musculos_secundarios": (musculos_ref[:5] if musculos_ref else padrao["musculos_secundarios"]),
+        "instrucoes": (instrucoes_ref[:8] if instrucoes_ref else padrao["instrucoes"]),
+    }
+
+
+def gerar_campos_exercicio_com_ia(nome, grupo, subgrupo, aparelho, exercicios_referencia=None):
+    openai_api_key = (os.environ.get("OPENAI_API_KEY") or "").strip()
+    gemini_api_key = (os.environ.get("GEMINI_API_KEY") or "").strip()
+    fallback = gerar_campos_exercicio_por_referencia(exercicios_referencia or [], nome, grupo, subgrupo, aparelho)
+    provedor = ""
+    if openai_api_key:
+        provedor = "openai"
+    elif gemini_api_key:
+        provedor = "gemini"
+
+    if not provedor:
+        return (
+            fallback,
+            "",
+            "Nenhuma chave de IA configurada (OPENAI_API_KEY ou GEMINI_API_KEY); campos sugeridos automaticamente com base na biblioteca atual.",
+        )
+
+    prompt_sistema = (
+        "Você é especialista em treinamento físico e deve gerar campos padronizados para cadastro de exercício. "
+        "Responda APENAS em JSON válido com as chaves exatas: "
+        "dicas (array de strings), erros (array de strings), observacoes (string), foco (string), "
+        "musculos_secundarios (array de strings), instrucoes (array de strings)."
+    )
+    prompt_usuario = (
+        "Gere os campos para o exercício abaixo em português do Brasil, com linguagem objetiva e técnica.\n"
+        f"Nome do exercício: {nome}\n"
+        f"Grupo muscular: {grupo}\n"
+        f"Subgrupo muscular: {subgrupo}\n"
+        f"Aparelho/implemento: {aparelho}\n"
+        "Regras:\n"
+        "- Dicas: entre 3 e 5 itens curtos.\n"
+        "- Erros: entre 3 e 5 itens curtos.\n"
+        "- Observações: 1 parágrafo curto.\n"
+        "- Foco: texto curto (pode ser vazio se realmente não se aplicar).\n"
+        "- Músculos secundários: entre 2 e 5 itens.\n"
+        "- Instruções: entre 4 e 8 passos objetivos."
+    )
+
+    if provedor == "openai":
+        modelo_openai = (os.environ.get("OPENAI_MODEL") or "gpt-4o-mini").strip()
+        payload = {
+            "model": modelo_openai,
+            "messages": [
+                {"role": "system", "content": prompt_sistema},
+                {"role": "user", "content": prompt_usuario},
+            ],
+            "temperature": 0.4,
+            "response_format": {"type": "json_object"},
+        }
+        req = urllib.request.Request(
+            "https://api.openai.com/v1/chat/completions",
+            data=json.dumps(payload).encode("utf-8"),
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {openai_api_key}",
+            },
+            method="POST",
+        )
+    else:
+        modelo_gemini = (os.environ.get("GEMINI_MODEL") or "gemini-1.5-flash").strip()
+        payload = {
+            "contents": [
+                {
+                    "parts": [
+                        {
+                            "text": (
+                                f"{prompt_sistema}\n\n{prompt_usuario}\n\n"
+                                "Retorne somente JSON válido, sem markdown."
+                            )
+                        }
+                    ]
+                }
+            ],
+            "generationConfig": {
+                "temperature": 0.4,
+                "responseMimeType": "application/json",
+            },
+        }
+        req = urllib.request.Request(
+            f"https://generativelanguage.googleapis.com/v1beta/models/{modelo_gemini}:generateContent?key={gemini_api_key}",
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            body = resp.read().decode("utf-8")
+    except urllib.error.HTTPError as e:
+        try:
+            _ = e.read().decode("utf-8")
+        except Exception:
+            pass
+        return fallback, "", f"Falha ao usar IA ({provedor.upper()} - HTTP {e.code}). Sugestões automáticas foram aplicadas."
+    except Exception:
+        return fallback, "", f"Falha de comunicação com o serviço de IA ({provedor.upper()}); sugestões automáticas foram aplicadas."
+
+    try:
+        resposta = json.loads(body)
+        conteudo = ""
+        if provedor == "openai":
+            conteudo = resposta["choices"][0]["message"]["content"]
+            if isinstance(conteudo, list):
+                conteudo = "".join(
+                    parte.get("text", "") if isinstance(parte, dict) else str(parte)
+                    for parte in conteudo
+                )
+        else:
+            partes = (((resposta.get("candidates") or [{}])[0].get("content") or {}).get("parts") or [])
+            conteudo = "".join((parte.get("text") or "") for parte in partes if isinstance(parte, dict))
+
+        conteudo = (conteudo or "").strip()
+        if conteudo.startswith("```"):
+            conteudo = re.sub(r"^```(?:json)?\s*", "", conteudo, flags=re.IGNORECASE)
+            conteudo = re.sub(r"\s*```$", "", conteudo)
+        dados = json.loads(conteudo)
+    except (ValueError, KeyError, IndexError, TypeError):
+        return fallback, "", f"A resposta da IA ({provedor.upper()}) veio em formato inválido; sugestões automáticas foram aplicadas."
+
+    resultado = {
+        "dicas": normalizar_lista_texto(dados.get("dicas") or []),
+        "erros": normalizar_lista_texto(dados.get("erros") or []),
+        "observacoes": (dados.get("observacoes") or "").strip(),
+        "foco": (dados.get("foco") or "").strip(),
+        "musculos_secundarios": normalizar_lista_texto(dados.get("musculos_secundarios") or []),
+        "instrucoes": normalizar_lista_texto(dados.get("instrucoes") or []),
+    }
+
+    if not resultado["dicas"] or not resultado["erros"] or not resultado["instrucoes"]:
+        return fallback, "", f"A IA ({provedor.upper()}) não retornou conteúdo suficiente; sugestões automáticas foram aplicadas."
+
+    return resultado, "", ""
+
+
+def gerar_campos_exercicio_com_ia(nome, grupo, subgrupo, aparelho):
+    api_key = (os.environ.get("OPENAI_API_KEY") or "").strip()
+    if not api_key:
+        return None, "OPENAI_API_KEY não configurada no servidor."
+
+    modelo = (os.environ.get("OPENAI_MODEL") or "gpt-4o-mini").strip()
+
+    prompt_sistema = (
+        "Você é especialista em treinamento físico e deve gerar campos padronizados para cadastro de exercício. "
+        "Responda APENAS em JSON válido com as chaves exatas: "
+        "dicas (array de strings), erros (array de strings), observacoes (string), foco (string), "
+        "musculos_secundarios (array de strings), instrucoes (array de strings)."
+    )
+    prompt_usuario = (
+        "Gere os campos para o exercício abaixo em português do Brasil, com linguagem objetiva e técnica.\n"
+        f"Nome do exercício: {nome}\n"
+        f"Grupo muscular: {grupo}\n"
+        f"Subgrupo muscular: {subgrupo}\n"
+        f"Aparelho/implemento: {aparelho}\n"
+        "Regras:\n"
+        "- Dicas: entre 3 e 5 itens curtos.\n"
+        "- Erros: entre 3 e 5 itens curtos.\n"
+        "- Observações: 1 parágrafo curto.\n"
+        "- Foco: texto curto (pode ser vazio se realmente não se aplicar).\n"
+        "- Músculos secundários: entre 2 e 5 itens.\n"
+        "- Instruções: entre 4 e 8 passos objetivos."
+    )
+
+    payload = {
+        "model": modelo,
+        "messages": [
+            {"role": "system", "content": prompt_sistema},
+            {"role": "user", "content": prompt_usuario},
+        ],
+        "temperature": 0.4,
+        "response_format": {"type": "json_object"},
+    }
+
+    req = urllib.request.Request(
+        "https://api.openai.com/v1/chat/completions",
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}",
+        },
+        method="POST",
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            body = resp.read().decode("utf-8")
+    except urllib.error.HTTPError as e:
+        detalhe = ""
+        try:
+            detalhe = e.read().decode("utf-8")
+        except Exception:
+            detalhe = ""
+        return None, f"Falha ao gerar conteúdo com IA ({e.code}). {detalhe[:300]}".strip()
+    except Exception:
+        return None, "Falha de comunicação com o serviço de IA."
+
+    try:
+        resposta = json.loads(body)
+        conteudo = resposta["choices"][0]["message"]["content"]
+        if isinstance(conteudo, list):
+            conteudo = "".join(
+                parte.get("text", "") if isinstance(parte, dict) else str(parte)
+                for parte in conteudo
+            )
+        dados = json.loads(conteudo)
+    except (ValueError, KeyError, IndexError, TypeError):
+        return None, "A IA retornou um formato inválido."
+
+    resultado = {
+        "dicas": normalizar_lista_texto(dados.get("dicas") or []),
+        "erros": normalizar_lista_texto(dados.get("erros") or []),
+        "observacoes": (dados.get("observacoes") or "").strip(),
+        "foco": (dados.get("foco") or "").strip(),
+        "musculos_secundarios": normalizar_lista_texto(dados.get("musculos_secundarios") or []),
+        "instrucoes": normalizar_lista_texto(dados.get("instrucoes") or []),
+    }
+
+    if not resultado["dicas"] or not resultado["erros"] or not resultado["instrucoes"]:
+        return None, "A IA não retornou conteúdo suficiente para preencher o exercício."
+
+    return resultado, ""
+
+
+def normalizar_chave_busca(texto):
+    return normalizar_chave_codigo(texto)
+
+
+def encontrar_exercicio_duplicado(exercicios, nome, grupo, subgrupo, aparelho):
+    chave_nome = normalizar_chave_busca(nome)
+    chave_grupo = normalizar_chave_busca(grupo)
+    chave_subgrupo = normalizar_chave_busca(subgrupo)
+    chave_aparelho = normalizar_chave_busca(aparelho)
+
+    if not all([chave_nome, chave_grupo, chave_subgrupo, chave_aparelho]):
+        return None
+
+    for ex in exercicios or []:
+        if not isinstance(ex, dict):
+            continue
+        if (
+            normalizar_chave_busca(ex.get("nome")) == chave_nome
+            and normalizar_chave_busca(ex.get("grupo")) == chave_grupo
+            and normalizar_chave_busca(ex.get("subgrupo")) == chave_subgrupo
+            and normalizar_chave_busca(ex.get("aparelho")) == chave_aparelho
+        ):
+            return ex
+    return None
+
+
+def montar_sugestao_campos_exercicio(exercicio):
+    if not isinstance(exercicio, dict):
+        return {}
+    return {
+        "dicas": "\n".join(exercicio.get("dicas") or []),
+        "erros": "\n".join(exercicio.get("erros") or []),
+        "observacoes": exercicio.get("observacoes") or "",
+        "foco": exercicio.get("foco") or "",
+        "musculos_secundarios": "\n".join(exercicio.get("musculos_secundarios") or []),
+        "instrucoes": "\n".join(exercicio.get("instrucoes") or []),
+    }
+
+
+def buscar_referencia_autocomplete(exercicios, nome, grupo, subgrupo, aparelho):
+    chave_grupo = normalizar_chave_busca(grupo)
+    chave_subgrupo = normalizar_chave_busca(subgrupo)
+    chave_aparelho = normalizar_chave_busca(aparelho)
+    nome_ref = (nome or "").strip().lower()
+
+    if not all([nome_ref, chave_grupo, chave_subgrupo, chave_aparelho]):
+        return None
+
+    candidatos = []
+    for ex in exercicios or []:
+        if not isinstance(ex, dict):
+            continue
+
+        if (
+            normalizar_chave_busca(ex.get("grupo")) != chave_grupo
+            or normalizar_chave_busca(ex.get("subgrupo")) != chave_subgrupo
+            or normalizar_chave_busca(ex.get("aparelho")) != chave_aparelho
+        ):
+            continue
+
+        nome_candidato = (ex.get("nome") or "").strip().lower()
+        if not nome_candidato:
+            continue
+
+        similaridade = SequenceMatcher(a=nome_ref, b=nome_candidato).ratio()
+        candidatos.append((similaridade, nome_candidato, ex))
+
+    if not candidatos:
+        return None
+
+    candidatos.sort(key=lambda item: (item[0], item[1]), reverse=True)
+    return candidatos[0][2]
+
+
+
+
+def extrair_json_de_texto_ia(texto):
+    conteudo = (texto or "").strip()
+    if not conteudo:
+        return {}
+
+    if conteudo.startswith("```"):
+        partes = conteudo.split("```")
+        for parte in partes:
+            bloco = parte.strip()
+            if not bloco:
+                continue
+            if bloco.lower().startswith("json"):
+                bloco = bloco[4:].strip()
+            try:
+                dado = json.loads(bloco)
+                if isinstance(dado, dict):
+                    return dado
+            except json.JSONDecodeError:
+                continue
+
+    try:
+        dado = json.loads(conteudo)
+        if isinstance(dado, dict):
+            return dado
+    except json.JSONDecodeError:
+        pass
+
+    inicio = conteudo.find("{")
+    fim = conteudo.rfind("}")
+    if inicio >= 0 and fim > inicio:
+        trecho = conteudo[inicio:fim + 1]
+        try:
+            dado = json.loads(trecho)
+            if isinstance(dado, dict):
+                return dado
+        except json.JSONDecodeError:
+            return {}
+
+    return {}
+
+
+def normalizar_campo_ia_texto(valor):
+    if isinstance(valor, list):
+        return "\n".join(str(v).strip() for v in valor if str(v).strip())
+    return str(valor or "").strip()
+
+
+def gerar_campos_com_ia(nome, grupo, subgrupo, aparelho):
+    api_key = (os.environ.get("OPENAI_API_KEY") or "").strip()
+    if not api_key:
+        return {}, "IA não configurada. Defina OPENAI_API_KEY no ambiente."
+
+    endpoint = (os.environ.get("OPENAI_API_URL") or "https://api.openai.com/v1/chat/completions").strip()
+    modelo = (os.environ.get("OPENAI_MODEL") or "gpt-4o-mini").strip()
+
+    prompt_sistema = (
+        "Você é especialista em educação física e biomecânica. "
+        "Responda SOMENTE JSON válido, sem markdown, com as chaves: "
+        "dicas (array de strings), erros (array de strings), observacoes (string), "
+        "foco (string), musculos_secundarios (array de strings), instrucoes (array de strings)."
+    )
+
+    prompt_usuario = (
+        "Gere o conteúdo para cadastro de exercício.\n"
+        f"Nome: {nome}\n"
+        f"Grupo: {grupo}\n"
+        f"Subgrupo: {subgrupo}\n"
+        f"Aparelho: {aparelho}\n"
+        "Use linguagem objetiva em português do Brasil e foco em execução segura."
+    )
+
+    payload = {
+        "model": modelo,
+        "temperature": 0.7,
+        "messages": [
+            {"role": "system", "content": prompt_sistema},
+            {"role": "user", "content": prompt_usuario},
+        ],
+        "response_format": {"type": "json_object"},
+    }
+
+    req = Request(
+        endpoint,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}",
+        },
+        method="POST",
+    )
+
+    try:
+        with urlopen(req, timeout=30) as resp:
+            bruto = resp.read().decode("utf-8")
+            data = json.loads(bruto)
+    except HTTPError as e:
+        detalhe = e.read().decode("utf-8", errors="ignore") if hasattr(e, "read") else ""
+        return {}, f"Falha ao consultar IA (HTTP {e.code}). {detalhe[:300]}"
+    except URLError:
+        return {}, "Falha de conexão ao consultar IA."
+    except (OSError, json.JSONDecodeError):
+        return {}, "Resposta inválida ao consultar IA."
+
+    conteudo = ""
+    escolhas = data.get("choices") or []
+    if escolhas and isinstance(escolhas[0], dict):
+        msg = escolhas[0].get("message") or {}
+        conteudo = msg.get("content") or ""
+
+    estrutura = extrair_json_de_texto_ia(conteudo)
+    if not estrutura:
+        return {}, "A IA não retornou JSON válido para os campos solicitados."
+
+    campos = {
+        "dicas": normalizar_campo_ia_texto(estrutura.get("dicas")),
+        "erros": normalizar_campo_ia_texto(estrutura.get("erros")),
+        "observacoes": normalizar_campo_ia_texto(estrutura.get("observacoes")),
+        "foco": normalizar_campo_ia_texto(estrutura.get("foco")),
+        "musculos_secundarios": normalizar_campo_ia_texto(estrutura.get("musculos_secundarios")),
+        "instrucoes": normalizar_campo_ia_texto(estrutura.get("instrucoes")),
+    }
+
+    if not any(campos.values()):
+        return {}, "A IA retornou vazio para os campos sugeridos."
+
+    return campos, ""
 
 def listar_pastas_exercicios():
     if not os.path.isdir(EXERCICIOS_STATIC_DIR):
@@ -1512,6 +2051,13 @@ def admin_novo_exercicio():
 
         upload = request.files.get("midia_arquivo")
         nome = valores["nome"]
+        exercicio_duplicado = encontrar_exercicio_duplicado(
+            exercicios,
+            nome=valores["nome"],
+            grupo=valores["grupo"],
+            subgrupo=valores["subgrupo"],
+            aparelho=valores["aparelho"],
+        )
         sugestao_id, erro_id = gerar_id_exercicio_por_categorias(
             exercicios,
             grupo=valores["grupo"],
@@ -1525,6 +2071,8 @@ def admin_novo_exercicio():
 
         if not nome:
             erro = "Informe o nome do exercício."
+        elif exercicio_duplicado:
+            erro = "Já existe um exercício com mesmo nome, grupo, subgrupo e aparelho."
         elif erro_id:
             erro = erro_id
         elif not ex_id:
@@ -1606,6 +2154,57 @@ def admin_novo_exercicio():
         )
 
 
+@app.route("/admin/exercicios/gerar-campos-ia", methods=["GET", "POST"])
+def gerar_campos_ia():
+    # Pega o nome vindo por GET ou no formato form-data
+    nome_exercicio = request.args.get("nome") or request.form.get("nome")
+    
+    # SE o nome ainda for vazio, tenta pegar do corpo JSON (que é o que o seu JS está enviando)
+    if not nome_exercicio and request.is_json:
+        nome_exercicio = request.json.get("nome")
+    
+    if not nome_exercicio:
+        return jsonify({"erro": "Nome do exercício é obrigatório."}), 400
+
+    chave_groq = os.environ.get("GROQ_API_KEY")
+    if not chave_groq:
+        return jsonify({"erro": "Chave da Groq não configurada no .env"}), 500
+
+    try:
+        client = Groq(api_key=chave_groq)
+        
+        # Prompt super detalhado exigindo JSON e Português do Brasil
+        prompt = f"""
+        Você é um especialista em biomecânica e musculação.
+        O usuário quer cadastrar o exercício: '{nome_exercicio}'.
+        Retorne APENAS um objeto JSON válido, em Português do Brasil claro e técnico, com a seguinte estrutura exata:
+        {{
+            "campos": {{
+                "dicas": ["Dica prática 1", "Dica prática 2", "Dica prática 3"],
+                "erros": ["Erro comum 1", "Erro comum 2"],
+                "musculos_secundarios": ["Músculo 1", "Músculo 2"],
+                "instrucoes": ["Passo 1 de execução", "Passo 2 de execução"],
+                "observacoes": "Uma breve observação geral sobre o exercício",
+                "foco": "Qual o foco principal ou benefício deste exercício"
+            }}
+        }}
+        Não adicione nenhuma formatação markdown (como ```json) ao redor da resposta, retorne apenas o JSON puro.
+        """
+
+        # Pedido à IA forçando o formato JSON
+        resposta = client.chat.completions.create(
+            messages=[{"role": "user", "content": prompt}],
+            model="llama-3.1-8b-instant",
+            response_format={"type": "json_object"}
+        )
+
+        # Converte a resposta de string para dicionário Python e envia para o frontend
+        conteudo_json = json.loads(resposta.choices[0].message.content)
+        return jsonify(conteudo_json)
+
+    except Exception as e:
+        return jsonify({"erro": f"Erro na IA: {str(e)}"}), 500
+
 @app.route("/admin/exercicios/sugerir-id")
 def admin_sugerir_id_exercicio():
     bloqueio = exigir_admin_ou_redirect()
@@ -1637,6 +2236,42 @@ def admin_sugerir_id_exercicio():
     return jsonify({"id": sugestao_id, "erro": erro})
 
 
+@app.route("/admin/exercicios/gerar-campos-ia")
+def admin_gerar_campos_ia_exercicio():
+    bloqueio = exigir_admin_ou_redirect()
+    if bloqueio:
+        return jsonify({"erro": "Não autorizado."}), 401
+
+    nome = (request.args.get("nome") or "").strip()
+    grupo = (request.args.get("grupo") or "").strip()
+    subgrupo = (request.args.get("subgrupo") or "").strip()
+    aparelho = (request.args.get("aparelho") or "").strip()
+
+    if not nome or not grupo or not subgrupo or not aparelho:
+        return jsonify({"duplicado": False, "campos": {}, "mensagem": "Preencha nome, grupo, subgrupo e aparelho."}), 400
+
+    exercicios = carregar_exercicios()
+    duplicado = encontrar_exercicio_duplicado(exercicios, nome, grupo, subgrupo, aparelho)
+    if duplicado:
+        return jsonify(
+            {
+                "duplicado": True,
+                "mensagem": "Já existe um exercício com o mesmo nome, grupo, subgrupo e aparelho.",
+                "campos": {},
+            }
+        )
+
+    campos, erro_ia = gerar_campos_com_ia(nome, grupo, subgrupo, aparelho)
+    if erro_ia:
+        return jsonify({"duplicado": False, "campos": {}, "mensagem": erro_ia}), 400
+
+    return jsonify(
+        {
+            "duplicado": False,
+            "mensagem": "Campos gerados com IA com sucesso.",
+            "campos": campos,
+        }
+    )
 @app.route("/midia/exercicios/<caminho>")
 def obter_midia_exercicio(caminho):
     if not db or not ExercicioMidiaDB:
