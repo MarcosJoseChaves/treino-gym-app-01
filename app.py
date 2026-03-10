@@ -8,11 +8,13 @@ import os
 import io
 import re
 import unicodedata
+from copy import deepcopy
 import urllib.error
 import urllib.request
 from difflib import SequenceMatcher
 import qrcode
 from datetime import datetime
+import time
 import uuid
 from urllib.parse import quote, urlparse, parse_qsl, urlencode, urlunparse
 from urllib.request import Request, urlopen
@@ -75,6 +77,46 @@ GRUPOS_CODIGOS_PADRAO = {
     "membros superiores": "4",
     "tronco": "5",
 }
+
+CACHE_TTL_SEGUNDOS = max(5, int(os.environ.get("RUNTIME_CACHE_TTL", "20")))
+_CACHE_RUNTIME = {}
+
+
+def assinatura_arquivo(caminho):
+    try:
+        stat = os.stat(caminho)
+        return stat.st_mtime_ns, stat.st_size
+    except OSError:
+        return None
+
+
+def cache_runtime_ler(chave, assinatura=None, ttl=CACHE_TTL_SEGUNDOS):
+    registro = _CACHE_RUNTIME.get(chave)
+    if not registro:
+        return None
+
+    if assinatura is not None and registro.get("assinatura") != assinatura:
+        _CACHE_RUNTIME.pop(chave, None)
+        return None
+
+    if (time.time() - registro.get("carregado_em", 0)) > ttl:
+        _CACHE_RUNTIME.pop(chave, None)
+        return None
+
+    return deepcopy(registro.get("valor"))
+
+
+def cache_runtime_salvar(chave, valor, assinatura=None):
+    _CACHE_RUNTIME[chave] = {
+        "carregado_em": time.time(),
+        "assinatura": assinatura,
+        "valor": deepcopy(valor),
+    }
+
+
+def cache_runtime_invalidar(*chaves):
+    for chave in chaves:
+        _CACHE_RUNTIME.pop(chave, None)
 
 
 def garantir_sslmode_require(database_url):
@@ -333,6 +375,12 @@ def injetar_estado_admin():
 
 def carregar_exercicios():
     """Carrega a lista de exercícios (banco quando disponível, senão JSON)."""
+    assinatura_json = assinatura_arquivo(DATA_FILE) if not (db and ExercicioDB) else None
+    cache_chave = "exercicios"
+    cache_assinatura = assinatura_json if assinatura_json else ("db",)
+    cache_valor = cache_runtime_ler(cache_chave, assinatura=cache_assinatura)
+    if cache_valor is not None:
+        return cache_valor
     data = []
 
     if db and ExercicioDB:
@@ -372,12 +420,18 @@ def carregar_exercicios():
         ex.setdefault("aparelho", "Peso livre")
         exercicios_normalizados.append(ex)
 
+    cache_runtime_salvar(cache_chave, exercicios_normalizados, assinatura=cache_assinatura)
+
     return exercicios_normalizados
 
 
 def carregar_favoritos_admin():
     """Carrega IDs de exercícios favoritos do admin."""
     favoritos_file = caminho_arquivo("FAVORITOS_FILE", "favoritos_admin.json")
+    assinatura = assinatura_arquivo(favoritos_file)
+    cache_valor = cache_runtime_ler("favoritos_admin", assinatura=assinatura)
+    if cache_valor is not None:
+        return set(cache_valor)
     if not os.path.exists(favoritos_file):
         return set()
 
@@ -390,11 +444,13 @@ def carregar_favoritos_admin():
     if not isinstance(data, list):
         return set()
 
-    return {
+    favoritos = {
         (str(ex_id).strip())
         for ex_id in data
         if str(ex_id).strip()
     }
+    cache_runtime_salvar("favoritos_admin", list(favoritos), assinatura=assinatura)
+    return favoritos
 
 
 def salvar_favoritos_admin(favoritos_ids):
@@ -402,6 +458,7 @@ def salvar_favoritos_admin(favoritos_ids):
     favoritos_ordenados = sorted({(str(ex_id).strip()) for ex_id in favoritos_ids if str(ex_id).strip()})
     with open(favoritos_file, "w", encoding="utf-8") as f:
         json.dump(favoritos_ordenados, f, ensure_ascii=False, indent=2)
+    cache_runtime_invalidar("favoritos_admin")
 
 
 def salvar_exercicios(exercicios):
@@ -416,11 +473,13 @@ def salvar_exercicios(exercicios):
                     continue
                 db.session.add(ExercicioDB(id=ex_id, dados=ex))
             db.session.commit()
+            cache_runtime_invalidar("exercicios", "categorias_exercicios")
             return
         except SQLAlchemyError:
             db.session.rollback()
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(exercicios, f, ensure_ascii=False, indent=2)
+    cache_runtime_invalidar("exercicios", "categorias_exercicios")
 
 
 def slug_texto(texto):
@@ -1049,6 +1108,10 @@ def listar_pastas_exercicios():
 
 
 def carregar_categorias_exercicios(exercicios):
+    assinatura = assinatura_arquivo(EXERCICIOS_CATEGORIAS_FILE)
+    cache_valor = cache_runtime_ler("categorias_exercicios", assinatura=assinatura)
+    if cache_valor is not None:
+        return cache_valor
     grupos_padrao = obter_grupos_validos(exercicios)
     subgrupos_padrao = obter_subgrupos_por_grupo(exercicios)
     aparelhos_padrao = obter_aparelhos_por_filtros(exercicios)["todos"]
@@ -1117,17 +1180,20 @@ def carregar_categorias_exercicios(exercicios):
             )
     vinculos_aparelho.sort(key=lambda x: ((x.get("grupo") or "").lower(), (x.get("subgrupo") or "").lower(), (x.get("aparelho") or "").lower()))
 
-    return {
+    resultado = {
         "grupos": grupos,
         "subgrupos_por_grupo": subgrupos_por_grupo,
         "aparelhos": aparelhos,
         "vinculos_aparelho": vinculos_aparelho,
     }
+    cache_runtime_salvar("categorias_exercicios", resultado, assinatura=assinatura)
+    return resultado
 
 
 def salvar_categorias_exercicios(categorias):
     with open(EXERCICIOS_CATEGORIAS_FILE, "w", encoding="utf-8") as f:
         json.dump(categorias, f, ensure_ascii=False, indent=2)
+    cache_runtime_invalidar("categorias_exercicios")
 
 
 def normalizar_categorias_para_salvar(categorias):
@@ -1491,10 +1557,16 @@ def index_por_id(exercicios):
 
 
 def carregar_treinos():
+    assinatura_json = assinatura_arquivo(caminho_arquivo("TREINOS_FILE", "treinos.json")) if not db else None
+    cache_assinatura = assinatura_json if assinatura_json else ("db",)
+    cache_valor = cache_runtime_ler("treinos", assinatura=cache_assinatura)
+    if cache_valor is not None:
+        return cache_valor
     if db:
         try:
             registros = TreinoDB.query.all()
             treinos = [registro.dados for registro in registros if isinstance(registro.dados, dict)]
+            cache_runtime_salvar("treinos", treinos, assinatura=cache_assinatura)
             return treinos
         except SQLAlchemyError:
             pass
@@ -1511,7 +1583,9 @@ def carregar_treinos():
     except (json.JSONDecodeError, OSError):
         return []
 
-    return data if isinstance(data, list) else []
+    resultado = data if isinstance(data, list) else []
+    cache_runtime_salvar("treinos", resultado, assinatura=cache_assinatura)
+    return resultado
 
 
 def salvar_treinos(treinos):
@@ -1539,6 +1613,7 @@ def salvar_treinos(treinos):
                     db.session.delete(registro)
 
             db.session.commit()
+            cache_runtime_invalidar("treinos")
             return
         except SQLAlchemyError as e:
             db.session.rollback()
@@ -1547,13 +1622,20 @@ def salvar_treinos(treinos):
     treinos_file = caminho_arquivo("TREINOS_FILE", "treinos.json")
     with open(treinos_file, "w", encoding="utf-8") as f:
         json.dump(treinos, f, ensure_ascii=False, indent=2)
+    cache_runtime_invalidar("treinos")
 
 
 def carregar_respostas_questionario():
+    assinatura_json = assinatura_arquivo(caminho_arquivo("QUESTIONARIO_FILE", "questionario_respostas.json")) if not db else None
+    cache_assinatura = assinatura_json if assinatura_json else ("db",)
+    cache_valor = cache_runtime_ler("respostas_questionario", assinatura=cache_assinatura)
+    if cache_valor is not None:
+        return cache_valor
     if db:
         try:
             registros = RespostaDB.query.all()
             respostas = [registro.dados for registro in registros if isinstance(registro.dados, dict)]
+            cache_runtime_salvar("respostas_questionario", respostas, assinatura=cache_assinatura)
             return respostas
         except SQLAlchemyError as e:
             app.logger.exception(f"Falha ao carregar respostas no banco: {e}")
@@ -1568,7 +1650,9 @@ def carregar_respostas_questionario():
     except (json.JSONDecodeError, OSError):
         return []
 
-    return data if isinstance(data, list) else []
+    resultado = data if isinstance(data, list) else []
+    cache_runtime_salvar("respostas_questionario", resultado, assinatura=cache_assinatura)
+    return resultado
 
 
 def salvar_respostas_questionario(respostas):
@@ -1590,6 +1674,7 @@ def salvar_respostas_questionario(respostas):
                     db.session.delete(registro)
 
             db.session.commit()
+            cache_runtime_invalidar("respostas_questionario")
             return
         except SQLAlchemyError as e:
             db.session.rollback()
@@ -1598,6 +1683,7 @@ def salvar_respostas_questionario(respostas):
     questionario_file = caminho_arquivo("QUESTIONARIO_FILE", "questionario_respostas.json")
     with open(questionario_file, "w", encoding="utf-8") as f:
         json.dump(respostas, f, ensure_ascii=False, indent=2)
+    cache_runtime_invalidar("respostas_questionario")
 
 
 def limpar_texto_campo(valor):
